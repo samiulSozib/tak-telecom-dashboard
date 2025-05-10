@@ -26,7 +26,6 @@ import { _fetchRoleList } from '@/app/redux/actions/rolesActions';
 import { useTranslation } from 'react-i18next';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { _fetchHawalaList } from '@/app/redux/actions/hawalaBranchActions';
 
 const UserListGroupPage = () => {
 

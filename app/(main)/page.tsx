@@ -119,27 +119,7 @@ const Dashboard = () => {
         });
     };
 
-    const bgGradientMap = {
-  bus_count: { backgroundImage: "linear-gradient(to right, #dbeafe, #c7d2fe)" },
-  trip_count: { backgroundImage: "linear-gradient(to right, #f3e8ff, #fbcfe8)" },
-  active_trip_count: { backgroundImage: "linear-gradient(to right, #d1fae5, #99f6e4)" },
-  customers_count: { backgroundImage: "linear-gradient(to right, #fef9c3, #fed7aa)" },
-  agents_count: { backgroundImage: "linear-gradient(to right, #fae8ff, #e9d5ff)" },
-  vendors_count: { backgroundImage: "linear-gradient(to right, #cffafe, #bfdbfe)" },
-  all_booking_count: { backgroundImage: "linear-gradient(to right, #e0e7ff, #e9d5ff)" },
-  pending_booking_count: { backgroundImage: "linear-gradient(to right, #ffedd5, #fde68a)" },
-  paid_booking_count: { backgroundImage: "linear-gradient(to right, #d1fae5, #a7f3d0)" },
-  partial_paid_booking_count: { backgroundImage: "linear-gradient(to right, #fef9c3, #fef08a)" },
-  cancelled_booking_count: { backgroundImage: "linear-gradient(to right, #fee2e2, #fbcfe8)" },
-  all_ticket_count: { backgroundImage: "linear-gradient(to right, #cffafe, #99f6e4)" },
-  booked_ticket_count: { backgroundImage: "linear-gradient(to right, #e0f2fe, #bfdbfe)" },
-  used_ticket_count: { backgroundImage: "linear-gradient(to right, #ecfccb, #bbf7d0)" },
-  cancelled_ticket_count: { backgroundImage: "linear-gradient(to right, #ffe4e6, #fecaca)" },
-  total_balance: { backgroundImage: "linear-gradient(to right, #f3f4f6, #d1d5db)" },
-  customers_total_balance: { backgroundImage: "linear-gradient(to right, #fef08a, #fde68a)" },
-  agents_total_balance: { backgroundImage: "linear-gradient(to right, #e9d5ff, #c7d2fe)" },
-  vendors_total_balance: { backgroundImage: "linear-gradient(to right, #bfdbfe, #cffafe)" },
-};
+
 
 
     return (
