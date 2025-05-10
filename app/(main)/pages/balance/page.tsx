@@ -1,0 +1,586 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
+import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Toast } from 'primereact/toast';
+import { Toolbar } from 'primereact/toolbar';
+import { classNames } from 'primereact/utils';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { Dropdown } from 'primereact/dropdown';
+import { _fetchCountries } from '@/app/redux/actions/countriesActions';
+import { _fetchTelegramList } from '@/app/redux/actions/telegramActions';
+import { AppDispatch } from '@/app/redux/store';
+import { Balance, Currency } from '@/types/interface';
+import { ProgressBar } from 'primereact/progressbar';
+import { _addBalance, _deleteBalance, _editBalance, _fetchBalances } from '@/app/redux/actions/balanceActions';
+import withAuth from '../../authGuard';
+import { useTranslation } from 'react-i18next';
+import { resellerReducer } from '../../../redux/reducers/resellerReducer';
+import { _fetchResellers } from '@/app/redux/actions/resellerActions';
+import { currenciesReducer } from '../../../redux/reducers/currenciesReducer';
+import { _fetchCurrencies } from '@/app/redux/actions/currenciesActions';
+import { paymentMethodsReducer } from '../../../redux/reducers/paymentMethodReducer';
+import { _fetchPaymentMethods } from '@/app/redux/actions/paymentMethodActions';
+import { Calendar } from 'primereact/calendar';
+import { customCellStyle } from '../../utilities/customRow';
+import i18n from '@/i18n';
+
+const BalancePage = () => {
+
+    let emptyBalance:Balance={
+        id:0,
+        reseller_id:0,
+        transaction_type:'',
+        payment_id:null,
+        amount:'',
+        remaining_balance:'',
+        currency_id:0,
+        description:'',
+        created_at:'',
+        updated_at:'',
+        reseller:null,
+        currency:null,
+        payment_method_id:null,
+        payment_amount:'',
+        payment_currency_id:0,
+        payment_status:'',
+        payment_notes:'',
+        payment_date:null
+    }
+
+
+    const [balanceDialog, setBalanceDialog] = useState(false);
+    const [deleteBalanceDialog, setDeleteBalanceDialog] = useState(false);
+    const [deleteBalancesDialog, setDeleteBalancesDialog] = useState(false);
+    const [balance,setBalance]=useState<Balance>(emptyBalance)
+    const [selectedCompanies, setSelectedBalance] = useState(null);
+    const [submitted, setSubmitted] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const toast = useRef<Toast>(null);
+    const dt = useRef<DataTable<any>>(null);
+    const dispatch=useDispatch<AppDispatch>()
+    const {balances,loading}=useSelector((state:any)=>state.balanceReducer)
+    const {currencies}=useSelector((state:any)=>state.currenciesReducer)
+    const {resellers}=useSelector((state:any)=>state.resellerReducer)
+    const {paymentMethods}=useSelector((state:any)=>state.paymentMethodsReducer)
+    const {t}=useTranslation()
+    const [searchTag,setSearchTag]=useState("")
+
+
+    useEffect(()=>{
+        dispatch(_fetchBalances(searchTag))
+        dispatch(_fetchCurrencies())
+        dispatch(_fetchResellers())
+        dispatch(_fetchPaymentMethods())
+    },[dispatch,searchTag])
+
+    const openNew = () => {
+        setBalance(emptyBalance)
+        setSubmitted(false);
+        setBalanceDialog(true);
+    };
+
+    const hideDialog = () => {
+        setSubmitted(false);
+        setBalanceDialog(false);
+    };
+
+    const hideDeleteBalanceDialog = () => {
+        setDeleteBalanceDialog(false);
+    };
+
+    const hideDeleteBalancesDialog = () => {
+        setDeleteBalancesDialog(false);
+    };
+
+
+
+    const saveBalance = () => {
+        setSubmitted(true);
+        if (!balance.reseller || !balance.amount || !balance.transaction_type
+            || !balance.currency_id|| !balance.description
+        ) {
+
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Validation Error',
+                detail: 'Please fill in all required fields.',
+                life: 3000,
+            });
+        return;
+    }
+        if (balance.id && balance.id !== 0) {
+            dispatch(_editBalance(balance.id,balance,toast));
+
+        } else {
+            dispatch(_addBalance(balance,toast));
+        }
+
+        setBalanceDialog(false);
+        setBalance(emptyBalance);
+        setSubmitted(false)
+    };
+
+    const editBalance = (balance: Balance) => {
+        setBalance({ ...balance});
+
+        setBalanceDialog(true);
+    };
+
+    const confirmDeleteBalance = (balance: Balance) => {
+        setBalance(balance);
+        setDeleteBalanceDialog(true);
+    };
+
+    const deleteBalance = () => {
+        if (!balance?.id) {
+            console.error("Balance  ID is undefined.");
+            return;
+        }
+        dispatch(_deleteBalance(balance?.id,toast))
+        setDeleteBalanceDialog(false);
+
+    };
+
+
+    const confirmDeleteSelected = () => {
+        setDeleteBalancesDialog(true);
+    };
+
+
+
+    const rightToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                <div className="my-2">
+                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('RESELLER.BALANCETRANSACTION.ADDBALANCE')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
+                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                </div>
+            </React.Fragment>
+        );
+    };
+
+    const leftToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                <span className="block mt-2 md:mt-0 p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText type="search"
+                    onInput={(e) => setSearchTag(e.currentTarget.value)}
+                    placeholder={t('ECOMMERCE.COMMON.SEARCH')}  />
+            </span>
+            </React.Fragment>
+        );
+    };
+
+
+    const resellerNameBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Reseller</span>
+                {rowData.reseller?.reseller_name}
+            </>
+        );
+    };
+
+
+    const amountBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Amount</span>
+                {rowData.amount}
+            </>
+        );
+    };
+
+    const currencyBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Currency</span>
+                {rowData.currency?.code}
+            </>
+        );
+    };
+
+
+    const remainingBalanceBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Remaining Balance</span>
+                {rowData.remaining_balance}
+            </>
+        );
+    };
+
+    const statusBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Status</span>
+                {rowData.transaction_type}
+            </>
+        );
+    };
+
+    const descriptionBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Description</span>
+                {rowData.description}
+            </>
+        );
+    };
+
+    const createdAtBodyTemplate = (rowData: Balance) => {
+            const formatDate = (dateString: string) => {
+                const date = new Date(dateString);
+                const optionsDate: Intl.DateTimeFormatOptions = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                };
+                const optionsTime: Intl.DateTimeFormatOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                };
+                const formattedDate = date.toLocaleDateString('en-US', optionsDate);
+                const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
+
+                return { formattedDate, formattedTime };
+            };
+
+            const { formattedDate, formattedTime } = formatDate(rowData.created_at);
+
+            return (
+                <>
+                    <span className="p-column-title">Created At</span>
+                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
+                    <br />
+                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
+                </>
+            );
+        };
+
+
+
+
+    const actionBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <Button icon="pi pi-pencil" rounded severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}  onClick={()=>editBalance(rowData)}/>
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteBalance(rowData)} />
+            </>
+        );
+    };
+
+    // const header = (
+    //     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+    //         <h5 className="m-0">Manage Products</h5>
+    //         <span className="block mt-2 md:mt-0 p-input-icon-left">
+    //             <i className="pi pi-search" />
+    //             <InputText type="search" onInput={(e) => setGlobalFilter(e.currentTarget.value)} placeholder="Search..." />
+    //         </span>
+    //     </div>
+    // );
+
+    const balanceDialogFooter = (
+        <>
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveBalance} />
+        </>
+    );
+    const deleteBalanceDialogFooter = (
+        <>
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteBalanceDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteBalance} />
+        </>
+    );
+    const deleteCompaniesDialogFooter = (
+        <>
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteBalancesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+        </>
+    );
+
+
+
+
+    return (
+        <div className="grid crud-demo -m-5">
+            <div className="col-12">
+                <div className="card p-2">
+                    {loading && <ProgressBar mode="indeterminate" style={{ height: '6px' }} />}
+                    <Toast ref={toast} />
+                    <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+
+                    <DataTable
+                        ref={dt}
+                        value={balances}
+                        selection={selectedCompanies}
+                        onSelectionChange={(e) => setSelectedBalance(e.value as any)}
+                        dataKey="id"
+                        paginator
+                        rows={10}
+                        rowsPerPageOptions={[5, 10, 25]}
+                        className="datatable-responsive"
+                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} balance code"
+                        globalFilter={globalFilter}
+                        emptyMessage="No Balance s found."
+                        // header={header}
+                        responsiveLayout="scroll"
+                    >
+                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.RESELLER')} body={resellerNameBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.REMAINING_BALANCE')} body={remainingBalanceBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.STATUS')} body={statusBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.DESCRIPTIONS')} body={descriptionBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.BALANCEDATE')} body={createdAtBodyTemplate} ></Column>
+                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} ></Column>
+                    </DataTable>
+
+                    <Dialog visible={balanceDialog}  style={{ width: '900px',padding:'5px' }} header={t('BALANCE.DETAILS.TITLE')} modal className="p-fluid" footer={balanceDialogFooter} onHide={hideDialog}>
+                        <div className="card flex flex-wrap p-fluid mt-3 gap-4">
+                            {/* Balance Details */}
+                            <div className="flex-1 col-12 lg:col-6">
+                                <div className="card">
+                                    <h5 className="mb-4">{t('BALANCE.DETAILS.TITLE')}</h5>
+
+                                    {/* Reseller */}
+                                    <div className="field">
+                                        <label htmlFor="reseller_id">{t('BALANCE.FORM.INPUT.RESELLER')} *</label>
+                                        <Dropdown
+                                            id="reseller_id"
+                                            value={balance.reseller_id}
+                                            options={resellers}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    reseller_id: e.value,
+                                                }))
+                                            }
+                                            optionLabel="reseller_name"
+                                            optionValue="id"
+                                            placeholder={t('BALANCE.FORM.RESELLER.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                        {submitted && !balance.reseller && <small className="p-invalid" style={{ color: 'red' }}>Reseller is required.</small>}
+
+                                    </div>
+
+                                    {/* Transaction Type */}
+                                    <div className="field">
+                                        <label htmlFor="transaction_type">{t('BALANCE.FORM.INPUT.TRANSACTIONTYPE')} *</label>
+                                        <Dropdown
+                                            id="transaction_type"
+                                            value={balance.transaction_type}
+                                            options={[
+                                                { label: 'Credit', value: 'credit' },
+                                                { label: 'Debit', value: 'debit' },
+                                            ]}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    transaction_type: e.value,
+                                                }))
+                                            }
+                                            placeholder={t('BALANCE.FORM.TRANSACTIONTYPE.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                        {submitted && !balance.transaction_type && <small className="p-invalid" style={{ color: 'red' }}>Transaction Type is required.</small>}
+                                    </div>
+
+                                    <div className="field">
+                                        <label htmlFor="amount">{t('BALANCE.FORM.INPUT.BALANCEAMOUNT')} *</label>
+                                        <InputText
+                                            id="amount"
+                                            value={balance.amount}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    amount: e.target.value,
+                                                }))
+                                            }
+                                            placeholder="0"
+                                            type="number"
+                                            className="w-full"
+                                        />
+                                        {submitted && !balance.amount && <small className="p-invalid" style={{ color: 'red' }}>Amount is required.</small>}
+                                    </div>
+
+                                    {/* Currency */}
+                                    <div className="field">
+                                        <label htmlFor="currency_id">{t('BALANCE.FORM.INPUT.CURRENCY')} *</label>
+                                        <Dropdown
+                                            id="currency_id"
+                                            value={balance.currency_id}
+                                            options={currencies}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    currency_id: e.value,
+                                                }))
+                                            }
+                                            optionLabel="name"
+                                            optionValue="id"
+                                            placeholder={t('BALANCE.FORM.CURRENCY.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                        {submitted && !balance.currency_id && <small className="p-invalid" style={{ color: 'red' }}>Currency is required.</small>}
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="field">
+                                        <label htmlFor="description">{t('BALANCE.FORM.INPUT.DESCRIPTION')} *</label>
+                                        <InputText
+                                            id="description"
+                                            value={balance.description}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    description: e.target.value,
+                                                }))
+                                            }
+                                            placeholder={t('BALANCE.FORM.DESCRIPTION.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                        {submitted && !balance.description && <small className="p-invalid" style={{ color: 'red' }}>Description is required.</small>}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Payment Details */}
+                            <div className="flex-1 col-12 lg:col-6">
+                                <div className="card">
+                                    <h5 className="mb-4">{t('PAYMENT.DETAILS.TITLE')}</h5>
+
+                                    {/* Payment Method */}
+                                    <div className="field">
+                                        <label htmlFor="payment_method_id">{t('BALANCE.FORM.INPUT.PAYMENTMETHOD')}</label>
+                                        <Dropdown
+                                            id="payment_method_id"
+                                            value={balance.payment_method_id}
+                                            options={paymentMethods}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    payment_method_id: e.value,
+                                                }))
+                                            }
+                                            optionLabel="method_name"
+                                            optionValue="id"
+                                            placeholder={t('PAYMENT.FORM.METHOD.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                    </div>
+
+                                    {/* Payment Amount */}
+                                    <div className="field">
+                                        <label htmlFor="payment_amount">{t('BALANCE.FORM.INPUT.PAYMENTAMOUNT')}</label>
+                                        <InputText
+                                            id="payment_amount"
+                                            value={balance.payment_amount}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    payment_amount: e.target.value,
+                                                }))
+                                            }
+                                            placeholder="0"
+                                            type="number"
+                                            className="w-full"
+                                        />
+                                    </div>
+
+                                    {/* Payment Currency */}
+                                    <div className="field">
+                                        <label htmlFor="payment_currency_id">{t('BALANCE.FORM.INPUT.PAYMENTCURRENCY')}</label>
+                                        <Dropdown
+                                            id="payment_currency_id"
+                                            value={balance.payment_currency_id}
+                                            options={currencies}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    payment_currency_id: e.value,
+                                                }))
+                                            }
+                                            optionLabel="name"
+                                            optionValue="id"
+                                            placeholder={t('PAYMENT.FORM.CURRENCY.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                    </div>
+
+                                    {/* Payment Notes */}
+                                    <div className="field">
+                                        <label htmlFor="payment_notes">{t('BALANCE.FORM.INPUT.PAYMENTNOTES')}</label>
+                                        <InputText
+                                            id="payment_notes"
+                                            value={balance.payment_notes}
+                                            onChange={(e) =>
+                                                setBalance((prev) => ({
+                                                    ...prev,
+                                                    payment_notes: e.target.value,
+                                                }))
+                                            }
+                                            placeholder={t('PAYMENT.FORM.NOTES.PLACEHOLDER')}
+                                            className="w-full"
+                                        />
+                                    </div>
+
+                                    {/* Payment Date */}
+                                    <div className="field">
+                                        <label htmlFor="payment_date">{t('BALANCE.FORM.INPUT.PAYMENTDATE')}</label>
+                                        <Calendar
+                                            id="payment_date"
+                                            value={balance.payment_date ? new Date(balance.payment_date) : null}
+                                            onChange={(e) =>
+                                                setBalance((prev:Balance) => ({
+                                                    ...prev,
+                                                    payment_date: e.value,
+                                                }))
+                                            }
+                                            placeholder={t('PAYMENT.FORM.DATE.LABEL')}
+                                            className="w-full"
+                                        />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </Dialog>
+
+                    <Dialog visible={deleteBalanceDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteBalanceDialogFooter} onHide={hideDeleteBalanceDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {balance && (
+                                <span>
+                                    Are you sure you want to delete <b></b>?
+                                </span>
+                            )}
+                        </div>
+                    </Dialog>
+
+                    <Dialog visible={deleteBalancesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteBalancesDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {balance && <span>Are you sure you want to delete the selected companies?</span>}
+                        </div>
+                    </Dialog>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default withAuth(BalancePage);
