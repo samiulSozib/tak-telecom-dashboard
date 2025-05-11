@@ -584,7 +584,7 @@ const HawalaBranchPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {hawalaBranch && (
                                 <span>
-                                    {t('APP.DELETE_CONFIRMATION', { name: hawalaBranch.name })}
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE', { name: hawalaBranch.name })}
                                 </span>
                             )}
                         </div>
