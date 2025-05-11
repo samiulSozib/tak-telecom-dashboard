@@ -98,17 +98,17 @@ const CountryPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (country.id && country.id !== 0) {
-            dispatch(_editCountry(country.id,country,toast));
+            dispatch(_editCountry(country.id,country,toast,t));
 
         } else {
-            dispatch(_addCountry(country,toast));
+            dispatch(_addCountry(country,toast,t));
         }
 
         setCountryDialog(false);
@@ -132,7 +132,7 @@ const CountryPage = () => {
             console.error("Country  ID is undefined.");
             return;
         }
-        dispatch(_deleteCountry(country?.id,toast))
+        dispatch(_deleteCountry(country?.id,toast,t))
         setDeleteCountryDialog(false);
 
     };
@@ -446,7 +446,7 @@ const CountryPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {country && (
                                 <span>
-                                    Are you sure you want to delete <b>{country.country_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{country.country_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -455,7 +455,7 @@ const CountryPage = () => {
                     <Dialog visible={deleteCountrysDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteCountrysDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {country && <span>Are you sure you want to delete the selected companies?</span>}
+                            {country && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

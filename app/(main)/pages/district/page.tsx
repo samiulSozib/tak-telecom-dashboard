@@ -90,17 +90,17 @@ const DistrictPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (district.id && district.id !== 0) {
-            dispatch(_editDistrict(district.id,district,toast));
+            dispatch(_editDistrict(district.id,district,toast,t));
 
         } else {
-            dispatch(_addDistrict(district,toast));
+            dispatch(_addDistrict(district,toast,t));
         }
 
         setDistrictDialog(false);
@@ -124,7 +124,7 @@ const DistrictPage = () => {
             console.error("District  ID is undefined.");
             return;
         }
-        dispatch(_deleteDistrict(district?.id,toast))
+        dispatch(_deleteDistrict(district?.id,toast,t))
         setDeleteDistrictDialog(false);
 
     };
@@ -325,7 +325,7 @@ const DistrictPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {district && (
                                 <span>
-                                    Are you sure you want to delete <b>{district.district_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{district.district_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -336,7 +336,7 @@ const DistrictPage = () => {
                     <Dialog visible={deleteDistrictsDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteDistrictsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {district && <span>Are you sure you want to delete the selected companies?</span>}
+                            {district && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

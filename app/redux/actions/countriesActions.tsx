@@ -1,6 +1,5 @@
 import { Dispatch } from "redux";
 import axios from "axios";
-
 import {
     FETCH_COUNTRIES_REQUEST,
     FETCH_COUNTRIES_SUCCESS,
@@ -19,7 +18,7 @@ import { Country } from "@/types/interface";
 import { Toast } from "primereact/toast";
 
 const getAuthToken = () => {
-    return localStorage.getItem("api_token") || ""; // Get the token or return an empty string if not found
+    return localStorage.getItem("api_token") || "";
 };
 
 // Fetch Countries
@@ -38,31 +37,40 @@ export const _fetchCountries = () => async (dispatch: Dispatch) => {
             type: FETCH_COUNTRIES_SUCCESS,
             payload: response.data.data.countries,
         });
+
+        // Optional: Show success toast if needed
+        // toast.current?.show({
+        //     severity: "success",
+        //     summary: t("SUCCESS"),
+        //     detail: t("COUNTRIES_FETCHED"),
+        //     life: 3000,
+        // });
     } catch (error: any) {
         dispatch({
             type: FETCH_COUNTRIES_FAIL,
             payload: error.message,
         });
+
     }
 };
 
 // Add Country
-export const _addCountry = (countryData: Country,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _addCountry = (countryData: Country, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: ADD_COUNTRY_REQUEST });
 
     try {
         const token = getAuthToken();
-        //console.log(countryData)
-        //return
-        const formData=new FormData()
-        formData.append('country_name',countryData.country_name)
-        formData.append('country_telecom_code',countryData.country_telecom_code)
-        formData.append('phone_number_length',countryData.phone_number_length)
-        formData.append('currency_id',String(countryData.currency?.id))
-        formData.append('language_id',String(countryData.language?.id))
+        const formData = new FormData();
+        formData.append('country_name', countryData.country_name);
+        formData.append('country_telecom_code', countryData.country_telecom_code);
+        formData.append('phone_number_length', countryData.phone_number_length);
+        formData.append('currency_id', String(countryData.currency?.id));
+        formData.append('language_id', String(countryData.language?.id));
+
         if (countryData.country_flag_image_url && typeof countryData.country_flag_image_url !== 'string') {
             formData.append('country_flag_image', countryData.country_flag_image_url);
         }
+
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/countries`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,19 +78,18 @@ export const _addCountry = (countryData: Country,toast: React.RefObject<Toast>) 
             },
         });
 
-        //console.log(response)
-        const newData={...countryData,id:response.data.data.country.id}
-        //console.log(newData)
+        const newData = {...countryData, id: response.data.data.country.id};
         dispatch({
             type: ADD_COUNTRY_SUCCESS,
             payload: newData,
         });
+
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Country added",
+            summary: t("SUCCESS"),
+            detail: t("COUNTRY_ADDED"),
             life: 3000,
-          });
+        });
     } catch (error: any) {
         dispatch({
             type: ADD_COUNTRY_FAIL,
@@ -90,46 +97,49 @@ export const _addCountry = (countryData: Country,toast: React.RefObject<Toast>) 
         });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to add country",
+            summary: t("ERROR"),
+            detail: t("COUNTRY_ADD_FAILED"),
             life: 3000,
-          });
-          //console.log(error)
+        });
     }
 };
 
 // Edit Country
-export const _editCountry = (countryId: number, updatedData: any,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _editCountry = (countryId: number, updatedData: Country, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: EDIT_COUNTRY_REQUEST });
 
     try {
         const token = getAuthToken();
-        const formData=new FormData()
-        formData.append('country_name',updatedData.country_name)
-        formData.append('country_telecom_code',updatedData.country_telecom_code)
-        formData.append('phone_number_length',updatedData.phone_number_length)
-        formData.append('currency_id',updatedData.currency)
-        formData.append('language_id',updatedData.language_id)
+        const formData = new FormData();
+        formData.append('country_name', updatedData.country_name);
+        formData.append('country_telecom_code', updatedData.country_telecom_code);
+        formData.append('phone_number_length', updatedData.phone_number_length);
+        formData.append('currency_id', String(updatedData.currency?.id));
+        formData.append('language_id', String(updatedData.language?.id));
+
         if (updatedData.country_flag_image_url && typeof updatedData.country_flag_image_url !== 'string') {
             formData.append('country_flag_image', updatedData.country_flag_image_url);
         }
+
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/countries/${countryId}`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
             },
         });
-        const newData={...updatedData,id:response.data.data.country.id}
+
+        const newData = {...updatedData, id: response.data.data.country.id};
         dispatch({
             type: EDIT_COUNTRY_SUCCESS,
             payload: newData,
         });
+
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Country edited",
+            summary: t("SUCCESS"),
+            detail: t("COUNTRY_UPDATED"),
             life: 3000,
-          });
+        });
     } catch (error: any) {
         dispatch({
             type: EDIT_COUNTRY_FAIL,
@@ -137,16 +147,15 @@ export const _editCountry = (countryId: number, updatedData: any,toast: React.Re
         });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to edit country",
+            summary: t("ERROR"),
+            detail: t("COUNTRY_UPDATE_FAILED"),
             life: 3000,
-          });
-          //console.log(error)
+        });
     }
 };
 
 // Delete Country
-export const _deleteCountry = (countryId: number,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteCountry = (countryId: number, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: DELETE_COUNTRY_REQUEST });
 
     try {
@@ -161,12 +170,13 @@ export const _deleteCountry = (countryId: number,toast: React.RefObject<Toast>) 
             type: DELETE_COUNTRY_SUCCESS,
             payload: countryId,
         });
+
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Country deleted",
+            summary: t("SUCCESS"),
+            detail: t("COUNTRY_DELETED"),
             life: 3000,
-          });
+        });
     } catch (error: any) {
         dispatch({
             type: DELETE_COUNTRY_FAIL,
@@ -174,10 +184,9 @@ export const _deleteCountry = (countryId: number,toast: React.RefObject<Toast>) 
         });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to delete country",
+            summary: t("ERROR"),
+            detail: t("COUNTRY_DELETE_FAILED"),
             life: 3000,
-          });
-
+        });
     }
 };

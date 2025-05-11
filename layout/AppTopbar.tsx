@@ -13,6 +13,12 @@ import { LayoutContext } from './context/layoutcontext';
 import { classNames } from 'primereact/utils';
 import Swal from 'sweetalert2';
 
+interface MyLanguage {
+    name:string,
+    language_code:string,
+    flag:string
+}
+
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const [profileMenuVisible, setProfileMenuVisible] = useState(false);
@@ -22,6 +28,17 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { languages } = useSelector((state: any) => state.languageReducer);
 
     const [currentLanguage, setCurrentLanguage] = useState(i18n.language); // Track current language
+
+
+  const languagesWithFlags : MyLanguage[]= [
+    { name: "پښتو", language_code: "ps", flag: "https://flagcdn.com/w40/af.png" }, // Pashto (Afghanistan)
+    { name: "English", language_code: "en", flag: "https://flagcdn.com/w40/us.png" }, // English (USA)
+    { name: "Bangladesh", language_code: "bn", flag: "https://flagcdn.com/w40/bd.png" }, // Bengali (Bangladesh)
+    { name: "Arabic", language_code: "ar", flag: "https://flagcdn.com/w40/sa.png" }, // Arabic (Saudi Arabia)
+    { name: "Turkey", language_code: "tr", flag: "https://flagcdn.com/w40/tr.png" }, // Turkish (Turkey)
+    { name: "فارسی", language_code: "fa", flag: "https://flagcdn.com/w40/ir.png" }, // Persian (Iran)
+
+  ];
 
     const toggleProfileMenu = () => {
         setProfileMenuVisible((prevVisible) => !prevVisible);
@@ -42,7 +59,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         router.push('/auth/login');
     };
 
-    const handleLanguageClick = (language: Language) => {
+    const handleLanguageClick = (language: MyLanguage) => {
         i18n.changeLanguage(language.language_code) // Change language dynamically
             .then(() => {
                 setCurrentLanguage(language.language_code); // Update state
@@ -206,7 +223,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                                             zIndex: 1000,
                                         }}
                                     >
-                                        {languages.map((language: Language) => (
+                                        {/* {languages.map((language: Language) => (
                                             <li
                                                 key={language.id}
                                                 style={{
@@ -219,6 +236,24 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                                             >
                                                 {language.language_name}
                                             </li>
+                                        ))} */}
+                                        {languagesWithFlags?.map((lang:MyLanguage) => (
+                                        <li
+                                            key={lang.name}
+                                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                            onClick={() => handleLanguageClick(lang)}
+                                        >
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                gap: '0.75rem', // 12px, which is Tailwind's gap-3
+                                                justifyContent: 'space-between'
+                                                }}
+                                                >
+                                                <span>{lang.name}</span>
+                                                <img src={lang.flag} alt="" style={{height:'20px', width:'30px' , fill:'cover'}}/>
+                                            </div>
+                                        </li>
                                         ))}
                                     </ul>
                                 )}

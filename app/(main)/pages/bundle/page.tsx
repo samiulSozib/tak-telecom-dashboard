@@ -118,17 +118,17 @@ const BundlePage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (bundle.id && bundle.id !== 0) {
-            dispatch(_editBundle(bundle.id,bundle,toast));
+            dispatch(_editBundle(bundle.id,bundle,toast,t));
 
         } else {
-            dispatch(_addBundle(bundle,toast));
+            dispatch(_addBundle(bundle,toast,t));
         }
 
         setServiceDialog(false);
@@ -152,7 +152,7 @@ const BundlePage = () => {
             console.error("Service ID is undefined.");
             return;
         }
-        dispatch(_deleteBundle(bundle?.id,toast))
+        dispatch(_deleteBundle(bundle?.id,toast,t))
         setDeleteServiceDialog(false);
 
     };
@@ -625,7 +625,7 @@ const BundlePage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {bundle && (
                                 <span>
-                                    Are you sure you want to delete <b>{bundle.bundle_title}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{bundle.bundle_title}</b>?
                                 </span>
                             )}
                         </div>
@@ -634,7 +634,7 @@ const BundlePage = () => {
                     <Dialog visible={deleteServicesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteServicesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {bundle && <span>Are you sure you want to delete the selected companies?</span>}
+                            {bundle && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

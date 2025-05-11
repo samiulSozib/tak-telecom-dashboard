@@ -42,7 +42,7 @@ export const _fetchCompanyCodes = (search:string='') => async (dispatch: Dispatc
 };
 
 // DELETE COMPANY CODE ACTION
-export const _deleteCompanyCode = (codeId: number, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteCompanyCode = (codeId: number, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: DELETE_COMPANY_CODE_REQUEST });
 
   try {
@@ -56,31 +56,30 @@ export const _deleteCompanyCode = (codeId: number, toast: React.RefObject<Toast>
     dispatch({ type: DELETE_COMPANY_CODE_SUCCESS, payload: codeId });
     toast.current?.show({
       severity: 'success',
-      summary: 'Successful',
-      detail: 'Company code deleted',
+      summary: t("SUCCESS"),
+      detail: t("COMPANY_CODE_DELETED"),
       life: 3000,
     });
   } catch (error: any) {
     dispatch({ type: DELETE_COMPANY_CODE_FAIL, payload: error.message });
     toast.current?.show({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to delete company code',
+      summary: t("ERROR"),
+      detail: t("COMPANY_CODE_DELETE_FAILED"),
       life: 3000,
     });
   }
 };
 
 // ADD COMPANY CODE ACTION
-export const _addCompanyCode = (newCode: CompanyCode, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _addCompanyCode = (newCode: CompanyCode, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: ADD_COMPANY_CODE_REQUEST });
-  //console.log(newCode)
-  //return
-    const body={
-        reserved_digit:newCode.reserved_digit,
-        company_id:newCode.company?.id,
 
-    }
+  const body = {
+    reserved_digit: newCode.reserved_digit,
+    company_id: newCode.company?.id,
+  };
+
   try {
     const token = getAuthToken();
     const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/companycodes`, body, {
@@ -89,35 +88,35 @@ export const _addCompanyCode = (newCode: CompanyCode, toast: React.RefObject<Toa
         'Content-Type': 'application/json',
       },
     });
-    const newData={...newCode,id:response.data.data.company_code.id}
+
+    const newData = {...newCode, id: response.data.data.company_code.id};
     dispatch({ type: ADD_COMPANY_CODE_SUCCESS, payload: newData });
     toast.current?.show({
       severity: 'success',
-      summary: 'Successful',
-      detail: 'Company code added',
+      summary: t("SUCCESS"),
+      detail: t("COMPANY_CODE_ADDED"),
       life: 3000,
     });
   } catch (error: any) {
     dispatch({ type: ADD_COMPANY_CODE_FAIL, payload: error.message });
     toast.current?.show({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to add company code',
+      summary: t("ERROR"),
+      detail: t("COMPANY_CODE_ADD_FAILED"),
       life: 3000,
     });
   }
 };
 
 // EDIT COMPANY CODE ACTION
-export const _editCompanyCode = (updatedCode: CompanyCode, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _editCompanyCode = (updatedCode: CompanyCode, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: EDIT_COMPANY_CODE_REQUEST });
-  //console.log(updatedCode)
-  //return
-  const body={
-    reserved_digit:updatedCode.reserved_digit,
-    company_id:updatedCode.company?.id,
 
-}
+  const body = {
+    reserved_digit: updatedCode.reserved_digit,
+    company_id: updatedCode.company?.id,
+  };
+
   try {
     const token = getAuthToken();
     const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/companycodes/${updatedCode.id}`, body, {
@@ -126,21 +125,21 @@ export const _editCompanyCode = (updatedCode: CompanyCode, toast: React.RefObjec
         'Content-Type': 'application/json',
       },
     });
-    //console.log(response)
-    const newData={...updatedCode,id:response.data.data.company_code.id}
+
+    const newData = {...updatedCode, id: response.data.data.company_code.id};
     dispatch({ type: EDIT_COMPANY_CODE_SUCCESS, payload: newData });
     toast.current?.show({
       severity: 'success',
-      summary: 'Successful',
-      detail: 'Company code updated',
+      summary: t("SUCCESS"),
+      detail: t("COMPANY_CODE_UPDATED"),
       life: 3000,
     });
   } catch (error: any) {
     dispatch({ type: EDIT_COMPANY_CODE_FAIL, payload: error.message });
     toast.current?.show({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to update company code',
+      summary: t("ERROR"),
+      detail: t("COMPANY_CODE_UPDATE_FAILED"),
       life: 3000,
     });
   }

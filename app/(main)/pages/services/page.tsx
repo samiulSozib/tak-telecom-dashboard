@@ -91,17 +91,17 @@ const Services = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (service.id && service.id !== 0) {
-            dispatch(_editService(service.id,service,toast));
+            dispatch(_editService(service.id,service,toast,t));
 
         } else {
-            dispatch(_addService(service,toast));
+            dispatch(_addService(service,toast,t));
         }
 
         setServiceDialog(false);
@@ -125,7 +125,7 @@ const Services = () => {
             console.error("Service ID is undefined.");
             return;
         }
-        dispatch(_deleteService(service?.id,toast))
+        dispatch(_deleteService(service?.id,toast,t))
         setDeleteServiceDialog(false);
 
     };
@@ -371,7 +371,7 @@ const Services = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {service && (
                                 <span>
-                                    Are you sure you want to delete <b>{service.service_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{service.service_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -380,7 +380,7 @@ const Services = () => {
                     <Dialog visible={deleteServicesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteServicesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {service && <span>Are you sure you want to delete the selected companies?</span>}
+                            {service && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

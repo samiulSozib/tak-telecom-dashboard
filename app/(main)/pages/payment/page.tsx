@@ -107,17 +107,17 @@ const PaymentPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (payment.id && payment.id !== 0) {
-            dispatch(_editPayment(payment.id,payment,toast));
+            dispatch(_editPayment(payment.id,payment,toast,t));
 
         } else {
-            dispatch(_addPayment(payment,toast));
+            dispatch(_addPayment(payment,toast,t));
         }
 
         setPaymentDialog(false);
@@ -141,7 +141,7 @@ const PaymentPage = () => {
             console.error("Payment  ID is undefined.");
             return;
         }
-        dispatch(_deletePayment(payment?.id,toast))
+        dispatch(_deletePayment(payment?.id,toast,t))
         setDeletePaymentDialog(false);
 
     };
@@ -478,6 +478,7 @@ const PaymentPage = () => {
                                             payment_date: e.target.value,
                                         }))
                                     }
+                                    type='date'
                                     required
                                     autoFocus
                                     placeholder={t('PAYMENT.FORM.INPUT.PAYMENTDATE')}
@@ -485,6 +486,7 @@ const PaymentPage = () => {
                                         'p-invalid': submitted && !payment.payment_date
                                     })}
                                 />
+
                                 {submitted && !payment.payment_date && <small className="p-invalid" style={{ color: 'red' }}>Payment Date is required.</small>}
 
                             </div>
@@ -499,7 +501,7 @@ const PaymentPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {payment && (
                                 <span>
-                                    Are you sure you want to delete <b></b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>?
                                 </span>
                             )}
                         </div>
@@ -508,7 +510,7 @@ const PaymentPage = () => {
                     <Dialog visible={deletePaymentsDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeletePaymentsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {payment && <span>Are you sure you want to delete the selected companies?</span>}
+                            {payment && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

@@ -20,7 +20,7 @@ export const _fetchPermissions = () => async (dispatch: Dispatch) => {
 
     try {
         const token = getAuthToken();
-        const response = await axios.get(`https://app-bt-api-2024-v2.bakhtartelecom.com/api/permissions`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL_WITHOUT_ADMIN}/permissions`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

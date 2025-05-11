@@ -100,17 +100,17 @@ const PurchasedProductPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (purchasedProduct.id && purchasedProduct.id !== 0) {
-            dispatch(_editPurchasedProduct(purchasedProduct.id,purchasedProduct,toast));
+            dispatch(_editPurchasedProduct(purchasedProduct.id,purchasedProduct,toast,t));
 
         } else {
-            dispatch(_addPurchasedProduct(purchasedProduct,toast));
+            dispatch(_addPurchasedProduct(purchasedProduct,toast,t));
         }
 
         setPurchasedProductDialog(false);
@@ -134,7 +134,7 @@ const PurchasedProductPage = () => {
             console.error("PurchasedProduct  ID is undefined.");
             return;
         }
-        dispatch(_deletePurchasedProduct(purchasedProduct?.id,toast))
+        dispatch(_deletePurchasedProduct(purchasedProduct?.id,toast,t))
         setDeletePurchasedProductDialog(false);
 
     };
@@ -482,6 +482,7 @@ const PurchasedProductPage = () => {
                                             purchase_date: e.target.value,
                                         }))
                                     }
+                                    type='date'
                                     required
                                     autoFocus
                                     placeholder={t('PURCHASEDPRODUCTS.FORM.PLACEHOLDER.PURCHASE.DATE')}
@@ -503,7 +504,7 @@ const PurchasedProductPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {purchasedProduct && (
                                 <span>
-                                    Are you sure you want to delete <b></b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>?
                                 </span>
                             )}
                         </div>
@@ -512,7 +513,7 @@ const PurchasedProductPage = () => {
                     <Dialog visible={deletePurchasedProductsDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeletePurchasedProductsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {purchasedProduct && <span>Are you sure you want to delete the selected companies?</span>}
+                            {purchasedProduct && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

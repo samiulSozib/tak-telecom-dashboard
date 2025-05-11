@@ -151,17 +151,17 @@ const ResellerPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (reseller.id && reseller.id !== 0) {
-            dispatch(_editReseller(reseller.id,reseller,toast));
+            dispatch(_editReseller(reseller.id,reseller,toast,t));
 
         } else {
-            dispatch(_addReseller(reseller,toast));
+            dispatch(_addReseller(reseller,toast,t));
         }
 
         setResellerDialog(false);
@@ -190,7 +190,7 @@ const ResellerPage = () => {
             console.error("Reseller ID is undefined.");
             return;
         }
-        dispatch(_deleteReseller(reseller?.id,toast))
+        dispatch(_deleteReseller(reseller?.id,toast,t))
         setDeleteResellerDialog(false);
 
     };
@@ -210,7 +210,7 @@ const ResellerPage = () => {
             console.error("Reseller ID is undefined.");
             return;
         }
-        dispatch(_changeResellerStatus(reseller?.id,reseller.status,toast))
+        dispatch(_changeResellerStatus(reseller?.id,reseller.status,toast,t))
         setStatusResellerDialog(false);
     }
 
@@ -857,7 +857,7 @@ useEffect(() => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {reseller && (
                                 <span>
-                                    Are you sure you want to delete <b>{reseller.reseller_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{reseller.reseller_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -877,7 +877,7 @@ useEffect(() => {
                     <Dialog visible={deleteResellersDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteResellersDialogFooter} onHide={hideDeleteResellersDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {reseller && <span>Are you sure you want to delete the selected companies?</span>}
+                            {reseller && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

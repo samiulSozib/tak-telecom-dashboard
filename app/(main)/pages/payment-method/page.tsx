@@ -85,17 +85,17 @@ const PaymentMethodPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (paymentMethod.id && paymentMethod.id !== 0) {
-            dispatch(_editPaymentMethod(paymentMethod.id,paymentMethod,toast));
+            dispatch(_editPaymentMethod(paymentMethod.id,paymentMethod,toast,t));
 
         } else {
-            dispatch(_addPaymentMethod(paymentMethod,toast));
+            dispatch(_addPaymentMethod(paymentMethod,toast,t));
         }
 
         setMethodDialog(false);
@@ -119,7 +119,7 @@ const PaymentMethodPage = () => {
             console.error("Method ID is undefined.");
             return;
         }
-        dispatch(_deletePaymentMethod(paymentMethod?.id,toast))
+        dispatch(_deletePaymentMethod(paymentMethod?.id,toast,t))
         setDeleteMethodDialog(false);
 
     };
@@ -393,7 +393,7 @@ const PaymentMethodPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {paymentMethod && (
                                 <span>
-                                    Are you sure you want to delete <b>{paymentMethod.method_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{paymentMethod.method_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -402,7 +402,7 @@ const PaymentMethodPage = () => {
                     <Dialog visible={deleteMethodsDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteMethodsDialogFooter} onHide={hideDeleteMethodsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {paymentMethod && <span>Are you sure you want to delete the selected companies?</span>}
+                            {paymentMethod && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

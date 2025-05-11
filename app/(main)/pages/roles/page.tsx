@@ -95,17 +95,17 @@ const RolesPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (role.id && role.id !== 0) {
-            dispatch(_editRole(role.id,role,selectedPermissions,toast));
+            dispatch(_editRole(role.id,role,selectedPermissions,toast,t));
 
         } else {
-            dispatch(_addRole(role,selectedPermissions,toast));
+            dispatch(_addRole(role,selectedPermissions,toast,t));
         }
 
         setRoleDialog(false);
@@ -146,7 +146,7 @@ const RolesPage = () => {
             console.error("Role  ID is undefined.");
             return;
         }
-        dispatch(_deleteRole(role?.id,toast))
+        dispatch(_deleteRole(role?.id,toast,t))
         setDeleteRoleDialog(false);
 
     };
@@ -438,7 +438,7 @@ const RolesPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {role && (
                                 <span>
-                                    Are you sure you want to delete <b>{role.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{role.name}</b>?
                                 </span>
                             )}
                         </div>
@@ -447,7 +447,7 @@ const RolesPage = () => {
                     <Dialog visible={deleteRolesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteRolesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {role && <span>Are you sure you want to delete the selected companies?</span>}
+                            {role && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

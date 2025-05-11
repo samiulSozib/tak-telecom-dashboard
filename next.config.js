@@ -9,8 +9,8 @@ const nextConfig = {
     reactStrictMode: false,
     localePath: path.resolve('./public/locales'),
     experimental: {
-        //metadataBase: 'http://localhost:3000', // Replace with your actual domain
-        metadataBase:'https://telecom-admin.vercel.app'
+        metadataBase: new URL(process.env.NEXT_PUBLIC_METADATA_BASE || 'http://localhost:3000'),
+
     },
 }
 

@@ -90,10 +90,10 @@ const ResellerGroupPage = () => {
     const saveResellerGroup = () => {
         setSubmitted(true);
         if (resellerGroup.id && resellerGroup.id !== 0) {
-            dispatch(_editResellerGroup(resellerGroup.id,resellerGroup,toast));
+            dispatch(_editResellerGroup(resellerGroup.id,resellerGroup,toast,t));
 
         } else {
-            dispatch(_addResellerGroup(resellerGroup,toast));
+            dispatch(_addResellerGroup(resellerGroup,toast,t));
         }
 
         setResellerGroupDialog(false);
@@ -116,7 +116,7 @@ const ResellerGroupPage = () => {
             console.error("ResellerGroup  ID is undefined.");
             return;
         }
-        dispatch(_deleteResellerGroup(resellerGroup?.id,toast))
+        dispatch(_deleteResellerGroup(resellerGroup?.id,toast,t))
         setDeleteResellerGroupDialog(false);
 
     };
@@ -513,7 +513,7 @@ const ResellerGroupPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {resellerGroup && (
                                 <span>
-                                    Are you sure you want to delete <b>{resellerGroup.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{resellerGroup.name}</b>?
                                 </span>
                             )}
                         </div>
@@ -522,7 +522,7 @@ const ResellerGroupPage = () => {
                     <Dialog visible={deleteResellerGroupsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteResellerGroupsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {resellerGroup && <span>Are you sure you want to delete the selected companies?</span>}
+                            {resellerGroup && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

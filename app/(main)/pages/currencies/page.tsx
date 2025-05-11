@@ -88,10 +88,10 @@ const CurrencyPage = () => {
             return;
         }
         if (currency.id && currency.id !== 0) {
-            dispatch(_editCurrency(currency.id,currency,toast));
+            dispatch(_editCurrency(currency.id,currency,toast,t));
 
         } else {
-            dispatch(_addCurrency(currency,toast));
+            dispatch(_addCurrency(currency,toast,t));
         }
 
         setCurrencyDialog(false);
@@ -114,7 +114,7 @@ const CurrencyPage = () => {
             console.error("Currency  ID is undefined.");
             return;
         }
-        dispatch(_deleteCurrency(currency?.id,toast))
+        dispatch(_deleteCurrency(currency?.id,toast,t))
         setDeleteCurrencyDialog(false);
 
     };
@@ -364,7 +364,7 @@ const CurrencyPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {currency && (
                                 <span>
-                                    Are you sure you want to delete <b>{currency.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{currency.name}</b>?
                                 </span>
                             )}
                         </div>
@@ -373,7 +373,7 @@ const CurrencyPage = () => {
                     <Dialog visible={deleteCurrencysDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteCurrencysDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {currency && <span>Are you sure you want to delete the selected companies?</span>}
+                            {currency && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

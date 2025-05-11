@@ -123,7 +123,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                 confirm_new_password: passwordFormData.confirm_new_password,
                 reseller_id: params.id,
             };
-            dispatch(_changeResellerPassword(bodyData, toast));
+            dispatch(_changeResellerPassword(bodyData, toast,t));
             setShowPasswordDialog(false);
         } catch (validationErrors:any) {
             // Extract validation errors
@@ -164,7 +164,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                 confirm_new_pin: pinFormData.confirm_new_pin,
                 reseller_id: params.id,
             };
-            dispatch(_changeResellerPin(bodyData, toast));
+            dispatch(_changeResellerPin(bodyData, toast,t));
             setShowPinDialog(false);
             setPinFormData({
                 new_pin: '',

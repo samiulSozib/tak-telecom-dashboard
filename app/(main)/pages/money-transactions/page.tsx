@@ -604,7 +604,7 @@ const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {bundle && (
                                 <span>
-                                    Are you sure you want to delete <b>{bundle.bundle_title}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{bundle.bundle_title}</b>?
                                 </span>
                             )}
                         </div>
@@ -613,7 +613,7 @@ const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
                     <Dialog visible={deleteServicesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteServicesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {bundle && <span>Are you sure you want to delete the selected companies?</span>}
+                            {bundle && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog> */}
                 </div>

@@ -86,17 +86,17 @@ const AdvertisementPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (advertisement.id && advertisement.id !== 0) {
-            dispatch(_editAdvertisement(advertisement.id,advertisement,toast));
+            dispatch(_editAdvertisement(advertisement.id,advertisement,toast,t));
 
         } else {
-            dispatch(_addAdvertisement(advertisement,toast));
+            dispatch(_addAdvertisement(advertisement,toast,t));
         }
 
         setAdvertisementDialog(false);
@@ -120,7 +120,7 @@ const AdvertisementPage = () => {
             console.error("Advertisement  ID is undefined.");
             return;
         }
-        dispatch(_deleteAdvertisement(advertisement?.id,toast))
+        dispatch(_deleteAdvertisement(advertisement?.id,toast,t))
         setDeleteAdvertisementDialog(false);
 
     };
@@ -326,7 +326,7 @@ const AdvertisementPage = () => {
                                     'p-invalid': submitted && !advertisement.advertisement_title
                                 })}
                             />
-                            {submitted && !advertisement.advertisement_title && <small className="p-invalid" style={{ color: 'red' }}>Advertisement Title is required.</small>}
+                            {submitted && !advertisement.advertisement_title && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
                         </div>
 
                         <div className="field">
@@ -359,7 +359,7 @@ const AdvertisementPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {advertisement && (
                                 <span>
-                                    Are you sure you want to delete <b>{advertisement.advertisement_title}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{advertisement.advertisement_title}</b>?
                                 </span>
                             )}
                         </div>
@@ -368,7 +368,7 @@ const AdvertisementPage = () => {
                     <Dialog visible={deleteAdvertisementsDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteAdvertisementsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {advertisement && <span>Are you sure you want to delete the selected companies?</span>}
+                            {advertisement && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

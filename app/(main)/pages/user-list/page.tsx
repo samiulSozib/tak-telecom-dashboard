@@ -102,17 +102,17 @@ const UserListGroupPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (user.id && user.id !== 0) {
-            dispatch(_editUser(user.id,user,toast));
+            dispatch(_editUser(user.id,user,toast,t));
 
         } else {
-            dispatch(_addUser(user,toast));
+            dispatch(_addUser(user,toast,t));
         }
 
         setUserListDialog(false);
@@ -136,7 +136,7 @@ const UserListGroupPage = () => {
             console.error("UserList  ID is undefined.");
             return;
         }
-        dispatch(_deleteUser(user?.id,toast))
+        dispatch(_deleteUser(user?.id,toast,t))
         setDeleteUserListDialog(false);
 
     };
@@ -458,7 +458,7 @@ const UserListGroupPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {user && (
                                 <span>
-                                    Are you sure you want to delete <b>{user.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{user.name}</b>?
                                 </span>
                             )}
                         </div>
@@ -467,7 +467,7 @@ const UserListGroupPage = () => {
                     <Dialog visible={deleteUserListsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteUserListsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {user && <span>Are you sure you want to delete the selected companies?</span>}
+                            {user && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

@@ -91,17 +91,17 @@ const HawalaBranchPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
             return;
         }
 
         if (hawalaBranch.id && hawalaBranch.id !== 0) {
-            dispatch(_editHawalaBranch(hawalaBranch.id, hawalaBranch, toast));
+            dispatch(_editHawalaBranch(hawalaBranch.id, hawalaBranch, toast,t));
         } else {
-            dispatch(_addHawalaBranch(hawalaBranch, toast));
+            dispatch(_addHawalaBranch(hawalaBranch, toast,t));
         }
 
         setHawalaBranchDialog(false);
@@ -124,7 +124,7 @@ const HawalaBranchPage = () => {
             console.error("Hawala Branch ID is undefined.");
             return;
         }
-        dispatch(_deleteHawalaBranch(hawalaBranch?.id, toast));
+        dispatch(_deleteHawalaBranch(hawalaBranch?.id, toast,t));
         setDeleteHawalaBranchDialog(false);
     };
 

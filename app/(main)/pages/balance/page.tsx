@@ -108,17 +108,17 @@ const BalancePage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (balance.id && balance.id !== 0) {
-            dispatch(_editBalance(balance.id,balance,toast));
+            dispatch(_editBalance(balance.id,balance,toast,t));
 
         } else {
-            dispatch(_addBalance(balance,toast));
+            dispatch(_addBalance(balance,toast,t));
         }
 
         setBalanceDialog(false);
@@ -142,7 +142,7 @@ const BalancePage = () => {
             console.error("Balance  ID is undefined.");
             return;
         }
-        dispatch(_deleteBalance(balance?.id,toast))
+        dispatch(_deleteBalance(balance?.id,toast,t))
         setDeleteBalanceDialog(false);
 
     };
@@ -371,7 +371,7 @@ const BalancePage = () => {
                                             placeholder={t('BALANCE.FORM.RESELLER.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.reseller && <small className="p-invalid" style={{ color: 'red' }}>Reseller is required.</small>}
+                                        {submitted && !balance.reseller && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
 
                                     </div>
 
@@ -394,7 +394,7 @@ const BalancePage = () => {
                                             placeholder={t('BALANCE.FORM.TRANSACTIONTYPE.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.transaction_type && <small className="p-invalid" style={{ color: 'red' }}>Transaction Type is required.</small>}
+                                        {submitted && !balance.transaction_type && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
                                     </div>
 
                                     <div className="field">
@@ -412,7 +412,7 @@ const BalancePage = () => {
                                             type="number"
                                             className="w-full"
                                         />
-                                        {submitted && !balance.amount && <small className="p-invalid" style={{ color: 'red' }}>Amount is required.</small>}
+                                        {submitted && !balance.amount && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
                                     </div>
 
                                     {/* Currency */}
@@ -433,7 +433,7 @@ const BalancePage = () => {
                                             placeholder={t('BALANCE.FORM.CURRENCY.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.currency_id && <small className="p-invalid" style={{ color: 'red' }}>Currency is required.</small>}
+                                        {submitted && !balance.currency_id && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
                                     </div>
 
                                     {/* Description */}
@@ -451,7 +451,7 @@ const BalancePage = () => {
                                             placeholder={t('BALANCE.FORM.DESCRIPTION.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.description && <small className="p-invalid" style={{ color: 'red' }}>Description is required.</small>}
+                                        {submitted && !balance.description && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
                                     </div>
                                 </div>
                             </div>
@@ -565,7 +565,7 @@ const BalancePage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {balance && (
                                 <span>
-                                    Are you sure you want to delete <b></b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>?
                                 </span>
                             )}
                         </div>
@@ -574,7 +574,7 @@ const BalancePage = () => {
                     <Dialog visible={deleteBalancesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteBalancesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {balance && <span>Are you sure you want to delete the selected companies?</span>}
+                            {balance && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

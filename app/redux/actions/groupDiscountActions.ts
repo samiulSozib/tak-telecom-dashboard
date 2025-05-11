@@ -1,21 +1,21 @@
-// store/actions/Group DiscountActions.ts
+// store/actions/GroupDiscountActions.ts
 import { Dispatch } from "redux";
 import axios from "axios";
 
 import {
-    FETCH_GROUP_DISCOUNTS_REQUEST,
-    FETCH_GROUP_DISCOUNTS_SUCCESS,
-    FETCH_GROUP_DISCOUNTS_FAIL,
-    ADD_GROUP_DISCOUNT_REQUEST,
-    ADD_GROUP_DISCOUNT_SUCCESS,
-    ADD_GROUP_DISCOUNT_FAIL,
-    EDIT_GROUP_DISCOUNT_REQUEST,
-    EDIT_GROUP_DISCOUNT_SUCCESS,
-    EDIT_GROUP_DISCOUNT_FAIL,
-    DELETE_GROUP_DISCOUNT_REQUEST,
-    DELETE_GROUP_DISCOUNT_SUCCESS,
-    DELETE_GROUP_DISCOUNT_FAIL,
-  } from "../constants/groupDiscountConstants";
+  FETCH_GROUP_DISCOUNTS_REQUEST,
+  FETCH_GROUP_DISCOUNTS_SUCCESS,
+  FETCH_GROUP_DISCOUNTS_FAIL,
+  ADD_GROUP_DISCOUNT_REQUEST,
+  ADD_GROUP_DISCOUNT_SUCCESS,
+  ADD_GROUP_DISCOUNT_FAIL,
+  EDIT_GROUP_DISCOUNT_REQUEST,
+  EDIT_GROUP_DISCOUNT_SUCCESS,
+  EDIT_GROUP_DISCOUNT_FAIL,
+  DELETE_GROUP_DISCOUNT_REQUEST,
+  DELETE_GROUP_DISCOUNT_SUCCESS,
+  DELETE_GROUP_DISCOUNT_FAIL,
+} from "../constants/groupDiscountConstants";
 import { GroupDiscount } from "@/types/interface";
 import { Toast } from "primereact/toast";
 
@@ -42,21 +42,17 @@ export const _fetchGroupDiscounts = () => async (dispatch: Dispatch) => {
 };
 
 // Add a Group Discount
-export const _addGroupDiscount = (groupDiscountData: GroupDiscount,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _addGroupDiscount = (groupDiscountData: GroupDiscount, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: ADD_GROUP_DISCOUNT_REQUEST });
 
   try {
     const token = getAuthToken();
-    const formData=new FormData()
-    formData.append('reseller_group_id',groupDiscountData.reseller_group?.id?groupDiscountData.reseller_group?.id.toString():'')
-    formData.append('service_id',groupDiscountData.service?.id?groupDiscountData.service.id.toString():'')
-    formData.append('bundle_id',groupDiscountData.bundle?.id?groupDiscountData.bundle.id.toString():'')
-    formData.append('discount_type',groupDiscountData.discount_type)
-    formData.append('discount_value',groupDiscountData.discount_value)
-
-    formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-    });
+    const formData = new FormData();
+    formData.append('reseller_group_id', groupDiscountData.reseller_group?.id ? groupDiscountData.reseller_group?.id.toString() : '');
+    formData.append('service_id', groupDiscountData.service?.id ? groupDiscountData.service.id.toString() : '');
+    formData.append('bundle_id', groupDiscountData.bundle?.id ? groupDiscountData.bundle.id.toString() : '');
+    formData.append('discount_type', groupDiscountData.discount_type);
+    formData.append('discount_value', groupDiscountData.discount_value);
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/group-discounts`,
@@ -69,41 +65,40 @@ export const _addGroupDiscount = (groupDiscountData: GroupDiscount,toast: React.
       }
     );
 
-    console.log(response)
-    const newData={...groupDiscountData,id:response.data.data.id}
+    const newData = { ...groupDiscountData, id: response.data.data.id };
 
     dispatch({ type: ADD_GROUP_DISCOUNT_SUCCESS, payload: newData });
     toast.current?.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "Group Discount added",
-        life: 3000,
-      });
+      severity: "success",
+      summary: t("SUCCESS"),
+      detail: t("GROUP_DISCOUNT_ADDED"),
+      life: 3000,
+    });
   } catch (error: any) {
-    console.log(error)
     dispatch({ type: ADD_GROUP_DISCOUNT_FAIL, payload: error.message });
     toast.current?.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Failed to add Group Discount",
-        life: 3000,
-      });
+      severity: "error",
+      summary: t("ERROR"),
+      detail: t("GROUP_DISCOUNT_ADD_FAILED"),
+      life: 3000,
+    });
   }
 };
 
 // Edit a Group Discount
-export const _editGroupDiscount = (groupDiscountId: number, groupDiscountData: GroupDiscount,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _editGroupDiscount = (groupDiscountId: number, groupDiscountData: GroupDiscount, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: EDIT_GROUP_DISCOUNT_REQUEST });
 
   try {
     const token = getAuthToken();
-    const formData=new FormData()
-    formData.append('reseller_group_id',groupDiscountData.reseller_group?.id?groupDiscountData.reseller_group?.id.toString():'')
-    formData.append('service_id',groupDiscountData.service?.id?groupDiscountData.service.id.toString():'')
-    formData.append('bundle_id',groupDiscountData.bundle?.id?groupDiscountData.bundle.id.toString():'')
-    formData.append('discount_type',groupDiscountData.discount_type)
-    formData.append('discount_value',groupDiscountData.discount_value)
-    const response = await axios.post(
+    const formData = new FormData();
+    formData.append('reseller_group_id', groupDiscountData.reseller_group?.id ? groupDiscountData.reseller_group?.id.toString() : '');
+    formData.append('service_id', groupDiscountData.service?.id ? groupDiscountData.service.id.toString() : '');
+    formData.append('bundle_id', groupDiscountData.bundle?.id ? groupDiscountData.bundle.id.toString() : '');
+    formData.append('discount_type', groupDiscountData.discount_type);
+    formData.append('discount_value', groupDiscountData.discount_value);
+
+    const response = await axios.put(
       `${process.env.NEXT_PUBLIC_BASE_URL}/group-discounts/${groupDiscountId}`,
       formData,
       {
@@ -114,29 +109,28 @@ export const _editGroupDiscount = (groupDiscountId: number, groupDiscountData: G
       }
     );
 
-    const newData={...groupDiscountData,id:response.data.data.id}
+    const newData = { ...groupDiscountData, id: response.data.data.groupDiscountId };
 
     dispatch({ type: EDIT_GROUP_DISCOUNT_SUCCESS, payload: newData });
     toast.current?.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "Group Discount edited",
-        life: 3000,
-      });
+      severity: "success",
+      summary: t("SUCCESS"),
+      detail: t("GROUP_DISCOUNT_UPDATED"),
+      life: 3000,
+    });
   } catch (error: any) {
-    console.log(error)
     dispatch({ type: EDIT_GROUP_DISCOUNT_FAIL, payload: error.message });
     toast.current?.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Failed to edit Group Discount",
-        life: 3000,
-      });
+      severity: "error",
+      summary: t("ERROR"),
+      detail: t("GROUP_DISCOUNT_UPDATE_FAILED"),
+      life: 3000,
+    });
   }
 };
 
 // Delete a Group Discount
-export const _deleteGroupDiscount = (groupDiscountID: number,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteGroupDiscount = (groupDiscountID: number, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: DELETE_GROUP_DISCOUNT_REQUEST });
 
   try {
@@ -149,18 +143,18 @@ export const _deleteGroupDiscount = (groupDiscountID: number,toast: React.RefObj
 
     dispatch({ type: DELETE_GROUP_DISCOUNT_SUCCESS, payload: groupDiscountID });
     toast.current?.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "Group Discount deleted",
-        life: 3000,
-      });
+      severity: "success",
+      summary: t("SUCCESS"),
+      detail: t("GROUP_DISCOUNT_DELETED"),
+      life: 3000,
+    });
   } catch (error: any) {
     dispatch({ type: DELETE_GROUP_DISCOUNT_FAIL, payload: error.message });
     toast.current?.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Failed to delete Group Discount",
-        life: 3000,
-      });
+      severity: "error",
+      summary: t("ERROR"),
+      detail: t("GROUP_DISCOUNT_DELETE_FAILED"),
+      life: 3000,
+    });
   }
 };

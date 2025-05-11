@@ -83,18 +83,18 @@ const LanguagePage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
 
         if (language.id && language.id !== 0) {
-            dispatch(_editLanguage(language.id,language,toast));
+            dispatch(_editLanguage(language.id,language,toast,t));
 
         } else {
-            dispatch(_addLanguage(language,toast));
+            dispatch(_addLanguage(language,toast,t));
         }
 
         setLanguageDialog(false);
@@ -118,7 +118,7 @@ const LanguagePage = () => {
             console.error("Language  ID is undefined.");
             return;
         }
-        dispatch(_deleteLanguage(language?.id,toast))
+        dispatch(_deleteLanguage(language?.id,toast,t))
         setDeleteLanguageDialog(false);
 
     };
@@ -337,7 +337,7 @@ const LanguagePage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {language && (
                                 <span>
-                                    Are you sure you want to delete <b>{language.language_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{language.language_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -346,7 +346,7 @@ const LanguagePage = () => {
                     <Dialog visible={deleteLanguagesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteLanguagesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {language && <span>Are you sure you want to delete the selected companies?</span>}
+                            {language && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

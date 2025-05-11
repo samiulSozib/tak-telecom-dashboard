@@ -103,17 +103,46 @@ const ResellerGroupPage = () => {
 
     const saveResellerGroup = () => {
         setSubmitted(true);
-        console.log(groupDiscount)
+        //console.log(groupDiscount)
         //return;
-        if (groupDiscount.id && groupDiscount.id !== 0) {
-            dispatch(_editGroupDiscount(groupDiscount.id,groupDiscount,toast));
+        if (!groupDiscount.reseller_group_id || !groupDiscount.service_id || !groupDiscount.bundle_id || !groupDiscount.discount_type || !groupDiscount.discount_value) {
+            toast.current?.show({
+                severity: 'error',
+                summary: t('VALIDATION_ERROR'),
+                detail: 'Please Enter All Required Field',
+                life: 3000
+            });
+            return;
+        }
+
+        // if (groupDiscount.id && groupDiscount.id !== 0) {
+        //     dispatch(_editGroupDiscount(groupDiscount.id,groupDiscount,toast));
+
+        // } else {
+        //     dispatch(_addGroupDiscount(groupDiscount,toast));
+        // }
+
+        // setResellerGroupDialog(false);
+        // setGroupDiscount(emptyGroupDiscount);
+
+        //
+        try {
+                    if (groupDiscount.id && groupDiscount.id !== 0) {
+            dispatch(_editGroupDiscount(groupDiscount.id,groupDiscount,toast,t));
 
         } else {
-            dispatch(_addGroupDiscount(groupDiscount,toast));
+            dispatch(_addGroupDiscount(groupDiscount,toast,t));
         }
 
         setResellerGroupDialog(false);
         setGroupDiscount(emptyGroupDiscount);
+        } catch (error) {
+            console.error('Error saving group discount:', error);
+            // Error handling is done in the action, but we can add additional handling here if needed
+        } finally {
+            setSubmitted(false);
+        }
+        //
     };
 
     const editResellerGroup = (groupDiscount: GroupDiscount) => {
@@ -132,7 +161,7 @@ const ResellerGroupPage = () => {
             console.error("ResellerGroup  ID is undefined.");
             return;
         }
-        dispatch(_deleteGroupDiscount(groupDiscount?.id,toast))
+        dispatch(_deleteGroupDiscount(groupDiscount?.id,toast,t))
         setDeleteResellerGroupDialog(false);
 
     };
@@ -461,7 +490,7 @@ const ResellerGroupPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {groupDiscount && (
                                 <span>
-                                    Are you sure you want to delete <b>{groupDiscount.reseller_group?.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{groupDiscount.reseller_group?.name}</b>?
                                 </span>
                             )}
                         </div>
@@ -470,7 +499,7 @@ const ResellerGroupPage = () => {
                     <Dialog visible={deleteResellerGroupsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteResellerGroupsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {groupDiscount && <span>Are you sure you want to delete the selected companies?</span>}
+                            {groupDiscount && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

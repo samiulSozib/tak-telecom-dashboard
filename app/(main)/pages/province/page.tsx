@@ -87,17 +87,17 @@ const ProvincePage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (province.id && province.id !== 0) {
-            dispatch(_editProvince(province.id,province,toast));
+            dispatch(_editProvince(province.id,province,toast,t));
 
         } else {
-            dispatch(_addProvince(province,toast));
+            dispatch(_addProvince(province,toast,t));
         }
 
         setProvinceDialog(false);
@@ -121,7 +121,7 @@ const ProvincePage = () => {
             console.error("Province  ID is undefined.");
             return;
         }
-        dispatch(_deleteProvince(province?.id,toast))
+        dispatch(_deleteProvince(province?.id,toast,t))
         setDeleteProvinceDialog(false);
 
     };
@@ -324,7 +324,7 @@ useEffect(() => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {province && (
                                 <span>
-                                    Are you sure you want to delete <b>{province.province_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{province.province_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -333,7 +333,7 @@ useEffect(() => {
                     <Dialog visible={deleteProvincesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteProvincesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {province && <span>Are you sure you want to delete the selected companies?</span>}
+                            {province && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

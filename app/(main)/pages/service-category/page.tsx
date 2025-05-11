@@ -85,17 +85,17 @@ const Category = () => {
 
                 toast.current?.show({
                     severity: 'error',
-                    summary: 'Validation Error',
-                    detail: 'Please fill in all required fields.',
+                    summary: t('VALIDATION_ERROR'),
+                    detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                     life: 3000,
                 });
             return;
         }
         if (serviceCategory.id && serviceCategory.id !== 0) {
-            dispatch(_editServiceCategory(serviceCategory,toast));
+            dispatch(_editServiceCategory(serviceCategory,toast,t));
 
         } else {
-            dispatch(_addServiceCategory(serviceCategory,toast));
+            dispatch(_addServiceCategory(serviceCategory,toast,t));
         }
 
         setServiceCategoryDialog(false);
@@ -119,7 +119,7 @@ const Category = () => {
             //console.error("Service Category ID is undefined.");
             return;
         }
-        dispatch(_deleteServiceCategory(serviceCategory?.id,toast))
+        dispatch(_deleteServiceCategory(serviceCategory?.id,toast,t))
         setDeleteServiceCategoryDialog(false);
 
     };
@@ -310,7 +310,7 @@ const Category = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {serviceCategory && (
                                 <span>
-                                    Are you sure you want to delete <b>{serviceCategory.category_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{serviceCategory.category_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -319,7 +319,7 @@ const Category = () => {
                     <Dialog visible={deleteServiceCategoriesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteServiceCategoriesDialogFooter} onHide={hideDeleteServiceCategoriesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {serviceCategory && <span>Are you sure you want to delete the selected categories?</span>}
+                            {serviceCategory && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected categories?</span>}
                         </div>
                     </Dialog>
                 </div>

@@ -99,17 +99,17 @@ const CompanyPage = () => {
 
                 toast.current?.show({
                     severity: 'error',
-                    summary: 'Validation Error',
-                    detail: 'Please fill in all required fields.',
+                    summary: t('VALIDATION_ERROR'),
+                    detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                     life: 3000,
                 });
             return;
         }
         if (company.id && company.id !== 0) {
-            dispatch(_editCompany(company,toast));
+            dispatch(_editCompany(company,toast,t));
 
         } else {
-            dispatch(_addCompany(company,toast));
+            dispatch(_addCompany(company,toast,t));
         }
 
         setCompanyDialog(false);
@@ -134,7 +134,7 @@ const CompanyPage = () => {
             console.error("Company ID is undefined.");
             return;
         }
-        dispatch(_deleteCompany(company?.id,toast))
+        dispatch(_deleteCompany(company?.id,toast,t))
         setDeleteCompanyDialog(false);
 
     };
@@ -433,7 +433,7 @@ const CompanyPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {company && (
                                 <span>
-                                    Are you sure you want to delete <b>{company.company_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{company.company_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -442,7 +442,7 @@ const CompanyPage = () => {
                     <Dialog visible={deleteCompaniesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteCompaniesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {company && <span>Are you sure you want to delete the selected companies?</span>}
+                            {company && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

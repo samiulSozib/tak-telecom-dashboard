@@ -48,7 +48,7 @@ export const _fetchBundleList = (page: number = 1,search:string='') => async (di
 };
 
 // Add Bundle
-export const _addBundle = (newBundleData: Bundle, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _addBundle = (newBundleData: Bundle, toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: ADD_BUNDLE_REQUEST });
   try {
     const body = {
@@ -79,8 +79,8 @@ export const _addBundle = (newBundleData: Bundle, toast: React.RefObject<Toast>)
     });
     toast.current?.show({
       severity: "success",
-      summary: "Successful",
-      detail: "Bundle added",
+      summary: t("SUCCESS"),
+      detail: t("BUNDLE_ADDED"),
       life: 3000,
     });
   } catch (error: any) {
@@ -90,15 +90,15 @@ export const _addBundle = (newBundleData: Bundle, toast: React.RefObject<Toast>)
     });
     toast.current?.show({
       severity: "error",
-      summary: "Error",
-      detail: "Failed to add bundle",
+      summary: t("ERROR"),
+      detail: t("BUNDLE_ADD_FAILED"),
       life: 3000,
     });
   }
 };
 
 // Edit Bundle
-export const _editBundle = (bundleId: number, updatedBundleData: Bundle, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _editBundle = (bundleId: number, updatedBundleData: Bundle, toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: EDIT_BUNDLE_REQUEST });
   try {
 
@@ -131,8 +131,8 @@ export const _editBundle = (bundleId: number, updatedBundleData: Bundle, toast: 
     });
     toast.current?.show({
       severity: "success",
-      summary: "Successful",
-      detail: "Bundle edited",
+      summary: t("SUCCESS"),
+      detail: t("BUNDLE_EDITED"),
       life: 3000,
     });
   } catch (error: any) {
@@ -143,15 +143,15 @@ export const _editBundle = (bundleId: number, updatedBundleData: Bundle, toast: 
     });
     toast.current?.show({
       severity: "error",
-      summary: "Error",
-      detail: "Failed to edit bundle",
+      summary: t("ERROR"),
+      detail: t("BUNDLE_EDIT_FAILED"),
       life: 3000,
     });
   }
 };
 
 // Delete Bundle
-export const _deleteBundle = (bundleId: number, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteBundle = (bundleId: number, toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: DELETE_BUNDLE_REQUEST });
   try {
     const token = getAuthToken();
@@ -166,8 +166,8 @@ export const _deleteBundle = (bundleId: number, toast: React.RefObject<Toast>) =
     });
     toast.current?.show({
       severity: "success",
-      summary: "Successful",
-      detail: "Bundle deleted",
+      summary: t("SUCCESS"),
+      detail: t("BUNDLE_DELETED"),
       life: 3000,
     });
   } catch (error: any) {
@@ -177,8 +177,8 @@ export const _deleteBundle = (bundleId: number, toast: React.RefObject<Toast>) =
     });
     toast.current?.show({
       severity: "error",
-      summary: "Error",
-      detail: "Failed to delete bundle",
+      summary: t("ERROR"),
+      detail: t("BUNDLE_DELETE_FAILED"),
       life: 3000,
     });
   }

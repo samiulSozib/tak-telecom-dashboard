@@ -44,7 +44,7 @@ export const _fetchCompanies=(search:string='')=>async(dispatch:Dispatch)=>{
 
 
 // DELETE COMPANY ACTION
-export const _deleteCompany = (companyId: number,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteCompany = (companyId: number,toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: DELETE_COMPANY_REQUEST });
 
     try {
@@ -58,18 +58,24 @@ export const _deleteCompany = (companyId: number,toast: React.RefObject<Toast>) 
         dispatch({ type: DELETE_COMPANY_SUCCESS, payload: companyId });
         toast.current?.show({
             severity: 'success',
-            summary: 'Successful',
-            detail: 'Company Deleted',
+            summary: t("SUCCESS"),
+            detail: t("COMPANY_DELETED"),
             life: 3000
         });
 
     } catch (error: any) {
         dispatch({ type: DELETE_COMPANY_FAIL, payload: error.message });
+        toast.current?.show({
+            severity: 'error',
+            summary: t("ERROR"),
+            detail: t("COMPANY_DELETE_FAILED"),
+            life: 3000
+        });
     }
 };
 
 // ADD COMPANY ACTION
-export const _addCompany = (newCompany: Company,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _addCompany = (newCompany: Company,toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: ADD_COMPANY_REQUEST });
     //console.log(newCompany)
     //return
@@ -105,8 +111,8 @@ export const _addCompany = (newCompany: Company,toast: React.RefObject<Toast>) =
         });
         toast.current?.show({
             severity: 'success',
-            summary: 'Successful',
-            detail: 'Company Updated',
+            summary: t("SUCCESS"),
+            detail: t("COMPANY_ADDED"),
             life: 3000
         });
     } catch (error: any) {
@@ -115,12 +121,18 @@ export const _addCompany = (newCompany: Company,toast: React.RefObject<Toast>) =
             type: ADD_COMPANY_FAIL,
             payload: error.message,
         });
+        toast.current?.show({
+            severity: 'error',
+            summary: t("ERROR"),
+            detail: t("COMPANY_ADD_FAILED"),
+            life: 3000
+        });
     }
 };
 
 
 // EDIT COMPANY ACTION
-export const _editCompany = (updatedCompany: Company,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _editCompany = (updatedCompany: Company,toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: EDIT_COMPANY_REQUEST });
     //console.log(updatedCompany)
 
@@ -156,8 +168,8 @@ export const _editCompany = (updatedCompany: Company,toast: React.RefObject<Toas
         });
         toast.current?.show({
             severity: 'success',
-            summary: 'Successful',
-            detail: 'Company Updated',
+            summary: t("SUCCESS"),
+            detail: t("COMPANY_UPDATED"),
             life: 3000
         });
     } catch (error: any) {
@@ -165,6 +177,12 @@ export const _editCompany = (updatedCompany: Company,toast: React.RefObject<Toas
         dispatch({
             type: EDIT_COMPANY_FAIL,
             payload: error.message,
+        });
+        toast.current?.show({
+            severity: 'error',
+            summary: t("ERROR"),
+            detail: t("COMPANY_UPDATE_FAILED"),
+            life: 3000
         });
     }
 };

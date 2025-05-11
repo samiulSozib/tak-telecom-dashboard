@@ -452,7 +452,7 @@ const statusBodyTemplate = (rowData: Order) => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {order && (
                                 <span>
-                                    Are you sure you want to delete <b>{order.rechargeble_account}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{order.rechargeble_account}</b>?
                                 </span>
                             )}
                         </div>
@@ -461,7 +461,7 @@ const statusBodyTemplate = (rowData: Order) => {
                     <Dialog visible={deleteOrdersDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteOrdersDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {order && <span>Are you sure you want to delete the selected companies?</span>}
+                            {order && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

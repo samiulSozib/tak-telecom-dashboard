@@ -17,11 +17,14 @@ import {
 } from '../constants/advertisementConstants';
 import { Toast } from 'primereact/toast';
 import { Advertisement } from '@/types/interface';
+import { useTranslation } from 'react-i18next';
 
 // Get Auth Token from Local Storage
 const getAuthToken = () => {
     return localStorage.getItem('api_token') || ''; // Get the token or return an empty string if not found
 };
+
+
 
 // Fetch advertisements
 export const _fetchAdvertisements = (search:string='') => async (dispatch: Dispatch) => {
@@ -42,7 +45,7 @@ export const _fetchAdvertisements = (search:string='') => async (dispatch: Dispa
 };
 
 // Add an advertisement
-export const _addAdvertisement = (advertisementData: Advertisement,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _addAdvertisement = (advertisementData: Advertisement,toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: ADD_ADVERTISEMENT_REQUEST });
 
     try {
@@ -68,23 +71,23 @@ export const _addAdvertisement = (advertisementData: Advertisement,toast: React.
 
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Advertisement added",
+            summary: t("SUCCESS"),
+            detail: t("ADVERTISEMENT_ADDED"),
             life: 3000,
-          });
+        });
     } catch (error: any) {
         dispatch({ type: ADD_ADVERTISEMENT_FAIL, payload: error.message });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to add advertisement",
+            summary: t("ERROR"),
+            detail: t("ADVERTISEMENT_ADD_FAILED"),
             life: 3000,
-          });
+        });
     }
 };
 
 // Edit an advertisement
-export const _editAdvertisement = (advertisementId: number, advertisementData: Advertisement,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _editAdvertisement = (advertisementId: number, advertisementData: Advertisement,toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: EDIT_ADVERTISEMENT_REQUEST });
 
     try {
@@ -109,23 +112,23 @@ export const _editAdvertisement = (advertisementId: number, advertisementData: A
         dispatch({ type: EDIT_ADVERTISEMENT_SUCCESS, payload: response.data.data.advertisement });
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Advertisement edited",
+            summary: t("SUCCESS"),
+            detail: t("ADVERTISEMENT_EDITED"),
             life: 3000,
-          });
+        });
     } catch (error: any) {
         dispatch({ type: EDIT_ADVERTISEMENT_FAIL, payload: error.message });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to edit advertisement",
+            summary: t("ERROR"),
+            detail: t("ADVERTISEMENT_EDIT_FAILED"),
             life: 3000,
-          });
+        });
     }
 };
 
 // Delete an advertisement
-export const _deleteAdvertisement = (advertisementId: number,toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteAdvertisement = (advertisementId: number,toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: DELETE_ADVERTISEMENT_REQUEST });
 
     try {
@@ -139,17 +142,17 @@ export const _deleteAdvertisement = (advertisementId: number,toast: React.RefObj
         dispatch({ type: DELETE_ADVERTISEMENT_SUCCESS, payload: advertisementId });
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Advertisement deleted",
+            summary: t("SUCCESS"),
+            detail: t("ADVERTISEMENT_DELETED"),
             life: 3000,
-          });
+        });
     } catch (error: any) {
         dispatch({ type: DELETE_ADVERTISEMENT_FAIL, payload: error.message });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to delete advertisement",
+            summary: t("ERROR"),
+            detail: t("ADVERTISEMENT_DELETE_FAILED"),
             life: 3000,
-          });
+        });
     }
 };

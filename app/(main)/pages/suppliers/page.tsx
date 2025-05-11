@@ -83,17 +83,17 @@ const SupplierPage = () => {
 
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
         return;
     }
         if (supplier.id && supplier.id !== 0) {
-            dispatch(_editSupplier(supplier.id,supplier,toast));
+            dispatch(_editSupplier(supplier.id,supplier,toast,t));
 
         } else {
-            dispatch(_addSupplier(supplier,toast));
+            dispatch(_addSupplier(supplier,toast,t));
         }
 
         setSupplierDialog(false);
@@ -117,7 +117,7 @@ const SupplierPage = () => {
             console.error("Supplier ID is undefined.");
             return;
         }
-        dispatch(_deleteSupplier(supplier?.id,toast))
+        dispatch(_deleteSupplier(supplier?.id,toast,t))
         setDeleteSupplierDialog(false);
 
     };
@@ -383,7 +383,7 @@ const SupplierPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {supplier && (
                                 <span>
-                                    Are you sure you want to delete <b>{supplier.supplier_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{supplier.supplier_name}</b>?
                                 </span>
                             )}
                         </div>
@@ -392,7 +392,7 @@ const SupplierPage = () => {
                     <Dialog visible={deleteSuppliersDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteSuppliersDialogFooter} onHide={hideDeleteSuppliersDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {supplier && <span>Are you sure you want to delete the selected companies?</span>}
+                            {supplier && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>

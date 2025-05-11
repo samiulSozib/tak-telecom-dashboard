@@ -87,17 +87,17 @@ const CompanyCodePage = () => {
         if (!companyCode.reserved_digit || !companyCode.company) {
             toast.current?.show({
                 severity: 'error',
-                summary: 'Validation Error',
-                detail: 'Please fill in all required fields.',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
                 life: 3000,
             });
             return; // Prevent saving if validation fails
         }
         if (companyCode.id && companyCode.id !== 0) {
-            dispatch(_editCompanyCode(companyCode,toast));
+            dispatch(_editCompanyCode(companyCode,toast,t));
 
         } else {
-            dispatch(_addCompanyCode(companyCode,toast));
+            dispatch(_addCompanyCode(companyCode,toast,t));
         }
 
         setCompanyCodeDialog(false);
@@ -122,7 +122,7 @@ const CompanyCodePage = () => {
             console.error("Company Code ID is undefined.");
             return;
         }
-        dispatch(_deleteCompanyCode(companyCode?.id,toast))
+        dispatch(_deleteCompanyCode(companyCode?.id,toast,t))
         setDeleteCompanyCodeDialog(false);
 
     };
@@ -346,7 +346,7 @@ const CompanyCodePage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {companyCode && (
                                 <span>
-                                    Are you sure you want to delete <b>{companyCode.reserved_digit}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{companyCode.reserved_digit}</b>?
                                 </span>
                             )}
                         </div>
@@ -355,7 +355,7 @@ const CompanyCodePage = () => {
                     <Dialog visible={deleteCompanyCodesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteCompanyCodesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {companyCode && <span>Are you sure you want to delete the selected companies?</span>}
+                            {companyCode && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
                 </div>
