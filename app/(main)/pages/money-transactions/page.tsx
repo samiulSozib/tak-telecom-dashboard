@@ -111,10 +111,10 @@ const TransactionPage = () => {
     const saveService = () => {
         setSubmitted(true);
         if (bundle.id && bundle.id !== 0) {
-            dispatch(_editBundle(bundle.id,bundle,toast));
+            dispatch(_editBundle(bundle.id,bundle,toast,t));
 
         } else {
-            dispatch(_addBundle(bundle,toast));
+            dispatch(_addBundle(bundle,toast,t));
         }
 
         setServiceDialog(false);
@@ -137,7 +137,7 @@ const TransactionPage = () => {
             console.error("Service ID is undefined.");
             return;
         }
-        dispatch(_deleteBundle(bundle?.id,toast))
+        dispatch(_deleteBundle(bundle?.id,toast,t))
         setDeleteServiceDialog(false);
 
     };
