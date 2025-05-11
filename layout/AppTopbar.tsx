@@ -209,6 +209,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                                 {languageDropdownVisible && (
                                     <ul
                                         style={{
+                                            width:'220px',
                                             position: 'absolute',
                                             top: '100%',
                                             left: isRTL ? 'auto' : '0', // Align to left when LTR
