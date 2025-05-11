@@ -17,6 +17,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../../demo/service/ProductService';
 import { Demo } from '@/types';
 import i18n from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 /* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
 const Crud = () => {
@@ -42,6 +43,7 @@ const Crud = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
+    const {t}=useTranslation()
 
     useEffect(() => {
         ProductService.getProducts().then((data) => setProducts(data as any));
