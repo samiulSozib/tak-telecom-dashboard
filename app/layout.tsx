@@ -69,6 +69,8 @@ import store from './redux/store';
 import { ReactNode, useEffect, useState } from 'react';
 import '../i18n'
 import i18n from 'i18next';
+import '../styles/fonts.scss';
+
 
 interface RootLayoutProps {
     children: ReactNode;

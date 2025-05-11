@@ -1,6 +1,7 @@
 .layout-sidebar {
     position: fixed;
     width: 270px;
+    margin-top: 10px;
     height: calc(100vh - 9rem);
     z-index: 999;
     overflow-y: auto;
