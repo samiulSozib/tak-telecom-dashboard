@@ -258,8 +258,6 @@ export const _fetchRoleList = () => async (dispatch: Dispatch) => {
 // Fetch Single Role
 export const _fetchSingleRole = (
   roleId: number,
-  toast: React.RefObject<Toast>,
-  t: (key: string) => string
 ) => async (dispatch: Dispatch) => {
   dispatch({ type: FETCH_SINGLE_ROLE_REQUEST });
   try {
@@ -278,24 +276,14 @@ export const _fetchSingleRole = (
       payload: response.data.data.role,
     });
 
-    toast.current?.show({
-      severity: "success",
-      summary: t("SUCCESS"),
-      detail: t("ROLE_DETAILS_FETCHED"),
-      life: 3000,
-    });
+
   } catch (error: any) {
     dispatch({
       type: FETCH_SINGLE_ROLE_FAIL,
       payload: error.response?.data.message || error.message,
     });
 
-    toast.current?.show({
-      severity: "error",
-      summary: t("ERROR"),
-      detail: t("ROLE_DETAILS_FETCH_FAILED"),
-      life: 3000,
-    });
+
   }
 };
 
