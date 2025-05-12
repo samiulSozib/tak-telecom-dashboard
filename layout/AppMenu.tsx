@@ -144,12 +144,12 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-credit-card', // Globe for geographical data
                     items: [
                         {
-                            label: t('MENU.TRANSFER_BRAND'),
+                            label: t('MENU.HAWALA_BRANCH'),
                             icon: 'pi pi-fw pi-flag', // Flag for country
                             to: '/pages/hawala-branches',
                         },
                         {
-                            label: t('MENU.THIS_IS_A_TRANSFER'),
+                            label: t('MENU.HAWALAS'),
                             icon: 'pi pi-fw pi-map', // Map for provinces
                             to: '/pages/hawala',
                         }
@@ -171,11 +171,11 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-cog', // Cogwheel for settings
                     to: '/pages/roles',
                 },
-                {
-                    label: t('MENU.USER_LIST'),
-                    icon: 'pi pi-fw pi-cog', // Cogwheel for settings
-                    to: '/pages/user-list',
-                },
+                // {
+                //     label: t('MENU.USER_LIST'),
+                //     icon: 'pi pi-fw pi-cog', // Cogwheel for settings
+                //     to: '/pages/user-list',
+                // },
                 {
                     label: t('MENU.RESELLER_GROUP'),
                     icon: 'pi pi-fw pi-cog', // Cogwheel for settings

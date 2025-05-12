@@ -7,6 +7,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { isRTL } from "../../utilities/rtlUtil";
 
 
 const Settings = () => {
@@ -55,11 +56,11 @@ const Settings = () => {
             <Toast ref={toast} />
 
             <TabView>
-                <TabPanel header={t("COMPANY.FORM.INPUT.TELEGRAMID")}>
+                <TabPanel header={t("TELEGRAM_GROUP")}>
                     <p>
-                        Click the button below to sync Telegram groups with the application. This will ensure that all the latest groups are updated in the system.
+                        {t("TELEGRAM_GROUP_TEXT")}
                     </p>
-                    <Button label="Sync Telegram Groups" icon="pi pi-check" loading={loading} onClick={syncTelegramGroups} />
+                    <Button label={t("SYNC_TELEGRAM_GROUP")} icon="pi pi-check" loading={loading} onClick={syncTelegramGroups} className={isRTL() ? 'rtl-button' : ''}/>
 
 
                 </TabPanel>
