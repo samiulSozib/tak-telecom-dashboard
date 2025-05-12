@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const PaymentMethodPage = () => {
 
@@ -136,7 +137,7 @@ const PaymentMethodPage = () => {
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
                     <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('PAYMENTMETHOD.TABLE.CREATEPAYMENTMETHOD')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t("APP.GENERAL.DELETE")} icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
                 </div>
             </React.Fragment>
         );
@@ -240,20 +241,20 @@ const PaymentMethodPage = () => {
 
     const methodDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveMethod} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''} onClick={saveMethod} />
         </>
     );
     const deleteMethodDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteMethodDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteMethod} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteMethodDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''} onClick={deleteMethod} />
         </>
     );
     const deleteMethodsDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteMethodsDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteMethodsDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''}  />
         </>
     );
 
@@ -278,10 +279,20 @@ const PaymentMethodPage = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} companies"
+                       paginatorTemplate={
+                            isRTL()
+                            ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink'
+                            : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                            ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`  // localized RTL string
+                            : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No Companies found."
                         // header={header}
                         responsiveLayout="scroll"
                     >
@@ -393,7 +404,7 @@ const PaymentMethodPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {paymentMethod && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{paymentMethod.method_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{paymentMethod.method_name}</b>
                                 </span>
                             )}
                         </div>

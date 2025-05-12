@@ -12,6 +12,7 @@ import { AppTopbarRef } from '@/types';
 import { LayoutContext } from './context/layoutcontext';
 import { classNames } from 'primereact/utils';
 import Swal from 'sweetalert2';
+import { isRTL } from '@/app/(main)/utilities/rtlUtil';
 
 interface MyLanguage {
     name:string,
@@ -65,6 +66,9 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                 setCurrentLanguage(language.language_code); // Update state
                 //console.log(`Language changed to: ${language.language_code}`);
                 router.refresh()
+                setProfileMenuVisible(false)
+                setLanguageDropdownVisible(false)
+                //window.location.reload()
 
             })
             .catch((err) => {
@@ -83,7 +87,6 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         topbarmenubutton: topbarmenubuttonRef.current
     }));
 
-    const isRTL = ['ar', 'fa', 'ps'].includes(currentLanguage); // Check if it's an RTL language
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -100,10 +103,23 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     return (
         <div className="layout-topbar" >
             {/* Logo Section */}
-            <Link href="/" className="layout-topbar-logo">
-                <img src={`/layout/images/tak_telecom.jpeg`} width="47.22px" height={'35px'} alt="logo" style={{borderRadius:'10px'}}/>
+            <Link href="/" className="layout-topbar-logo" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: isRTL() ? '0.5rem' : '1rem',
+                }}>
+                <img
+                    src={`/layout/images/tak_telecom.jpeg`}
+                    width="47.22px"
+                    height={'35px'}
+                    alt="logo"
+                    style={{
+                    borderRadius: '10px',
+                    [isRTL() ? 'marginLeft' : 'marginRight']: isRTL() ? '0.5rem' : '1rem'
+                    }}
+                />
                 <span>Tak</span>
-            </Link>
+                </Link>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>
                 <i className="pi pi-bars" />
@@ -115,8 +131,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
 
             {/* Profile Button */}
             <div style={{
-                marginLeft: isRTL ? '0' : 'auto', // Move left for Arabic
-                marginRight: isRTL ? 'auto' : '0' // Default for LTR
+                marginLeft: isRTL() ? '0' : 'auto', // Move left for Arabic
+                marginRight: isRTL() ? 'auto' : '0' // Default for LTR
             }} ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
                 <button
                     type="button"
@@ -135,8 +151,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                         style={{
                             position: 'absolute',
                             top: '100%',
-                            right: isRTL ? 'auto' : '0', // Align to left when RTL
-                            left: isRTL ? '0' : 'auto', // Align to right when LTR
+                            right: isRTL() ? 'auto' : '0', // Align to left when RTL
+                            left: isRTL() ? '0' : 'auto', // Align to right when LTR
                             backgroundColor: 'white',
                             border: '1px solid #ccc',
                             borderRadius: '8px',
@@ -144,7 +160,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                             zIndex: 1000,
                             width: '300px',
                             padding: '20px',
-                            marginLeft: isRTL && isMobile ? '-100px' : '',
+                            marginLeft: isRTL() && isMobile ? '-100px' : '',
                         }}
                     >
                         {/* User Info */}
@@ -160,8 +176,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                                     alignItems: 'center',
                                     color: 'white',
                                     fontSize: '24px',
-                                    marginRight: isRTL ? '0' : '12px', // Adjust for RTL
-                                    marginLeft: isRTL ? '12px' : '0', // Adjust for RTL
+                                    marginRight: isRTL() ? '0' : '12px', // Adjust for RTL
+                                    marginLeft: isRTL() ? '12px' : '0', // Adjust for RTL
                                 }}
                             >
                                 <i className="pi pi-user"></i>
@@ -212,8 +228,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                                             width:'220px',
                                             position: 'absolute',
                                             top: '100%',
-                                            left: isRTL ? 'auto' : '0', // Align to left when LTR
-                                            right: isRTL ? '0' : 'auto', // Align to right when RTL
+                                            left: isRTL() ? 'auto' : '0', // Align to left when LTR
+                                            right: isRTL() ? '0' : 'auto', // Align to right when RTL
                                             background: '#fff',
                                             border: '1px solid #ccc',
                                             borderRadius: '8px',

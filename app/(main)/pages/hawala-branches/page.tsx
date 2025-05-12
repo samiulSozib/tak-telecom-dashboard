@@ -22,6 +22,7 @@ import i18n from '@/i18n';
 import { HawalaBranch } from '@/types/interface';
 import { _fetchHawalaList } from '@/app/redux/actions/hawalaActions';
 import { Paginator } from 'primereact/paginator';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const HawalaBranchPage = () => {
     let emptyHawalaBranch: HawalaBranch = {
@@ -46,9 +47,9 @@ const HawalaBranchPage = () => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { hawalaBranches, loading,pagination } = useSelector((state: any) => state.hawalaBranchReducer);
+    const { hawalaBranches, loading, pagination } = useSelector((state: any) => state.hawalaBranchReducer);
     const { t } = useTranslation();
-    const [searchTag, setSearchTag] = useState("");
+    const [searchTag, setSearchTag] = useState('');
 
     const commissionTypes = [
         { label: t('HAWALA.FORM.PERCENTAGE'), value: 'percentage' },
@@ -61,7 +62,7 @@ const HawalaBranchPage = () => {
     ];
 
     useEffect(() => {
-        dispatch(_fetchHawalaBranchList(1,searchTag));
+        dispatch(_fetchHawalaBranchList(1, searchTag));
     }, [dispatch, searchTag]);
 
     const openNew = () => {
@@ -86,22 +87,20 @@ const HawalaBranchPage = () => {
     const saveHawalaBranch = () => {
         setSubmitted(true);
 
-        if (!hawalaBranch.name || !hawalaBranch.email || !hawalaBranch.phone_number ||
-            !hawalaBranch.address || !hawalaBranch.commission_type || !hawalaBranch.amount) {
-
+        if (!hawalaBranch.name || !hawalaBranch.email || !hawalaBranch.phone_number || !hawalaBranch.address || !hawalaBranch.commission_type || !hawalaBranch.amount) {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
             return;
         }
 
         if (hawalaBranch.id && hawalaBranch.id !== 0) {
-            dispatch(_editHawalaBranch(hawalaBranch.id, hawalaBranch, toast,t));
+            dispatch(_editHawalaBranch(hawalaBranch.id, hawalaBranch, toast, t));
         } else {
-            dispatch(_addHawalaBranch(hawalaBranch, toast,t));
+            dispatch(_addHawalaBranch(hawalaBranch, toast, t));
         }
 
         setHawalaBranchDialog(false);
@@ -121,10 +120,10 @@ const HawalaBranchPage = () => {
 
     const deleteHawalaBranch = () => {
         if (!hawalaBranch?.id) {
-            console.error("Hawala Branch ID is undefined.");
+            console.error('Hawala Branch ID is undefined.');
             return;
         }
-        dispatch(_deleteHawalaBranch(hawalaBranch?.id, toast,t));
+        dispatch(_deleteHawalaBranch(hawalaBranch?.id, toast, t));
         setDeleteHawalaBranchDialog(false);
     };
 
@@ -137,15 +136,15 @@ const HawalaBranchPage = () => {
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
                     <Button
-                        style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }}
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
                         label={t('HAWALA.CREATE_NEW')}
                         icon="pi pi-plus"
                         severity="success"
-                        className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
                         onClick={openNew}
                     />
                     <Button
-                        style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }}
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
                         label={t('APP.GENERAL.DELETE')}
                         icon="pi pi-trash"
                         severity="danger"
@@ -162,12 +161,7 @@ const HawalaBranchPage = () => {
             <div className="flex items-center">
                 <span className="block mt-2 md:mt-0 p-input-icon-left w-full md:w-auto">
                     <i className="pi pi-search" />
-                    <InputText
-                        type="search"
-                        onInput={(e) => setSearchTag(e.currentTarget.value)}
-                        placeholder={t('ECOMMERCE.COMMON.SEARCH')}
-                        className="w-full md:w-auto"
-                    />
+                    <InputText type="search" onInput={(e) => setSearchTag(e.currentTarget.value)} placeholder={t('ECOMMERCE.COMMON.SEARCH')} className="w-full md:w-auto" />
                 </span>
             </div>
         );
@@ -201,9 +195,7 @@ const HawalaBranchPage = () => {
     };
 
     const commissionTypeBodyTemplate = (rowData: HawalaBranch) => {
-        const typeLabel = rowData.commission_type === 'percentage'
-            ? t('HAWALA.FORM.PERCENTAGE')
-            : t('HAWALA.FORM.FIXED');
+        const typeLabel = rowData.commission_type === 'percentage' ? t('HAWALA.FORM.PERCENTAGE') : t('HAWALA.FORM.FIXED');
 
         return (
             <>
@@ -224,9 +216,7 @@ const HawalaBranchPage = () => {
 
     const statusBodyTemplate = (rowData: HawalaBranch) => {
         const statusClass = rowData.status === 'active' ? 'text-green-500' : 'text-red-500';
-        const statusLabel = rowData.status === 'active'
-            ? t('APP.GENERAL.ACTIVE')
-            : t('APP.GENERAL.INACTIVE');
+        const statusLabel = rowData.status === 'active' ? t('APP.GENERAL.ACTIVE') : t('APP.GENERAL.INACTIVE');
 
         return (
             <>
@@ -239,50 +229,37 @@ const HawalaBranchPage = () => {
     const actionBodyTemplate = (rowData: HawalaBranch) => {
         return (
             <>
-                <Button
-                    icon="pi pi-pencil"
-                    rounded
-                    severity="success"
-                    className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}
-                    onClick={() => editHawalaBranch(rowData)}
-                />
-                <Button
-                    icon="pi pi-trash"
-                    rounded
-                    severity="warning"
-                    onClick={() => confirmDeleteHawalaBranch(rowData)}
-                />
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editHawalaBranch(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteHawalaBranch(rowData)} />
             </>
         );
     };
 
     const hawalaBranchDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveHawalaBranch} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveHawalaBranch} />
         </>
     );
 
     const deleteHawalaBranchDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteHawalaBranchDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteHawalaBranch} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteHawalaBranchDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteHawalaBranch} />
         </>
     );
 
     const deleteHawalaBranchesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteHawalaBranchesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteHawalaBranchesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
 
-
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchHawalaBranchList(page,searchTag));
+        dispatch(_fetchHawalaBranchList(page, searchTag));
     };
-
 
     return (
         <div className="grid crud-demo -m-5">
@@ -301,61 +278,33 @@ const HawalaBranchPage = () => {
                         paginator={false} // Disable PrimeReact's built-in paginator
                         rows={pagination?.items_per_page}
                         totalRecords={pagination?.total}
-                        currentPageReportTemplate={`Showing {first} to {last} of {totalRecords} items`}
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         globalFilter={globalFilter}
-                        emptyMessage={t('APP.DATATABLE.NO_RECORDS')}
                         responsiveLayout="scroll"
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="name" header={t('HAWALA.TABLE.NAME')} sortable body={nameBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="email" header={t('HAWALA.TABLE.EMAIL')} body={emailBodyTemplate} sortable></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="phone_number" header={t('HAWALA.TABLE.PHONE')} body={phoneBodyTemplate} sortable></Column>
                         <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="name"
-                            header={t('HAWALA.TABLE.NAME')}
-                            sortable
-                            body={nameBodyTemplate}
-                        ></Column>
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="email"
-                            header={t('HAWALA.TABLE.EMAIL')}
-                            body={emailBodyTemplate}
-                            sortable
-                        ></Column>
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="phone_number"
-                            header={t('HAWALA.TABLE.PHONE')}
-                            body={phoneBodyTemplate}
-                            sortable
-                        ></Column>
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="commission_type"
                             header={t('HAWALA.TABLE.COMMISSION_TYPE')}
                             body={commissionTypeBodyTemplate}
                             sortable
                         ></Column>
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="amount"
-                            header={t('HAWALA.TABLE.AMOUNT')}
-                            body={amountBodyTemplate}
-                            sortable
-                        ></Column>
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="status"
-                            header={t('HAWALA.TABLE.STATUS')}
-                            body={statusBodyTemplate}
-                            sortable
-                        ></Column>
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }}
-                            body={actionBodyTemplate}
-                            headerStyle={{ minWidth: '10rem' }}
-                        ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="amount" header={t('HAWALA.TABLE.AMOUNT')} body={amountBodyTemplate} sortable></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('HAWALA.TABLE.STATUS')} body={statusBodyTemplate} sortable></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
                     <Paginator
@@ -363,29 +312,25 @@ const HawalaBranchPage = () => {
                         rows={pagination?.items_per_page}
                         totalRecords={pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
-                        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                        template={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
                     />
 
-                    <Dialog
-                        visible={hawalaBranchDialog}
-                        style={{ width: '900px', padding: '5px' }}
-                        header={t('HAWALA.DETAILS')}
-                        modal
-                        className="p-fluid"
-                        footer={hawalaBranchDialogFooter}
-                        onHide={hideDialog}
-                    >
+                    <Dialog visible={hawalaBranchDialog} style={{ width: '900px', padding: '5px' }} header={t('HAWALA.DETAILS')} modal className="p-fluid" footer={hawalaBranchDialogFooter} onHide={hideDialog}>
                         <div className="card flex flex-wrap p-fluid mt-3 gap-4">
-                            <div className='flex-1 col-12 lg:col-6'>
+                            <div className="flex-1 col-12 lg:col-6">
                                 <div className="field">
-                                    <label htmlFor="name" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.NAME')}</label>
+                                    <label htmlFor="name" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.NAME')}
+                                    </label>
                                     <InputText
                                         id="name"
                                         value={hawalaBranch.name}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                name: e.target.value,
+                                                name: e.target.value
                                             }))
                                         }
                                         required
@@ -395,22 +340,20 @@ const HawalaBranchPage = () => {
                                             'p-invalid': submitted && !hawalaBranch.name
                                         })}
                                     />
-                                    {submitted && !hawalaBranch.name && (
-                                        <small style={{ color: "red", fontSize: "12px" }}>
-                                            {t('APP.VALIDATION.REQUIRED_NAME')}
-                                        </small>
-                                    )}
+                                    {submitted && !hawalaBranch.name && <small style={{ color: 'red', fontSize: '12px' }}>{t('APP.VALIDATION.REQUIRED_NAME')}</small>}
                                 </div>
 
                                 <div className="field">
-                                    <label htmlFor="email" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.EMAIL')}</label>
+                                    <label htmlFor="email" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.EMAIL')}
+                                    </label>
                                     <InputText
                                         id="email"
                                         value={hawalaBranch.email}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                email: e.target.value,
+                                                email: e.target.value
                                             }))
                                         }
                                         required
@@ -419,23 +362,21 @@ const HawalaBranchPage = () => {
                                             'p-invalid': submitted && !hawalaBranch.email
                                         })}
                                     />
-                                    {submitted && !hawalaBranch.email && (
-                                        <small style={{ color: "red", fontSize: "12px" }}>
-                                            {t('APP.VALIDATION.REQUIRED_EMAIL')}
-                                        </small>
-                                    )}
+                                    {submitted && !hawalaBranch.email && <small style={{ color: 'red', fontSize: '12px' }}>{t('APP.VALIDATION.REQUIRED_EMAIL')}</small>}
                                 </div>
 
                                 <div className="field">
-                                    <label htmlFor="password" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.PASSWORD')}</label>
+                                    <label htmlFor="password" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.PASSWORD')}
+                                    </label>
                                     <InputText
                                         id="password"
                                         type="password"
                                         value={hawalaBranch.password}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                password: e.target.value,
+                                                password: e.target.value
                                             }))
                                         }
                                         required={!hawalaBranch.id}
@@ -444,22 +385,20 @@ const HawalaBranchPage = () => {
                                             'p-invalid': submitted && !hawalaBranch.password && !hawalaBranch.id
                                         })}
                                     />
-                                    {submitted && !hawalaBranch.password && !hawalaBranch.id && (
-                                        <small style={{ color: "red", fontSize: "12px" }}>
-                                            {t('APP.VALIDATION.REQUIRED_PASSWORD')}
-                                        </small>
-                                    )}
+                                    {submitted && !hawalaBranch.password && !hawalaBranch.id && <small style={{ color: 'red', fontSize: '12px' }}>{t('APP.VALIDATION.REQUIRED_PASSWORD')}</small>}
                                 </div>
 
                                 <div className="field">
-                                    <label htmlFor="address" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.ADDRESS')}</label>
+                                    <label htmlFor="address" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.ADDRESS')}
+                                    </label>
                                     <InputTextarea
                                         id="address"
                                         value={hawalaBranch.address}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                address: e.target.value,
+                                                address: e.target.value
                                             }))
                                         }
                                         required
@@ -469,24 +408,22 @@ const HawalaBranchPage = () => {
                                             'p-invalid': submitted && !hawalaBranch.address
                                         })}
                                     />
-                                    {submitted && !hawalaBranch.address && (
-                                        <small style={{ color: "red", fontSize: "12px" }}>
-                                            {t('APP.VALIDATION.REQUIRED_ADDRESS')}
-                                        </small>
-                                    )}
+                                    {submitted && !hawalaBranch.address && <small style={{ color: 'red', fontSize: '12px' }}>{t('APP.VALIDATION.REQUIRED_ADDRESS')}</small>}
                                 </div>
                             </div>
 
-                            <div className='flex-1 col-12 lg:col-6'>
+                            <div className="flex-1 col-12 lg:col-6">
                                 <div className="field">
-                                    <label htmlFor="phone_number" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.PHONE')}</label>
+                                    <label htmlFor="phone_number" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.PHONE')}
+                                    </label>
                                     <InputText
                                         id="phone_number"
                                         value={hawalaBranch.phone_number}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                phone_number: e.target.value,
+                                                phone_number: e.target.value
                                             }))
                                         }
                                         required
@@ -495,23 +432,21 @@ const HawalaBranchPage = () => {
                                             'p-invalid': submitted && !hawalaBranch.phone_number
                                         })}
                                     />
-                                    {submitted && !hawalaBranch.phone_number && (
-                                        <small style={{ color: "red", fontSize: "12px" }}>
-                                            {t('APP.VALIDATION.REQUIRED_PHONE')}
-                                        </small>
-                                    )}
+                                    {submitted && !hawalaBranch.phone_number && <small style={{ color: 'red', fontSize: '12px' }}>{t('APP.VALIDATION.REQUIRED_PHONE')}</small>}
                                 </div>
 
                                 <div className="field">
-                                    <label htmlFor="commission_type" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.COMMISSION_TYPE')}</label>
+                                    <label htmlFor="commission_type" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.COMMISSION_TYPE')}
+                                    </label>
                                     <Dropdown
                                         id="commission_type"
                                         value={hawalaBranch.commission_type}
                                         options={commissionTypes}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                commission_type: e.value,
+                                                commission_type: e.value
                                             }))
                                         }
                                         placeholder={t('HAWALA.FORM.SELECT_COMMISSION_TYPE')}
@@ -520,48 +455,40 @@ const HawalaBranchPage = () => {
                                 </div>
 
                                 <div className="field">
-                                    <label htmlFor="amount" style={{fontWeight:'bold'}}>
-                                        {hawalaBranch.commission_type === 'percentage'
-                                            ? t('HAWALA.FORM.COMMISSION_PERCENTAGE')
-                                            : t('HAWALA.FORM.COMMISSION_AMOUNT')}
+                                    <label htmlFor="amount" style={{ fontWeight: 'bold' }}>
+                                        {hawalaBranch.commission_type === 'percentage' ? t('HAWALA.FORM.COMMISSION_PERCENTAGE') : t('HAWALA.FORM.COMMISSION_AMOUNT')}
                                     </label>
                                     <InputText
                                         id="amount"
                                         value={hawalaBranch.amount?.toString()}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                amount: Number(e.target.value),
+                                                amount: Number(e.target.value)
                                             }))
                                         }
                                         required
                                         keyfilter="num"
-                                        placeholder={
-                                            hawalaBranch.commission_type === 'percentage'
-                                                ? t('HAWALA.FORM.PERCENTAGE_PLACEHOLDER')
-                                                : t('HAWALA.FORM.AMOUNT_PLACEHOLDER')
-                                        }
+                                        placeholder={hawalaBranch.commission_type === 'percentage' ? t('HAWALA.FORM.PERCENTAGE_PLACEHOLDER') : t('HAWALA.FORM.AMOUNT_PLACEHOLDER')}
                                         className={classNames({
                                             'p-invalid': submitted && !hawalaBranch.amount
                                         })}
                                     />
-                                    {submitted && !hawalaBranch.amount && (
-                                        <small style={{ color: "red", fontSize: "12px" }}>
-                                            {t('APP.VALIDATION.REQUIRED_AMOUNT')}
-                                        </small>
-                                    )}
+                                    {submitted && !hawalaBranch.amount && <small style={{ color: 'red', fontSize: '12px' }}>{t('APP.VALIDATION.REQUIRED_AMOUNT')}</small>}
                                 </div>
 
                                 <div className="field">
-                                    <label htmlFor="status" style={{fontWeight:'bold'}}>{t('HAWALA.FORM.STATUS')}</label>
+                                    <label htmlFor="status" style={{ fontWeight: 'bold' }}>
+                                        {t('HAWALA.FORM.STATUS')}
+                                    </label>
                                     <Dropdown
                                         id="status"
                                         value={hawalaBranch.status}
                                         options={statusOptions}
                                         onChange={(e) =>
-                                            setHawalaBranch((prev:any) => ({
+                                            setHawalaBranch((prev: any) => ({
                                                 ...prev,
-                                                status: e.value,
+                                                status: e.value
                                             }))
                                         }
                                         placeholder={t('HAWALA.FORM.SELECT_STATUS')}
@@ -572,39 +499,17 @@ const HawalaBranchPage = () => {
                         </div>
                     </Dialog>
 
-                    <Dialog
-                        visible={deleteHawalaBranchDialog}
-                        style={{ width: '450px' }}
-                        header={t('APP.GENERAL.CONFIRM')}
-                        modal
-                        footer={deleteHawalaBranchDialogFooter}
-                        onHide={hideDeleteHawalaBranchDialog}
-                    >
+                    <Dialog visible={deleteHawalaBranchDialog} style={{ width: '450px' }} header={t('APP.GENERAL.CONFIRM')} modal footer={deleteHawalaBranchDialogFooter} onHide={hideDeleteHawalaBranchDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {hawalaBranch && (
-                                <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE', { name: hawalaBranch.name })}
-                                </span>
-                            )}
+                            {hawalaBranch && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE', { name: hawalaBranch.name })}</span>}
                         </div>
                     </Dialog>
 
-                    <Dialog
-                        visible={deleteHawalaBranchesDialog}
-                        style={{ width: '450px' }}
-                        header={t('APP.GENERAL.CONFIRM')}
-                        modal
-                        footer={deleteHawalaBranchesDialogFooter}
-                        onHide={hideDeleteHawalaBranchesDialog}
-                    >
+                    <Dialog visible={deleteHawalaBranchesDialog} style={{ width: '450px' }} header={t('APP.GENERAL.CONFIRM')} modal footer={deleteHawalaBranchesDialogFooter} onHide={hideDeleteHawalaBranchesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {hawalaBranch && (
-                                <span>
-                                    {t('APP.DELETE_SELECTED_CONFIRMATION')}
-                                </span>
-                            )}
+                            {hawalaBranch && <span>{t('APP.DELETE_SELECTED_CONFIRMATION')}</span>}
                         </div>
                     </Dialog>
                 </div>

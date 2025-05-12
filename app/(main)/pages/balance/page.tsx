@@ -29,58 +29,56 @@ import { _fetchPaymentMethods } from '@/app/redux/actions/paymentMethodActions';
 import { Calendar } from 'primereact/calendar';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const BalancePage = () => {
-
-    let emptyBalance:Balance={
-        id:0,
-        reseller_id:0,
-        transaction_type:'',
-        payment_id:null,
-        amount:'',
-        remaining_balance:'',
-        currency_id:0,
-        description:'',
-        created_at:'',
-        updated_at:'',
-        reseller:null,
-        currency:null,
-        payment_method_id:null,
-        payment_amount:'',
-        payment_currency_id:0,
-        payment_status:'',
-        payment_notes:'',
-        payment_date:null
-    }
-
+    let emptyBalance: Balance = {
+        id: 0,
+        reseller_id: 0,
+        transaction_type: '',
+        payment_id: null,
+        amount: '',
+        remaining_balance: '',
+        currency_id: 0,
+        description: '',
+        created_at: '',
+        updated_at: '',
+        reseller: null,
+        currency: null,
+        payment_method_id: null,
+        payment_amount: '',
+        payment_currency_id: 0,
+        payment_status: '',
+        payment_notes: '',
+        payment_date: null
+    };
 
     const [balanceDialog, setBalanceDialog] = useState(false);
     const [deleteBalanceDialog, setDeleteBalanceDialog] = useState(false);
     const [deleteBalancesDialog, setDeleteBalancesDialog] = useState(false);
-    const [balance,setBalance]=useState<Balance>(emptyBalance)
+    const [balance, setBalance] = useState<Balance>(emptyBalance);
     const [selectedCompanies, setSelectedBalance] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {balances,loading}=useSelector((state:any)=>state.balanceReducer)
-    const {currencies}=useSelector((state:any)=>state.currenciesReducer)
-    const {resellers}=useSelector((state:any)=>state.resellerReducer)
-    const {paymentMethods}=useSelector((state:any)=>state.paymentMethodsReducer)
-    const {t}=useTranslation()
-    const [searchTag,setSearchTag]=useState("")
+    const dispatch = useDispatch<AppDispatch>();
+    const { balances, loading } = useSelector((state: any) => state.balanceReducer);
+    const { currencies } = useSelector((state: any) => state.currenciesReducer);
+    const { resellers } = useSelector((state: any) => state.resellerReducer);
+    const { paymentMethods } = useSelector((state: any) => state.paymentMethodsReducer);
+    const { t } = useTranslation();
+    const [searchTag, setSearchTag] = useState('');
 
-
-    useEffect(()=>{
-        dispatch(_fetchBalances(searchTag))
-        dispatch(_fetchCurrencies())
-        dispatch(_fetchResellers())
-        dispatch(_fetchPaymentMethods())
-    },[dispatch,searchTag])
+    useEffect(() => {
+        dispatch(_fetchBalances(searchTag));
+        dispatch(_fetchCurrencies());
+        dispatch(_fetchResellers());
+        dispatch(_fetchPaymentMethods());
+    }, [dispatch, searchTag]);
 
     const openNew = () => {
-        setBalance(emptyBalance)
+        setBalance(emptyBalance);
         setSubmitted(false);
         setBalanceDialog(true);
     };
@@ -98,36 +96,30 @@ const BalancePage = () => {
         setDeleteBalancesDialog(false);
     };
 
-
-
     const saveBalance = () => {
         setSubmitted(true);
-        if (!balance.reseller || !balance.amount || !balance.transaction_type
-            || !balance.currency_id|| !balance.description
-        ) {
-
+        if (!balance.reseller || !balance.amount || !balance.transaction_type || !balance.currency_id || !balance.description) {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
-        return;
-    }
+            return;
+        }
         if (balance.id && balance.id !== 0) {
-            dispatch(_editBalance(balance.id,balance,toast,t));
-
+            dispatch(_editBalance(balance.id, balance, toast, t));
         } else {
-            dispatch(_addBalance(balance,toast,t));
+            dispatch(_addBalance(balance, toast, t));
         }
 
         setBalanceDialog(false);
         setBalance(emptyBalance);
-        setSubmitted(false)
+        setSubmitted(false);
     };
 
     const editBalance = (balance: Balance) => {
-        setBalance({ ...balance});
+        setBalance({ ...balance });
 
         setBalanceDialog(true);
     };
@@ -139,27 +131,37 @@ const BalancePage = () => {
 
     const deleteBalance = () => {
         if (!balance?.id) {
-            console.error("Balance  ID is undefined.");
+            console.error('Balance  ID is undefined.');
             return;
         }
-        dispatch(_deleteBalance(balance?.id,toast,t))
+        dispatch(_deleteBalance(balance?.id, toast, t));
         setDeleteBalanceDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteBalancesDialog(true);
     };
 
-
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('RESELLER.BALANCETRANSACTION.ADDBALANCE')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('RESELLER.BALANCETRANSACTION.ADDBALANCE')}
+                        icon="pi pi-plus"
+                        severity="success"
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
+                        onClick={openNew}
+                    />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -170,14 +172,11 @@ const BalancePage = () => {
             <React.Fragment>
                 <span className="block mt-2 md:mt-0 p-input-icon-left">
                     <i className="pi pi-search" />
-                    <InputText type="search"
-                    onInput={(e) => setSearchTag(e.currentTarget.value)}
-                    placeholder={t('ECOMMERCE.COMMON.SEARCH')}  />
-            </span>
+                    <InputText type="search" onInput={(e) => setSearchTag(e.currentTarget.value)} placeholder={t('ECOMMERCE.COMMON.SEARCH')} />
+                </span>
             </React.Fragment>
         );
     };
-
 
     const resellerNameBodyTemplate = (rowData: Balance) => {
         return (
@@ -187,7 +186,6 @@ const BalancePage = () => {
             </>
         );
     };
-
 
     const amountBodyTemplate = (rowData: Balance) => {
         return (
@@ -206,7 +204,6 @@ const BalancePage = () => {
             </>
         );
     };
-
 
     const remainingBalanceBodyTemplate = (rowData: Balance) => {
         return (
@@ -236,43 +233,40 @@ const BalancePage = () => {
     };
 
     const createdAtBodyTemplate = (rowData: Balance) => {
-            const formatDate = (dateString: string) => {
-                const date = new Date(dateString);
-                const optionsDate: Intl.DateTimeFormatOptions = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                };
-                const optionsTime: Intl.DateTimeFormatOptions = {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true,
-                };
-                const formattedDate = date.toLocaleDateString('en-US', optionsDate);
-                const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
-
-                return { formattedDate, formattedTime };
+        const formatDate = (dateString: string) => {
+            const date = new Date(dateString);
+            const optionsDate: Intl.DateTimeFormatOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             };
+            const optionsTime: Intl.DateTimeFormatOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+            const formattedDate = date.toLocaleDateString('en-US', optionsDate);
+            const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
 
-            const { formattedDate, formattedTime } = formatDate(rowData.created_at);
-
-            return (
-                <>
-                    <span className="p-column-title">Created At</span>
-                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
-                    <br />
-                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
-                </>
-            );
+            return { formattedDate, formattedTime };
         };
 
+        const { formattedDate, formattedTime } = formatDate(rowData.created_at);
 
-
+        return (
+            <>
+                <span className="p-column-title">Created At</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
+                <br />
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
+            </>
+        );
+    };
 
     const actionBodyTemplate = (rowData: Balance) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}  onClick={()=>editBalance(rowData)}/>
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editBalance(rowData)} />
                 <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteBalance(rowData)} />
             </>
         );
@@ -290,25 +284,22 @@ const BalancePage = () => {
 
     const balanceDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveBalance} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveBalance} />
         </>
     );
     const deleteBalanceDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteBalanceDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteBalance} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteBalanceDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteBalance} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteBalancesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteBalancesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
-
-
-
 
     return (
         <div className="grid crud-demo -m-5">
@@ -328,25 +319,33 @@ const BalancePage = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} balance code"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No Balance s found."
                         // header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.RESELLER')} body={resellerNameBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.REMAINING_BALANCE')} body={remainingBalanceBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.STATUS')} body={statusBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.DESCRIPTIONS')} body={descriptionBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('BALANCE.TABLE.COLUMN.BALANCEDATE')} body={createdAtBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.RESELLER')} body={resellerNameBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.REMAINING_BALANCE')} body={remainingBalanceBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.STATUS')} body={statusBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.DESCRIPTIONS')} body={descriptionBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.BALANCEDATE')} body={createdAtBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={balanceDialog}  style={{ width: '900px',padding:'5px' }} header={t('BALANCE.DETAILS.TITLE')} modal className="p-fluid" footer={balanceDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={balanceDialog} style={{ width: '900px', padding: '5px' }} header={t('BALANCE.DETAILS.TITLE')} modal className="p-fluid" footer={balanceDialogFooter} onHide={hideDialog}>
                         <div className="card flex flex-wrap p-fluid mt-3 gap-4">
                             {/* Balance Details */}
                             <div className="flex-1 col-12 lg:col-6">
@@ -363,7 +362,7 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    reseller_id: e.value,
+                                                    reseller_id: e.value
                                                 }))
                                             }
                                             optionLabel="reseller_name"
@@ -371,8 +370,11 @@ const BalancePage = () => {
                                             placeholder={t('BALANCE.FORM.RESELLER.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.reseller && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
-
+                                        {submitted && !balance.reseller && (
+                                            <small className="p-invalid" style={{ color: 'red' }}>
+                                                {t('REQUIRED')}
+                                            </small>
+                                        )}
                                     </div>
 
                                     {/* Transaction Type */}
@@ -383,18 +385,22 @@ const BalancePage = () => {
                                             value={balance.transaction_type}
                                             options={[
                                                 { label: 'Credit', value: 'credit' },
-                                                { label: 'Debit', value: 'debit' },
+                                                { label: 'Debit', value: 'debit' }
                                             ]}
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    transaction_type: e.value,
+                                                    transaction_type: e.value
                                                 }))
                                             }
                                             placeholder={t('BALANCE.FORM.TRANSACTIONTYPE.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.transaction_type && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
+                                        {submitted && !balance.transaction_type && (
+                                            <small className="p-invalid" style={{ color: 'red' }}>
+                                                {t('REQUIRED')}
+                                            </small>
+                                        )}
                                     </div>
 
                                     <div className="field">
@@ -405,14 +411,18 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    amount: e.target.value,
+                                                    amount: e.target.value
                                                 }))
                                             }
                                             placeholder="0"
                                             type="number"
                                             className="w-full"
                                         />
-                                        {submitted && !balance.amount && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
+                                        {submitted && !balance.amount && (
+                                            <small className="p-invalid" style={{ color: 'red' }}>
+                                                {t('REQUIRED')}
+                                            </small>
+                                        )}
                                     </div>
 
                                     {/* Currency */}
@@ -425,7 +435,7 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    currency_id: e.value,
+                                                    currency_id: e.value
                                                 }))
                                             }
                                             optionLabel="name"
@@ -433,7 +443,11 @@ const BalancePage = () => {
                                             placeholder={t('BALANCE.FORM.CURRENCY.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.currency_id && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
+                                        {submitted && !balance.currency_id && (
+                                            <small className="p-invalid" style={{ color: 'red' }}>
+                                                {t('REQUIRED')}
+                                            </small>
+                                        )}
                                     </div>
 
                                     {/* Description */}
@@ -445,13 +459,17 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    description: e.target.value,
+                                                    description: e.target.value
                                                 }))
                                             }
                                             placeholder={t('BALANCE.FORM.DESCRIPTION.PLACEHOLDER')}
                                             className="w-full"
                                         />
-                                        {submitted && !balance.description && <small className="p-invalid" style={{ color: 'red' }}>{t('REQUIRED')}</small>}
+                                        {submitted && !balance.description && (
+                                            <small className="p-invalid" style={{ color: 'red' }}>
+                                                {t('REQUIRED')}
+                                            </small>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -471,7 +489,7 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    payment_method_id: e.value,
+                                                    payment_method_id: e.value
                                                 }))
                                             }
                                             optionLabel="method_name"
@@ -490,7 +508,7 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    payment_amount: e.target.value,
+                                                    payment_amount: e.target.value
                                                 }))
                                             }
                                             placeholder="0"
@@ -509,7 +527,7 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    payment_currency_id: e.value,
+                                                    payment_currency_id: e.value
                                                 }))
                                             }
                                             optionLabel="name"
@@ -528,7 +546,7 @@ const BalancePage = () => {
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    payment_notes: e.target.value,
+                                                    payment_notes: e.target.value
                                                 }))
                                             }
                                             placeholder={t('PAYMENT.FORM.NOTES.PLACEHOLDER')}
@@ -543,21 +561,18 @@ const BalancePage = () => {
                                             id="payment_date"
                                             value={balance.payment_date ? new Date(balance.payment_date) : null}
                                             onChange={(e) =>
-                                                setBalance((prev:Balance) => ({
+                                                setBalance((prev: Balance) => ({
                                                     ...prev,
-                                                    payment_date: e.value,
+                                                    payment_date: e.value
                                                 }))
                                             }
                                             placeholder={t('PAYMENT.FORM.DATE.LABEL')}
                                             className="w-full"
                                         />
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
-
                     </Dialog>
 
                     <Dialog visible={deleteBalanceDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteBalanceDialogFooter} onHide={hideDeleteBalanceDialog}>
@@ -565,7 +580,7 @@ const BalancePage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {balance && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>
                                 </span>
                             )}
                         </div>

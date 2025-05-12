@@ -4,12 +4,14 @@ import { SplitButton } from 'primereact/splitbutton';
 import { Button } from 'primereact/button';
 import styles from './index.module.scss';
 import { classNames } from 'primereact/utils';
+import { useTranslation } from 'react-i18next';
 
 const ButtonDemo = () => {
     const [loading1, setLoading1] = useState(false);
     const [loading2, setLoading2] = useState(false);
     const [loading3, setLoading3] = useState(false);
     const [loading4, setLoading4] = useState(false);
+    const {t}=useTranslation()
 
     const onLoadingClick1 = () => {
         setLoading1(true);
@@ -114,7 +116,7 @@ const ButtonDemo = () => {
                     <h5>Button Group</h5>
                     <span className="p-buttonset flex">
                         <Button label="Save" icon="pi pi-check" />
-                        <Button label="Delete" icon="pi pi-trash" />
+                        <Button label={t("APP.GENERAL.DELETE")} icon="pi pi-trash" />
                         <Button label="Cancel" icon="pi pi-times" />
                     </span>
                 </div>

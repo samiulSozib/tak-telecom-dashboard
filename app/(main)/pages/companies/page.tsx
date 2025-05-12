@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import withAuth from '../../authGuard';
 import { customCellStyle, customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const CompanyPage = () => {
 
@@ -153,12 +154,12 @@ const CompanyPage = () => {
                     label={t('COMPANY.TABLE.CREATECOMPANY')}
                     icon="pi pi-plus"
                     severity="success"
-                    className="mr-2"
+                    className={isRTL()?"ml-2":"mr-2"}
                     onClick={openNew}
                     style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }}
                 />
                 <Button
-                    label="Delete"
+                    label={t("APP.GENERAL.DELETE")}
                     icon="pi pi-trash"
                     severity="danger"
                     onClick={confirmDeleteSelected}
@@ -264,20 +265,20 @@ const CompanyPage = () => {
 
     const companyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveCompany} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog}/>
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''} onClick={saveCompany} />
         </>
     );
     const deleteCompanyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteCompanyDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteCompany} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteCompanyDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''} onClick={deleteCompany} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteCompaniesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteCompaniesDialog}/>
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''}  />
         </>
     );
 
@@ -314,14 +315,27 @@ const CompanyPage = () => {
                         paginator
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
-                        className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} companies"
+                        className={`datatable-responsive`}
+
+                        paginatorTemplate={
+                            isRTL()
+                            ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink'
+                            : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                            ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`  // localized RTL string
+                            : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
+
                         globalFilter={globalFilter}
-                        emptyMessage="No Companies found."
-                        // header={header}
                         responsiveLayout="scroll"
-                    >
+
+                        >
+
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="company_name" header={t('COMPANY.TABLE.COLUMN.COMPANYNAME')} sortable body={nameBodyTemplate}></Column>
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('COMPANY.TABLE.COLUMN.COMPANYNAME')} body={imageBodyTemplate}></Column>
@@ -433,7 +447,7 @@ const CompanyPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {company && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{company.company_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{company.company_name}</b>
                                 </span>
                             )}
                         </div>

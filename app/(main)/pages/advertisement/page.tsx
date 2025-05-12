@@ -24,6 +24,7 @@ import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const AdvertisementPage = () => {
 
@@ -137,7 +138,7 @@ const AdvertisementPage = () => {
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
                     <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('ADVERTISEMENT.TABLE.CREATEADVERTISEMENT')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t("APP.GENERAL.DELETE")} icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
                 </div>
             </React.Fragment>
         );
@@ -231,20 +232,20 @@ const AdvertisementPage = () => {
 
     const advertisementDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveAdvertisement} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''} onClick={saveAdvertisement} />
         </>
     );
     const deleteAdvertisementDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteAdvertisementDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteAdvertisement} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteAdvertisementDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''} onClick={deleteAdvertisement} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteAdvertisementsDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteAdvertisementsDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  className={isRTL() ? 'rtl-button' : ''}  />
         </>
     );
 
@@ -268,13 +269,23 @@ const AdvertisementPage = () => {
                         paginator
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
-                        className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} advertisement code"
+                        className={`datatable-responsive`}
+                        paginatorTemplate={
+                            isRTL()
+                            ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink'
+                            : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                            ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`  // localized RTL string
+                            : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
                         globalFilter={globalFilter}
-                        emptyMessage="No Advertisement s found."
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
                         // header={header}
                         responsiveLayout="scroll"
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="" header={t('ADVERTISEMENT.TABLE.COLUMN.ADVERTISEMENTIMAGE')} sortable body={imageBodyTemplate}></Column>
@@ -359,7 +370,7 @@ const AdvertisementPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {advertisement && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{advertisement.advertisement_title}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{advertisement.advertisement_title}</b>
                                 </span>
                             )}
                         </div>

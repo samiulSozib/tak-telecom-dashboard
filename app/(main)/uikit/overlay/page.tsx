@@ -12,6 +12,7 @@ import { Toast } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../../demo/service/ProductService';
 import type { Demo } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 type ButtonEvent = React.MouseEvent<HTMLButtonElement>;
 const OverlayDemo = () => {
@@ -27,6 +28,7 @@ const OverlayDemo = () => {
     const op = useRef<OverlayPanel>(null);
     const op2 = useRef<OverlayPanel>(null);
     const toast = useRef<Toast>(null);
+    const {t}=useTranslation()
 
     const accept = () => {
         toast.current?.show({
@@ -155,7 +157,7 @@ const OverlayDemo = () => {
                 <div className="col-12 lg:col-6">
                     <div className="card">
                         <h5>Confirmation</h5>
-                        <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={() => setDisplayConfirmation(true)} />
+                        <Button label={t("APP.GENERAL.DELETE")} icon="pi pi-trash" severity="danger" onClick={() => setDisplayConfirmation(true)} />
                         <Dialog header="Confirmation" visible={displayConfirmation} onHide={() => setDisplayConfirmation(false)} style={{ width: '350px' }} modal footer={confirmationDialogFooter}>
                             <div className="flex align-items-center justify-content-center">
                                 <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />

@@ -10,7 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { _fetchCompanies,_deleteCompany, _addCompany,_editCompany } from '@/app/redux/actions/companyActions';
+import { _fetchCompanies, _deleteCompany, _addCompany, _editCompany } from '@/app/redux/actions/companyActions';
 import { useSelector } from 'react-redux';
 import { Dropdown } from 'primereact/dropdown';
 import { _addService, _deleteService, _editService, _fetchServiceList } from '@/app/redux/actions/serviceActions';
@@ -27,68 +27,60 @@ import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const TransactionPage = () => {
-
-
-
-    let emptyBundle:Bundle = {
+    let emptyBundle: Bundle = {
         id: 0,
-        bundle_code: "",
+        bundle_code: '',
         service_id: 0,
-        bundle_title: "",
-        bundle_description: "",
+        bundle_title: '',
+        bundle_description: '',
         bundle_type: '',
-        validity_type: "",
-        admin_buying_price: "",
-        buying_price: "",
-        selling_price: "",
+        validity_type: '',
+        admin_buying_price: '',
+        buying_price: '',
+        selling_price: '',
         amount: '',
         bundle_image_url: '',
         currency_id: 0,
         expired_date: '',
         deleted_at: '',
-        created_at: "",
-        updated_at: "",
-        service: null ,
-        currency: null,
+        created_at: '',
+        updated_at: '',
+        service: null,
+        currency: null
     };
-
-
-
 
     const [serviceDialog, setServiceDialog] = useState(false);
     const [deleteServiceDialog, setDeleteServiceDialog] = useState(false);
     const [deleteServicesDialog, setDeleteServicesDialog] = useState(false);
-    const [bundle,setBundle]=useState<Bundle>(emptyBundle);
+    const [bundle, setBundle] = useState<Bundle>(emptyBundle);
     const [selectedCompanies, setSelectedCompanyCode] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {transactions,loading,pagination}=useSelector((state:any)=>state.moneyTransactionReducer)
-    const {t}=useTranslation()
-    const [searchTag,setSearchTag]=useState("")
+    const dispatch = useDispatch<AppDispatch>();
+    const { transactions, loading, pagination } = useSelector((state: any) => state.moneyTransactionReducer);
+    const { t } = useTranslation();
+    const [searchTag, setSearchTag] = useState('');
 
+    useEffect(() => {
+        dispatch(_fetchMoneyTransactionsList(1, searchTag));
+        dispatch(_fetchBundleList());
+        dispatch(_fetchCurrencies());
+        dispatch(_fetchServiceList());
+        dispatch(_fetchCompanies());
+        dispatch(_fetchServiceCategories());
+    }, [dispatch, searchTag]);
 
-
-    useEffect(()=>{
-        dispatch(_fetchMoneyTransactionsList(1,searchTag))
-        dispatch(_fetchBundleList())
-        dispatch(_fetchCurrencies())
-        dispatch(_fetchServiceList())
-        dispatch(_fetchCompanies())
-        dispatch(_fetchServiceCategories())
-    },[dispatch,searchTag])
-
-    useEffect(()=>{
+    useEffect(() => {
         //console.log(transactions)
-    },[dispatch,transactions])
-
+    }, [dispatch, transactions]);
 
     const openNew = () => {
-        setBundle(emptyBundle)
+        setBundle(emptyBundle);
         setSubmitted(false);
         setServiceDialog(true);
     };
@@ -106,15 +98,12 @@ const TransactionPage = () => {
         setDeleteServicesDialog(false);
     };
 
-
-
     const saveService = () => {
         setSubmitted(true);
         if (bundle.id && bundle.id !== 0) {
-            dispatch(_editBundle(bundle.id,bundle,toast,t));
-
+            dispatch(_editBundle(bundle.id, bundle, toast, t));
         } else {
-            dispatch(_addBundle(bundle,toast,t));
+            dispatch(_addBundle(bundle, toast, t));
         }
 
         setServiceDialog(false);
@@ -122,7 +111,7 @@ const TransactionPage = () => {
     };
 
     const editService = (bundle: Bundle) => {
-        setBundle({ ...bundle});
+        setBundle({ ...bundle });
 
         setServiceDialog(true);
     };
@@ -134,27 +123,30 @@ const TransactionPage = () => {
 
     const deleteService = () => {
         if (!bundle?.id) {
-            console.error("Service ID is undefined.");
+            console.error('Service ID is undefined.');
             return;
         }
-        dispatch(_deleteBundle(bundle?.id,toast,t))
+        dispatch(_deleteBundle(bundle?.id, toast, t));
         setDeleteServiceDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteServicesDialog(true);
     };
-
-
 
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
                     {/* <Button label="New" icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} /> */}
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -165,8 +157,8 @@ const TransactionPage = () => {
             <React.Fragment>
                 <span className="block mt-2 md:mt-0 p-input-icon-left">
                     <i className="pi pi-search" />
-                    <InputText type="search" onInput={(e) => setGlobalFilter(e.currentTarget.value)} placeholder={t('ECOMMERCE.COMMON.SEARCH')}  />
-            </span>
+                    <InputText type="search" onInput={(e) => setGlobalFilter(e.currentTarget.value)} placeholder={t('ECOMMERCE.COMMON.SEARCH')} />
+                </span>
             </React.Fragment>
         );
     };
@@ -175,9 +167,7 @@ const TransactionPage = () => {
         return (
             <>
                 <span className="p-column-title">Reseller</span>
-                <span style={{fontSize: '0.9rem'}}>
-                    {rowData.reseller?.reseller_name}
-                </span>
+                <span style={{ fontSize: '0.9rem' }}>{rowData.reseller?.reseller_name}</span>
             </>
         );
     };
@@ -186,9 +176,7 @@ const TransactionPage = () => {
         return (
             <>
                 <span className="p-column-title">Amount</span>
-                <span style={{fontSize: '0.9rem'}}>
-                    {parseInt(rowData.amount).toFixed(2)}
-                </span>
+                <span style={{ fontSize: '0.9rem' }}>{parseInt(rowData.amount).toFixed(2)}</span>
             </>
         );
     };
@@ -197,9 +185,7 @@ const TransactionPage = () => {
         return (
             <>
                 <span className="p-column-title">Currency</span>
-                <span style={{fontSize: '0.9rem'}}>
-                    {rowData.currency?.name}
-                </span>
+                <span style={{ fontSize: '0.9rem' }}>{rowData.currency?.name}</span>
             </>
         );
     };
@@ -208,9 +194,7 @@ const TransactionPage = () => {
         return (
             <>
                 <span className="p-column-title">Remaining Balance</span>
-                <span style={{fontSize: '0.9rem'}}>
-                    {rowData.remaining_balance}
-                </span>
+                <span style={{ fontSize: '0.9rem' }}>{rowData.remaining_balance}</span>
             </>
         );
     };
@@ -219,9 +203,7 @@ const TransactionPage = () => {
         return (
             <>
                 <span className="p-column-title">Bundle Title</span>
-                <span style={{fontSize: '0.9rem'}}>
-                    {"X"}
-                </span>
+                <span style={{ fontSize: '0.9rem' }}>{'X'}</span>
             </>
         );
     };
@@ -232,12 +214,12 @@ const TransactionPage = () => {
             const optionsDate: Intl.DateTimeFormatOptions = {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric',
+                day: 'numeric'
             };
             const optionsTime: Intl.DateTimeFormatOptions = {
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: true,
+                hour12: true
             };
             const formattedDate = date.toLocaleDateString('en-US', optionsDate);
             const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
@@ -258,77 +240,64 @@ const TransactionPage = () => {
     };
 
     const statusBodyTemplate = (rowData: MoneyTransaction) => {
-    // Define background color based on transaction type
-    const getBackgroundColor = (type: string | null) => {
-        switch (type) {
-            case 'credit':
-                return 'bg-green-500'; // Tailwind CSS class for green background
-            case 'debit':
-                return 'bg-red-500'; // Tailwind CSS class for red background
-            default:
-                return 'bg-gray-500'; // Default gray background for other or null types
-        }
-    };
+        // Define background color based on transaction type
+        const getBackgroundColor = (type: string | null) => {
+            switch (type) {
+                case 'credit':
+                    return 'bg-green-500'; // Tailwind CSS class for green background
+                case 'debit':
+                    return 'bg-red-500'; // Tailwind CSS class for red background
+                default:
+                    return 'bg-gray-500'; // Default gray background for other or null types
+            }
+        };
 
-    // Define message based on transaction type
-    const getTransactionMessage = (type: string | null) => {
-        switch (type) {
-            case 'credit':
-                return 'Amount Credited To Reseller';
-            case 'debit':
-                return 'Amount Debited From Reseller';
-            default:
-                return 'Unknown Transaction';
-        }
-    };
+        // Define message based on transaction type
+        const getTransactionMessage = (type: string | null) => {
+            switch (type) {
+                case 'credit':
+                    return 'Amount Credited To Reseller';
+                case 'debit':
+                    return 'Amount Debited From Reseller';
+                default:
+                    return 'Unknown Transaction';
+            }
+        };
 
-    return (
-        <>
-            <span className="p-column-title">Status (Type)</span>
-            <span style={{fontSize: '0.7rem', borderRadius:'5px'}}
-                className={`inline-block p-1 text-white ${getBackgroundColor(rowData.status)}`}
-            >
-                {getTransactionMessage(rowData.status)}
-            </span>
-        </>
-    );
-};
-
-
-
-
-const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
-    // Function to capitalize the first letter
-    const capitalizeFirstLetter = (text: string | null) => {
-        if (!text) return ''; // Handle null or empty string
-        if(text=='App\\Models\\User') return "Reseller"
-        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-    };
-
-    return (
-        <>
-            <span className="p-column-title">Initiator Type</span>
-            <span style={{fontSize: '0.9rem'}}>
-                {capitalizeFirstLetter(rowData.initiator_type)}
-            </span>
-        </>
-    );
-};
-
-
-    const descriptionBodyTemplate = (rowData: MoneyTransaction) => {
         return (
             <>
-                <span className="p-column-title">Description</span>
-                <span style={{fontSize: '0.9rem'}}>
-                    {rowData.transaction_reason}
+                <span className="p-column-title">Status (Type)</span>
+                <span style={{ fontSize: '0.7rem', borderRadius: '5px' }} className={`inline-block p-1 text-white ${getBackgroundColor(rowData.status)}`}>
+                    {getTransactionMessage(rowData.status)}
                 </span>
             </>
         );
     };
 
+    const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
+        // Function to capitalize the first letter
+        const capitalizeFirstLetter = (text: string | null) => {
+            if (!text) return ''; // Handle null or empty string
+            if (text == 'App\\Models\\User') return 'Reseller';
+            return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+        };
 
+        return (
+            <>
+                <span className="p-column-title">Initiator Type</span>
+                <span style={{ fontSize: '0.9rem' }}>{capitalizeFirstLetter(rowData.initiator_type)}</span>
+            </>
+        );
+    };
 
+    const descriptionBodyTemplate = (rowData: MoneyTransaction) => {
+        return (
+            <>
+                <span className="p-column-title">Description</span>
+                <span style={{ fontSize: '0.9rem' }}>{rowData.transaction_reason}</span>
+            </>
+        );
+    };
 
     // const actionBodyTemplate = (rowData: Bundle) => {
     //     return (
@@ -370,15 +339,14 @@ const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchMoneyTransactionsList(page,searchTag));
+        dispatch(_fetchMoneyTransactionsList(page, searchTag));
     };
-
 
     return (
         <div className="grid crud-demo -m-5">
             <div className="col-12">
                 <div className="card p-2">
-                {loading && <ProgressBar mode="indeterminate" style={{ height: '6px' }} />}
+                    {loading && <ProgressBar mode="indeterminate" style={{ height: '6px' }} />}
                     <Toast ref={toast} />
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
 
@@ -390,24 +358,55 @@ const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
                         dataKey="id"
                         className="datatable-responsive"
                         globalFilter={globalFilter}
-                        emptyMessage="No Service found."
                         // header={header}
                         responsiveLayout="scroll"
                         paginator={false} // Disable PrimeReact's built-in paginator
                         rows={pagination?.items_per_page}
                         totalRecords={pagination?.total}
-                        currentPageReportTemplate={`Showing {first} to {last} of {totalRecords} items`}
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Reseller" header={t('TRANSACTION.TABLE.COLUMN.RESELLERNAME')}  body={resellerBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Amount" header={t('TRANSACTION.TABLE.COLUMN.AMOUNT')}  body={amountBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Currency" header={t('TRANSACTION.TABLE.COLUMN.CURRENCY')}  body={currencyBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Remaining Balance" header={t('TRANSACTION.TABLE.COLUMN.REMAININGBALANCE')}  body={remainingBalanceBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Bundle Title" header={t('TRANSACTION.TABLE.COLUMN.BUNDLETITLE')}  body={bundleTitleBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Transaction Date" header={t('TRANSACTION.TABLE.COLUMN.TRANSACTIONEDDATE')}  body={transactionDateBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Status" header={t('TRANSACTION.TABLE.COLUMN.STATUS')}  body={statusBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Initiator" header={t('TRANSACTION.TABLE.COLUMN.INITIATORTYPE')}  body={initiatorTypeBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Description" header={t('TRANSACTION.TABLE.COLUMN.DESCRIPTION')}  body={descriptionBodyTemplate} ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Reseller" header={t('TRANSACTION.TABLE.COLUMN.RESELLERNAME')} body={resellerBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Amount" header={t('TRANSACTION.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Currency" header={t('TRANSACTION.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate}></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Remaining Balance"
+                            header={t('TRANSACTION.TABLE.COLUMN.REMAININGBALANCE')}
+                            body={remainingBalanceBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Bundle Title"
+                            header={t('TRANSACTION.TABLE.COLUMN.BUNDLETITLE')}
+                            body={bundleTitleBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Transaction Date"
+                            header={t('TRANSACTION.TABLE.COLUMN.TRANSACTIONEDDATE')}
+                            body={transactionDateBodyTemplate}
+                        ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Status" header={t('TRANSACTION.TABLE.COLUMN.STATUS')} body={statusBodyTemplate}></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Initiator"
+                            header={t('TRANSACTION.TABLE.COLUMN.INITIATORTYPE')}
+                            body={initiatorTypeBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Description"
+                            header={t('TRANSACTION.TABLE.COLUMN.DESCRIPTION')}
+                            body={descriptionBodyTemplate}
+                        ></Column>
                         {/* <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column> */}
                     </DataTable>
                     <Paginator
@@ -415,9 +414,10 @@ const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
                         rows={pagination?.items_per_page}
                         totalRecords={pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
-                        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                        template={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
                     />
-
 
                     {/* <Dialog visible={serviceDialog}  style={{ width: '700px' }} header="Bundle Details" modal className="p-fluid" footer={companyDialogFooter} onHide={hideDialog}>
                         <div className="formgrid grid">
@@ -604,7 +604,7 @@ const initiatorTypeBodyTemplate = (rowData: MoneyTransaction) => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {bundle && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{bundle.bundle_title}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{bundle.bundle_title}</b>
                                 </span>
                             )}
                         </div>

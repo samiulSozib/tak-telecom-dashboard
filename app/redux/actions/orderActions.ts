@@ -23,12 +23,27 @@ const getAuthToken = () => {
 };
 
 // Fetch orders
-export const _fetchOrders = (page: number = 1,search:string='') => async (dispatch: Dispatch) => {
+export const _fetchOrders = (page: number = 1,search:string='',filters:any={}) => async (dispatch: Dispatch) => {
   dispatch({ type: FETCH_ORDERS_REQUEST });
 
   try {
     const token = getAuthToken();
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/orders?page=${page}&search=${search}`, {
+    console.log(filters)
+    const queryParams = new URLSearchParams();
+
+    queryParams.append('page', String(page));
+    queryParams.append('search', search);
+
+    Object.entries(filters).forEach(([key, value]) => {
+  if (value !== null && value !== undefined && value !== '') {
+    queryParams.append(key, String(value));
+  }
+});
+
+
+    const queryString = queryParams.toString();
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/orders?${queryString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

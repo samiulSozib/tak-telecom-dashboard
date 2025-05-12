@@ -720,7 +720,7 @@
   "VALIDATION_ERROR": "خطای اعتبارسنجی",
   "PLEASE_FILLED_ALL_REQUIRED_FIELDS": "لطفاً تمام فیلدهای ضروری را پر کنید",
   "REQUIRED": "ضروری",
-  "ARE_YOU_SURE_YOU_WANT_TO_DELETE": "آیا مطمئن هستید که می خواهید حذف کنید؟",
+  "ARE_YOU_SURE_YOU_WANT_TO_DELETE": " آیا مطمئن هستید که می خواهید حذف کنید؟",
   "SUCCESSFULLY": "با موفقیت",
   "GROUP_PRICE_ADDED_SUCCESSFULLY": "قیمت گروه با موفقیت اضافه شد",
   "SUCCESSFUL": "موفقیت آمیز",
@@ -897,7 +897,59 @@
   "USER_UPDATED": "کاربر با موفقیت به روز شد",
   "USER_UPDATE_FAILED": "به روزرسانی کاربر ناموفق بود",
   "USER_DELETED": "کاربر با موفقیت حذف شد",
-  "USER_DELETE_FAILED": "حذف کاربر ناموفق بود"
+  "USER_DELETE_FAILED": "حذف کاربر ناموفق بود",
+
+
+"DATA_TABLE": {
+  "TABLE": {
+    "NO_DATA": "داده‌ای یافت نشد",
+    "PAGINATOR": {
+      "SHOWING": "نمایش {first} تا {last} از {totalRecords} مورد",
+      "ITEMS_PER_PAGE": "موارد در هر صفحه"
+    }
+  }
+},
+
+
+"ACTIVATE": "فعال‌سازی",
+"DEACTIVATE": "غیرفعال‌سازی",
+"VIEW_DETAILS": "مشاهده جزئیات",
+
+
+  "FILTER": "فیلتر",
+  "APPLY": "اعمال",
+  "RESET": "بازنشانی",
+
+  "ORDER": {
+    "FILTER": {
+      "FILTER": "فیلتر",
+      "SELECT_STATUS": "انتخاب وضعیت",
+      "SELECT_TYPE": "انتخاب نوع",
+      "SELECT_COMPANY": "انتخاب شرکت",
+      "SELECT_SERVICE": "انتخاب سرویس",
+      "SELECT_DATE_RANGE": "انتخاب بازه زمانی",
+      "STATUS": "وضعیت",
+      "BUNDLE_TYPE": "نوع بسته",
+      "SOCIAL": "اجتماعی",
+      "NONSOCIAL": "غیراجتماعی",
+      "COMPANY": "شرکت",
+      "SERVICE": "سرویس",
+      "DATE_RANGE": "بازه زمانی",
+      "AMOUNT_RANGE": "بازه مبلغ",
+      "CLEAR_FILTERS": "پاک کردن فیلترها",
+      "APPLY_FILTERS": "اعمال فیلترها"
+    },
+    "STATUS": {
+      "PENDING": "در انتظار",
+      "CONFIRMED": "تایید شده",
+      "REJECTED": "رد شده"
+    }
+  }
+
+
+
+
+
 
 
   }

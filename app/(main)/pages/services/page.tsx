@@ -10,7 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { _fetchCompanies,_deleteCompany, _addCompany,_editCompany } from '@/app/redux/actions/companyActions';
+import { _fetchCompanies, _deleteCompany, _addCompany, _editCompany } from '@/app/redux/actions/companyActions';
 import { useSelector } from 'react-redux';
 import { Dropdown } from 'primereact/dropdown';
 import { _addService, _deleteService, _editService, _fetchServiceList } from '@/app/redux/actions/serviceActions';
@@ -22,47 +22,45 @@ import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const Services = () => {
-    let emptyService:Service={
+    let emptyService: Service = {
         id: 0,
         service_category_id: 0,
-        service_name:'',
+        service_name: '',
         company_id: 0,
-        deleted_at: '' ,
+        deleted_at: '',
         created_at: '',
         updated_at: '',
         service_category: null,
-        company:  null,
-    }
+        company: null
+    };
 
     const [serviceDialog, setServiceDialog] = useState(false);
     const [deleteServiceDialog, setDeleteServiceDialog] = useState(false);
     const [deleteServicesDialog, setDeleteServicesDialog] = useState(false);
-    const [service,setService]=useState<Service>(emptyService)
+    const [service, setService] = useState<Service>(emptyService);
     const [selectedCompanies, setSelectedCompanyCode] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {companies}=useSelector((state:any)=>state.companyReducer)
-    const {services,loading}=useSelector((state:any)=>state.serviceReducer)
-    const {serviceCategories}=useSelector((state:any)=>state.serviceCategoryReducer)
-    const {t}=useTranslation()
-    const [searchTag,setSearchTag]=useState("")
+    const dispatch = useDispatch<AppDispatch>();
+    const { companies } = useSelector((state: any) => state.companyReducer);
+    const { services, loading } = useSelector((state: any) => state.serviceReducer);
+    const { serviceCategories } = useSelector((state: any) => state.serviceCategoryReducer);
+    const { t } = useTranslation();
+    const [searchTag, setSearchTag] = useState('');
 
-
-
-    useEffect(()=>{
-        dispatch(_fetchServiceList(searchTag))
-        dispatch(_fetchCompanies())
-        dispatch(_fetchServiceCategories())
-    },[dispatch,searchTag])
-
+    useEffect(() => {
+        dispatch(_fetchServiceList(searchTag));
+        dispatch(_fetchCompanies());
+        dispatch(_fetchServiceCategories());
+    }, [dispatch, searchTag]);
 
     const openNew = () => {
-        setService(emptyService)
+        setService(emptyService);
         setSubmitted(false);
         setServiceDialog(true);
     };
@@ -83,34 +81,30 @@ const Services = () => {
         setService(emptyService);
     };
 
-
-
     const saveService = () => {
         setSubmitted(true);
         if (!service.service_name || !service.company || !service.service_category) {
-
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
-        return;
-    }
+            return;
+        }
         if (service.id && service.id !== 0) {
-            dispatch(_editService(service.id,service,toast,t));
-
+            dispatch(_editService(service.id, service, toast, t));
         } else {
-            dispatch(_addService(service,toast,t));
+            dispatch(_addService(service, toast, t));
         }
 
         setServiceDialog(false);
         setService(emptyService);
-        setSubmitted(false)
+        setSubmitted(false);
     };
 
     const editService = (service: Service) => {
-        setService({ ...service});
+        setService({ ...service });
 
         setServiceDialog(true);
     };
@@ -122,27 +116,37 @@ const Services = () => {
 
     const deleteService = () => {
         if (!service?.id) {
-            console.error("Service ID is undefined.");
+            console.error('Service ID is undefined.');
             return;
         }
-        dispatch(_deleteService(service?.id,toast,t))
+        dispatch(_deleteService(service?.id, toast, t));
         setDeleteServiceDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteServicesDialog(true);
     };
 
-
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('SERVICE.TABLE.CREATESERVICE')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('SERVICE.TABLE.CREATESERVICE')}
+                        icon="pi pi-plus"
+                        severity="success"
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
+                        onClick={openNew}
+                    />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -153,12 +157,7 @@ const Services = () => {
             <div className="flex items-center">
                 <span className="block mt-2 md:mt-0 p-input-icon-left w-full md:w-auto">
                     <i className="pi pi-search" />
-                    <InputText
-                        type="search"
-                        onInput={(e) => setSearchTag(e.currentTarget.value)}
-                        placeholder={t('ECOMMERCE.COMMON.SEARCH')}
-                        className="w-full md:w-auto"
-                    />
+                    <InputText type="search" onInput={(e) => setSearchTag(e.currentTarget.value)} placeholder={t('ECOMMERCE.COMMON.SEARCH')} className="w-full md:w-auto" />
                 </span>
             </div>
         );
@@ -177,28 +176,27 @@ const Services = () => {
         return (
             <>
                 <span className="p-column-title">Company Info</span>
-                <div className="" style={{display:'flex',textAlign:'center',alignItems:'center', gap:'10px'}}>
+                <div className="" style={{ display: 'flex', textAlign: 'center', alignItems: 'center', gap: '10px' }}>
                     <img
                         src={`${rowData.company?.company_logo}`}
                         alt={rowData.company?.company_logo.toString()}
                         className="shadow-2"
                         style={{
-                            padding:'2px',
+                            padding: '2px',
                             width: '45px',
                             height: '45px',
                             borderRadius: '50%', // Makes the image circular
-                            objectFit: 'cover', // Ensures the image is cropped correctly within the circle
+                            objectFit: 'cover' // Ensures the image is cropped correctly within the circle
                         }}
                     />
-                    <div style={{display:'flex',flexDirection:'column', textAlign:'start'}}>
-                        <span style={{fontWeight:'bold'}}>{rowData.company?.company_name}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'start' }}>
+                        <span style={{ fontWeight: 'bold' }}>{rowData.company?.company_name}</span>
                         {rowData.company?.country?.country_name}
                     </div>
                 </div>
             </>
         );
     };
-
 
     const serviceCategoryNameBodyTemplate = (rowData: Service) => {
         return (
@@ -209,11 +207,10 @@ const Services = () => {
         );
     };
 
-
     const actionBodyTemplate = (rowData: Service) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}  onClick={()=>editService(rowData)}/>
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editService(rowData)} />
                 <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteService(rowData)} />
             </>
         );
@@ -231,36 +228,35 @@ const Services = () => {
 
     const companyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveService} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveService} />
         </>
     );
     const deleteCompanyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteServiceDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteService} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteServiceDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteService} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteServicesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteServicesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
 
     useEffect(() => {
         if (service.company_id) {
-            const selectedCompany = companies.find((company:Company) => company.id === service.company_id);
+            const selectedCompany = companies.find((company: Company) => company.id === service.company_id);
 
             if (selectedCompany) {
                 setService((prev) => ({
                     ...prev,
-                    company: selectedCompany, // Update with the selected company object
+                    company: selectedCompany // Update with the selected company object
                 }));
             }
         }
     }, [service.company_id, companies]);
-
 
     return (
         <div className="grid crud-demo -m-5">
@@ -280,31 +276,59 @@ const Services = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} company code"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No Service found."
                         // header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Company Name" header={t('SERVICE.TABLE.COLUMN.COMPANYNAME')} sortable body={companyInfoBodyTemplate} ></Column>
-                        <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Country" header={t('SERVICE.TABLE.COLUMN.COUNTRY')} body={countryNameBodyTemplate} sortable></Column>
-                        <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Service Category" header={t('SERVICE.TABLE.COLUMN.SERVICECATEGORY')} sortable body={serviceCategoryNameBodyTemplate} ></Column>
-                        <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column
+                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Company Name"
+                            header={t('SERVICE.TABLE.COLUMN.COMPANYNAME')}
+                            sortable
+                            body={companyInfoBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Country"
+                            header={t('SERVICE.TABLE.COLUMN.COUNTRY')}
+                            body={countryNameBodyTemplate}
+                            sortable
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="Service Category"
+                            header={t('SERVICE.TABLE.COLUMN.SERVICECATEGORY')}
+                            sortable
+                            body={serviceCategoryNameBodyTemplate}
+                        ></Column>
+                        <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
-                    <Dialog visible={serviceDialog}  style={{ width: '700px',padding:'5px' }} header={t('SERVICE.DETAILS')} modal className="p-fluid" footer={companyDialogFooter} onHide={hideDialog}>
-                        <div className='card' style={{padding:'40px'}}>
+                    <Dialog visible={serviceDialog} style={{ width: '700px', padding: '5px' }} header={t('SERVICE.DETAILS')} modal className="p-fluid" footer={companyDialogFooter} onHide={hideDialog}>
+                        <div className="card" style={{ padding: '40px' }}>
                             <div className="field">
-                                <label htmlFor="name" style={{fontWeight:'bold'}}>{t('SERVICE.FORM.INPUT.SERVICENAME')}</label>
+                                <label htmlFor="name" style={{ fontWeight: 'bold' }}>
+                                    {t('SERVICE.FORM.INPUT.SERVICENAME')}
+                                </label>
                                 <InputText
                                     id="service"
                                     value={service.service_name}
                                     onChange={(e) =>
                                         setService((perv) => ({
                                             ...perv,
-                                            service_name: e.target.value,
+                                            service_name: e.target.value
                                         }))
                                     }
                                     required
@@ -314,53 +338,65 @@ const Services = () => {
                                         'p-invalid': submitted && !service.service_name
                                     })}
                                 />
-                                {submitted && !service.service_name && <small className="p-invalid" style={{ color: 'red' }}>Service Name is required.</small>}
+                                {submitted && !service.service_name && (
+                                    <small className="p-invalid" style={{ color: 'red' }}>
+                                        Service Name is required.
+                                    </small>
+                                )}
                             </div>
 
                             <div className="formgrid grid">
                                 <div className="field col">
-                                    <label htmlFor="country_id" style={{fontWeight:'bold'}}>{t('SERVICE.FORM.INPUT.COMPANY')}</label>
+                                    <label htmlFor="country_id" style={{ fontWeight: 'bold' }}>
+                                        {t('SERVICE.FORM.INPUT.COMPANY')}
+                                    </label>
                                     <Dropdown
                                         id="company"
                                         value={service.company}
                                         options={companies}
                                         onChange={(e) =>
                                             setService((perv) => ({
-
                                                 ...perv,
-                                                company: e.value,
+                                                company: e.value
                                             }))
                                         }
-                                        optionLabel='company_name'
+                                        optionLabel="company_name"
                                         // optionValue='id'
                                         placeholder={t('SERVICE.FORM.PLACEHOLDER.COMPANY')}
                                         className="w-full"
                                     />
-                                {submitted && !service.company && <small className="p-invalid" style={{ color: 'red' }}>Company is required.</small>}
-
+                                    {submitted && !service.company && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Company is required.
+                                        </small>
+                                    )}
                                 </div>
                             </div>
                             <div className="formgrid grid">
                                 <div className="field col">
-                                    <label htmlFor="country_id" style={{fontWeight:'bold'}}>{t('SERVICE.FORM.INPUT.SERVICECATEGORY')}</label>
+                                    <label htmlFor="country_id" style={{ fontWeight: 'bold' }}>
+                                        {t('SERVICE.FORM.INPUT.SERVICECATEGORY')}
+                                    </label>
                                     <Dropdown
                                         id="service_category"
                                         value={service.service_category}
                                         options={serviceCategories}
                                         onChange={(e) =>
                                             setService((perv) => ({
-
                                                 ...perv,
-                                                service_category: e.value,
+                                                service_category: e.value
                                             }))
                                         }
-                                        optionLabel='category_name'
+                                        optionLabel="category_name"
                                         // optionValue='id'
                                         placeholder={t('SERVICE.FORM.PLACEHOLDER.ServiceCategory')}
                                         className="w-full"
                                     />
-                                {submitted && !service.service_category && <small className="p-invalid" style={{ color: 'red' }}>Service Category is required.</small>}
-
+                                    {submitted && !service.service_category && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Service Category is required.
+                                        </small>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -371,7 +407,7 @@ const Services = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {service && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{service.service_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{service.service_name}</b>
                                 </span>
                             )}
                         </div>

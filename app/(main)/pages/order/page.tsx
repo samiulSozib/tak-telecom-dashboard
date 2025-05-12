@@ -23,6 +23,11 @@ import { useTranslation } from 'react-i18next';
 import { SplitButton } from 'primereact/splitbutton';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
+import { Calendar } from 'primereact/calendar';
+import { companyReducer } from '../../../redux/reducers/companyReducer';
+import serviceReducer from '../../../redux/reducers/serviceReducer';
+import { _fetchServiceList } from '@/app/redux/actions/serviceActions';
 
 const OrderPage = () => {
 
@@ -38,15 +43,42 @@ const OrderPage = () => {
     const dt = useRef<DataTable<any>>(null);
     const dispatch=useDispatch<AppDispatch>()
     const {orders,pagination,loading}=useSelector((state:any)=>state.orderReducer)
+    const {companies}=useSelector((state:any)=>state.companyReducer)
+    const {services}=useSelector((state:any)=>state.serviceReducer)
     const [order,setOrder]=useState<Order>();
     const {t}=useTranslation()
     const [searchTag,setSearchTag]=useState("")
 
+    // Add these state variables near your other state declarations
+    const [filterDialogVisible, setFilterDialogVisible] = useState(false);
+    const [filters, setFilters] = useState({
+        filter_status: null as number | null,
+        filter_service_category_type: null as string | null,
+        filter_company_id: null as number | null,
+        filter_service_id: null as number | null,
+    });
+
+    const [activeFilters,setActiveFilters]=useState({})
+
+
+
+    useEffect(() => {
+        dispatch(_fetchOrders(1, searchTag)); // No filters initially
+        }, [dispatch, searchTag]);
+
+    useEffect(() => {
+        if (Object.keys(activeFilters).length > 0) {
+            dispatch(_fetchOrders(1, searchTag, activeFilters));
+        }
+        }, [dispatch, activeFilters,searchTag]);
 
 
     useEffect(()=>{
-        dispatch(_fetchOrders(1,searchTag))
-    },[dispatch,searchTag])
+        dispatch(_fetchCompanies())
+        dispatch(_fetchServiceList())
+    },[dispatch,filterDialogVisible])
+
+
 
 
 
@@ -91,14 +123,190 @@ const OrderPage = () => {
         setDeleteOrdersDialog(true);
     };
 
+    // Add this useEffect hook to your component
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+
+        // Ignore clicks on dropdown panels (they have .p-dropdown-panel class)
+        if (target.closest('.p-dropdown-panel')) {
+            return;
+        }
+
+        // Normal check for clicking outside the filter dialog
+        if (filterDialogVisible && filterRef.current && !filterRef.current.contains(target)) {
+            setFilterDialogVisible(false);
+        }
+    };
+
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [filterDialogVisible]);
+
+    const filterRef = useRef<HTMLDivElement>(null);
+
+
+    const handleSubmitFilter=(filters:any)=>{
+        setActiveFilters(filters)
+    }
 
 
     const rightToolbarTemplate = () => {
+
+
         return (
             <React.Fragment>
-                <div className="my-2">
-                    {/* <Button label="New" icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} /> */}
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                <div className="my-2" style={{ display: 'flex', gap: '0.5rem', position: 'relative' }}>
+                    <div ref={filterRef} style={{ position: 'relative' }}>
+                        <Button
+                            label={t("ORDER.FILTER.FILTER")}
+                            icon="pi pi-filter"
+                            className="p-button-info"
+                            onClick={() => setFilterDialogVisible(!filterDialogVisible)}
+                        />
+                        {filterDialogVisible && (
+                            <div
+                                className="p-card p-fluid"
+                                style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: isRTL()?0:'',
+                                    right:isRTL()?"":0,
+                                    width: '300px',
+                                    zIndex: 1000,
+                                    marginTop: '0.5rem',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                <div className="p-card-body" style={{ padding: '1rem' }}>
+                                    <div className="grid">
+                                        {/* Status Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="statusFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.STATUS')}
+                                            </label>
+                                            <Dropdown
+                                                id="statusFilter"
+                                                options={[
+                                                    { label: t('ORDER.STATUS.PENDING'), value: 0 },
+                                                    { label: t('ORDER.STATUS.CONFIRMED'), value: 1 },
+                                                    { label: t('ORDER.STATUS.REJECTED'), value: 2 }
+                                                ]}
+                                                value={filters.filter_status}
+                                                onChange={(e) => setFilters({...filters, filter_status: e.value})}
+                                                placeholder={t('ORDER.FILTER.SELECT_STATUS')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
+
+                                        {/* Bundle Type Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="bundleTypeFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.BUNDLE_TYPE')}
+                                            </label>
+                                            <Dropdown
+                                                id="bundleTypeFilter"
+                                                options={[
+                                                    { label: t('ORDER.FILTER.SOCIAL'), value: 'social' },
+                                                    { label: t('ORDER.FILTER.NONSOCIAL'), value: "nonsocial" },
+                                                ]}
+                                                value={filters.filter_service_category_type}
+                                                onChange={(e) => setFilters({...filters, filter_service_category_type: e.value})}
+                                                placeholder={t('ORDER.FILTER.SELECT_TYPE')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
+
+                                        {/* Company Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="companyFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.COMPANY')}
+                                            </label>
+                                            <Dropdown
+                                                id="companyFilter"
+                                                options={companies}
+                                                value={filters.filter_company_id}
+                                                onChange={(e) => setFilters({...filters, filter_company_id: e.value})}
+                                                optionLabel="company_name"
+                                                optionValue="id"
+                                                placeholder={t('ORDER.FILTER.SELECT_COMPANY')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
+
+                                        {/* Service Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="serviceFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.SERVICE')}
+                                            </label>
+                                            <Dropdown
+                                                id="serviceFilter"
+                                                options={services}
+                                                value={filters.filter_service_id}
+                                                onChange={(e) => setFilters({...filters, filter_service_id: e.value})}
+                                                optionLabel="service_name" // Adjust based on your service object structure
+                                                optionValue="id"
+                                                placeholder={t('ORDER.FILTER.SELECT_SERVICE')}
+                                                style={{ width: '100%' }}
+                                                itemTemplate={(option) => (
+                                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                                        <div>{option.service_category?.category_name}</div>
+                                                        <div>- {option.company?.company_name}</div>
+                                                    </div>
+                                                )}
+                                            />
+                                        </div>
+
+
+
+
+
+                                        {/* Action Buttons */}
+                                        <div className="col-12 mt-3 flex justify-content-between gap-2">
+                                            <Button
+                                                label={t('RESET')}
+                                                icon="pi pi-times"
+                                                className="p-button-secondary p-button-sm"
+                                                onClick={() => {
+                                                    setFilters({
+                                                        filter_status: null,
+                                                        filter_service_category_type: null,
+                                                        filter_service_id: null,
+                                                        filter_company_id: null,
+
+                                                    });
+                                                }}
+                                            />
+                                            <Button
+                                                label={t('APPLY')}
+                                                icon="pi pi-check"
+                                                className="p-button-sm"
+                                                onClick={() => {
+                                                    // Apply filters here
+                                                    // You might want to dispatch an action to fetch filtered orders
+                                                    //dispatch(_fetchOrders(1, searchTag, filters));
+                                                    //console.log(filters)
+                                                    handleSubmitFilter(filters)
+                                                    setFilterDialogVisible(false);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <Button
+                        label={t("APP.GENERAL.DELETE")}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -286,7 +494,7 @@ const statusBodyTemplate = (rowData: Order) => {
                     //     //disabled: menuType === 'guest', // Example condition
                     // },
                     {
-                        label: 'Delete',
+                        label: t('DELETE'),
                         icon: 'pi pi-trash',
                         command: () => confirmDeleteOrder(rowData),
                         //disabled: menuType !== 'admin', // Example condition
@@ -313,6 +521,7 @@ const statusBodyTemplate = (rowData: Order) => {
                         model={items}
                         className="p-button-rounded"
                         severity="info" // Optional: change severity or style
+                        dir='ltr'
                     />
                 );
             };
@@ -368,13 +577,19 @@ const statusBodyTemplate = (rowData: Order) => {
                         dataKey="id"
                         className="datatable-responsive"
                         globalFilter={globalFilter}
-                        emptyMessage="No order found."
                         // header={header}
                         responsiveLayout="scroll"
                         paginator={false} // Disable PrimeReact's built-in paginator
                         rows={pagination?.items_per_page}
                         totalRecords={pagination?.total}
-                        currentPageReportTemplate={`Showing {first} to {last} of {totalRecords} items`}
+                        currentPageReportTemplate={
+                            isRTL()
+                            ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`  // localized RTL string
+                            : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
@@ -394,7 +609,11 @@ const statusBodyTemplate = (rowData: Order) => {
                         rows={pagination?.items_per_page}
                         totalRecords={pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
-                        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                        template={
+                            isRTL()
+                            ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink'
+                            : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
                     />
 
 
@@ -450,7 +669,7 @@ const statusBodyTemplate = (rowData: Order) => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {order && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{order.rechargeble_account}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{order.rechargeble_account}</b>
                                 </span>
                             )}
                         </div>
@@ -462,6 +681,7 @@ const statusBodyTemplate = (rowData: Order) => {
                             {order && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
+
                 </div>
             </div>
         </div>

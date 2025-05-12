@@ -24,44 +24,40 @@ import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const DistrictPage = () => {
-
-
-    let emptyDistrict:District={
-        id:0,
-        district_name:'',
-        province_id:0,
-        delete_at:'',
-        created_at:'',
-        updated_at:'',
-        province:null
-    }
-
-
+    let emptyDistrict: District = {
+        id: 0,
+        district_name: '',
+        province_id: 0,
+        delete_at: '',
+        created_at: '',
+        updated_at: '',
+        province: null
+    };
 
     const [districtDialog, setDistrictDialog] = useState(false);
     const [deleteDistrictDialog, setDeleteDistrictDialog] = useState(false);
     const [deleteDistrictsDialog, setDeleteDistrictsDialog] = useState(false);
-    const [district,setDistrict]=useState<District>(emptyDistrict)
+    const [district, setDistrict] = useState<District>(emptyDistrict);
     const [selectedCompanies, setSelectedDistrict] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {districts,loading}=useSelector((state:any)=>state.districtReducer)
-    const {provinces}=useSelector((state:any)=>state.provinceReducer)
-    const {t}=useTranslation()
+    const dispatch = useDispatch<AppDispatch>();
+    const { districts, loading } = useSelector((state: any) => state.districtReducer);
+    const { provinces } = useSelector((state: any) => state.provinceReducer);
+    const { t } = useTranslation();
 
-
-    useEffect(()=>{
-        dispatch(_fetchDistricts())
-        dispatch(_fetchProvinces())
-    },[dispatch])
+    useEffect(() => {
+        dispatch(_fetchDistricts());
+        dispatch(_fetchProvinces());
+    }, [dispatch]);
 
     const openNew = () => {
-        setDistrict(emptyDistrict)
+        setDistrict(emptyDistrict);
         setSubmitted(false);
         setDistrictDialog(true);
     };
@@ -82,34 +78,30 @@ const DistrictPage = () => {
         setDistrict(emptyDistrict);
     };
 
-
-
     const saveDistrict = () => {
         setSubmitted(true);
-        if (!district.district_name || !district.province ) {
-
+        if (!district.district_name || !district.province) {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
-        return;
-    }
+            return;
+        }
         if (district.id && district.id !== 0) {
-            dispatch(_editDistrict(district.id,district,toast,t));
-
+            dispatch(_editDistrict(district.id, district, toast, t));
         } else {
-            dispatch(_addDistrict(district,toast,t));
+            dispatch(_addDistrict(district, toast, t));
         }
 
         setDistrictDialog(false);
         setDistrict(emptyDistrict);
-        setSubmitted(false)
+        setSubmitted(false);
     };
 
     const editDistrict = (district: District) => {
-        setDistrict({ ...district});
+        setDistrict({ ...district });
 
         setDistrictDialog(true);
     };
@@ -121,27 +113,37 @@ const DistrictPage = () => {
 
     const deleteDistrict = () => {
         if (!district?.id) {
-            console.error("District  ID is undefined.");
+            console.error('District  ID is undefined.');
             return;
         }
-        dispatch(_deleteDistrict(district?.id,toast,t))
+        dispatch(_deleteDistrict(district?.id, toast, t));
         setDeleteDistrictDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteDistrictsDialog(true);
     };
 
-
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('DISTRICT.TABLE.CREATEDISTRICT')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('DISTRICT.TABLE.CREATEDISTRICT')}
+                        icon="pi pi-plus"
+                        severity="success"
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
+                        onClick={openNew}
+                    />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -163,7 +165,6 @@ const DistrictPage = () => {
     //     );
     // };
 
-
     const districtNameBodyTemplate = (rowData: District) => {
         return (
             <>
@@ -172,7 +173,6 @@ const DistrictPage = () => {
             </>
         );
     };
-
 
     const provinceNameBodyTemplate = (rowData: District) => {
         return (
@@ -183,17 +183,10 @@ const DistrictPage = () => {
         );
     };
 
-
-
-
-
-
-
-
     const actionBodyTemplate = (rowData: District) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}  onClick={()=>editDistrict(rowData)}/>
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editDistrict(rowData)} />
                 <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteDistrict(rowData)} />
             </>
         );
@@ -211,36 +204,35 @@ const DistrictPage = () => {
 
     const districtDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveDistrict} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveDistrict} />
         </>
     );
     const deleteDistrictDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteDistrictDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteDistrict} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteDistrictDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteDistrict} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteDistrictsDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteDistrictsDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
 
     useEffect(() => {
         if (district.province_id) {
-            const selectedProvince = provinces.find((province:Province) => province.id === district.province_id);
+            const selectedProvince = provinces.find((province: Province) => province.id === district.province_id);
 
             if (selectedProvince) {
                 setDistrict((prev) => ({
                     ...prev,
-                    province: selectedProvince, // Update with the selected company object
+                    province: selectedProvince // Update with the selected company object
                 }));
             }
         }
     }, [district.province_id, provinces]);
-
 
     return (
         <div className="grid crud-demo -m-5">
@@ -248,7 +240,7 @@ const DistrictPage = () => {
                 <div className="card p-2">
                     {loading && <ProgressBar mode="indeterminate" style={{ height: '6px' }} />}
                     <Toast ref={toast} />
-                    <Toolbar className="mb-4"  right={rightToolbarTemplate}></Toolbar>
+                    <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
 
                     <DataTable
                         ref={dt}
@@ -259,31 +251,52 @@ const DistrictPage = () => {
                         paginator
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
-                        className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} district code"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No District s found."
                         // header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="district_name" header={t('DISTRICT.TABLE.COLUMN.DISTRICTNAME')} body={districtNameBodyTemplate} sortable></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="province_name" header={t('DISTRICT.TABLE.COLUMN.PROVINCE')} body={provinceNameBodyTemplate} sortable></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="district_name"
+                            header={t('DISTRICT.TABLE.COLUMN.DISTRICTNAME')}
+                            body={districtNameBodyTemplate}
+                            sortable
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="province_name"
+                            header={t('DISTRICT.TABLE.COLUMN.PROVINCE')}
+                            body={provinceNameBodyTemplate}
+                            sortable
+                        ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={districtDialog}   style={{ width: '700px',padding:'5px' }} header={t('DISTRICT.DETAILS')} modal className="p-fluid" footer={districtDialogFooter} onHide={hideDialog}>
-                        <div className='card' style={{padding:"40px"}}>
+                    <Dialog visible={districtDialog} style={{ width: '700px', padding: '5px' }} header={t('DISTRICT.DETAILS')} modal className="p-fluid" footer={districtDialogFooter} onHide={hideDialog}>
+                        <div className="card" style={{ padding: '40px' }}>
                             <div className="field">
-                                <label htmlFor="district_name" style={{fontWeight:'bold'}}>{t('DISTRICT.TABLE.COLUMN.DISTRICTNAME')}</label>
+                                <label htmlFor="district_name" style={{ fontWeight: 'bold' }}>
+                                    {t('DISTRICT.TABLE.COLUMN.DISTRICTNAME')}
+                                </label>
                                 <InputText
                                     id="district_name"
                                     value={district.district_name}
                                     onChange={(e) =>
                                         setDistrict((prevDistrict) => ({
                                             ...prevDistrict,
-                                            district_name: e.target.value,
+                                            district_name: e.target.value
                                         }))
                                     }
                                     required
@@ -293,29 +306,37 @@ const DistrictPage = () => {
                                         'p-invalid': submitted && !district.district_name
                                     })}
                                 />
-                                {submitted && !district.district_name && <small className="p-invalid" style={{ color: 'red' }}>District Name is required.</small>}
+                                {submitted && !district.district_name && (
+                                    <small className="p-invalid" style={{ color: 'red' }}>
+                                        District Name is required.
+                                    </small>
+                                )}
                             </div>
 
                             <div className="field col">
-                                    <label htmlFor="province_id" style={{fontWeight:'bold'}}>{t('DISTRICT.FORM.INPUT.PROVINCE')}</label>
-                                    <Dropdown
-                                        id="province"
-                                        value={district.province}
-                                        options={provinces}
-                                        onChange={(e) =>
-                                            setDistrict((prev) => ({
-
-                                                ...prev,
-                                                province: e.value,
-                                            }))
-                                        }
-                                        optionLabel='province_name'
-                                        // optionValue='id'
-                                        placeholder={t('DISTRICT.FORM.PLACEHOLDER.PROVINCE')}
-                                        className="w-full"
-                                    />
-                                {submitted && !district.province && <small className="p-invalid" style={{ color: 'red' }}>Province is required.</small>}
-
+                                <label htmlFor="province_id" style={{ fontWeight: 'bold' }}>
+                                    {t('DISTRICT.FORM.INPUT.PROVINCE')}
+                                </label>
+                                <Dropdown
+                                    id="province"
+                                    value={district.province}
+                                    options={provinces}
+                                    onChange={(e) =>
+                                        setDistrict((prev) => ({
+                                            ...prev,
+                                            province: e.value
+                                        }))
+                                    }
+                                    optionLabel="province_name"
+                                    // optionValue='id'
+                                    placeholder={t('DISTRICT.FORM.PLACEHOLDER.PROVINCE')}
+                                    className="w-full"
+                                />
+                                {submitted && !district.province && (
+                                    <small className="p-invalid" style={{ color: 'red' }}>
+                                        Province is required.
+                                    </small>
+                                )}
                             </div>
                         </div>
                     </Dialog>
@@ -325,13 +346,11 @@ const DistrictPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {district && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{district.district_name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{district.district_name}</b>
                                 </span>
                             )}
                         </div>
                     </Dialog>
-
-
 
                     <Dialog visible={deleteDistrictsDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteDistrictsDialog}>
                         <div className="flex align-items-center justify-content-center">

@@ -18,6 +18,7 @@ import { Dialog } from "primereact/dialog";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Toast } from "primereact/toast";
+import { isRTL } from "@/app/(main)/utilities/rtlUtil";
 
 
 // import { useRouter } from "next/router";
@@ -192,22 +193,24 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
         <div className="grid -m-4">
         <div className="card p-2" style={{width:'100%'}}>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2" dir={isRTL() ? "rtl" : "ltr"}>
                     <img
-                        src={singleReseller.profile_image_url}
+                        src={singleReseller.profile_image_url || "/demo/images/avatar/user.png"}
                         alt={singleReseller.reseller_name}
                         style={{
-                            width: '110px',
+                            width: '120px',
                             height: '120px',
-                            borderRadius: '10%',
+
+                            borderRadius: '50%',
                             objectFit: 'cover',
+                            [isRTL() ? 'marginLeft' : 'marginRight']: '1rem'
                         }}
                     />
                     <div className="gap-2">
-                        <div className="gap-2 mb-3">
+                        <div className="gap-2 mb-3 flex align-items-center">
                             <i
                                 className={PrimeIcons.USER}
-                                style={{ marginRight: '0.5rem' }}
+                                style={{ [isRTL() ? 'marginLeft' : 'marginRight']: '0.5rem' }}
                             ></i>
                             <strong style={{fontSize:"18px"}}>{singleReseller.reseller_name}</strong>
                             <i
@@ -218,57 +221,34 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                                 }
                                 style={{
                                     fontSize:'1.5rem',
-                                    marginLeft: '0.5rem',
+                                    [isRTL() ? 'marginRight' : 'marginLeft']: '0.5rem',
                                     color: singleReseller.status === 1 ? 'green' : 'red',
                                 }}
                             ></i>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <p>
-                                <i
-                                    className={PrimeIcons.USER}
-                                    style={{ marginRight: '0.5rem' }}
-                                ></i>
-                                {singleReseller.contact_name}
-                            </p>
-                            <p>
-                                <i
-                                    className={PrimeIcons.PHONE}
-                                    style={{ marginRight: '0.5rem' }}
-                                ></i>
-                                {singleReseller.phone}
-                            </p>
-                            <p>
-                                <i
-                                    className={PrimeIcons.GLOBE}
-                                    style={{ marginRight: '0.5rem' }}
-                                ></i>
-                                {singleReseller.country?.country_name}
-                            </p>
-                            <p>
-                                <i
-                                    className={PrimeIcons.MAP}
-                                    style={{ marginRight: '0.5rem' }}
-                                ></i>
-                                {singleReseller.province?.province_name}
-                            </p>
-                            <p>
-                                <i
-                                    className={PrimeIcons.MAP_MARKER}
-                                    style={{ marginRight: '0.5rem' }}
-                                ></i>
-                                {singleReseller.districts?.district_name}
-                            </p>
-                            <p>
-                                <i
-                                    className={PrimeIcons.ENVELOPE}
-                                    style={{ marginRight: '0.5rem' }}
-                                ></i>
-                                <span style={{fontSize:"12px"}}>{singleReseller.email}</span>
-                            </p>
+                            {[
+                                { icon: PrimeIcons.USER, text: singleReseller.contact_name },
+                                { icon: PrimeIcons.PHONE, text: singleReseller.phone },
+                                { icon: PrimeIcons.GLOBE, text: singleReseller.country?.country_name },
+                                { icon: PrimeIcons.MAP, text: singleReseller.province?.province_name },
+                                { icon: PrimeIcons.MAP_MARKER, text: singleReseller.districts?.district_name },
+                                { icon: PrimeIcons.ENVELOPE, text: singleReseller.email, small: true },
+                            ].map((item, index) => (
+                                <p key={index}>
+                                    <i
+                                        className={item.icon}
+                                        style={{ [isRTL() ? 'marginLeft' : 'marginRight']: '0.5rem' }}
+                                    ></i>
+                                    {item.small ? (
+                                        <span style={{fontSize:"12px"}}>{item.text}</span>
+                                    ) : (
+                                        item.text
+                                    )}
+                                </p>
+                            ))}
                         </div>
                     </div>
-
                 </div>
 
 
@@ -276,14 +256,14 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                     <div className="grid mt-2">
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px' ,backgroundImage:"linear-gradient(to right, #dbeafe, #c7d2fe)"}}>
                                 <h4>{singleReseller.balance} {userInfo?.currency?.symbol}</h4>
                                 <span>{t('RESELLER.VIEW.BALANCE')}</span>
                             </div>
                         </div>
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px',backgroundImage:"linear-gradient(to right, #f3e8ff, #fbcfe8)"}}>
                                 <h4>{singleReseller.today_orders}</h4>
                                 <span>{t('RESELLER.VIEW.TODAYORDER')}</span>
                             </div>
@@ -291,35 +271,35 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
 
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px',backgroundImage:"linear-gradient(to right, #d1fae5, #99f6e4)"}}>
                                 <h4>{singleReseller.total_orders}</h4>
                                 <span>{t('RESELLER.VIEW.TOTALORDER')}</span>
                             </div>
                         </div>
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px',backgroundImage:"linear-gradient(to right, #fef9c3, #fed7aa)"}}>
                                 <h4>{singleReseller.today_sale}</h4>
                                 <span>{t('RESELLER.VIEW.TODAYSALE')}</span>
                             </div>
                         </div>
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px',backgroundImage:"linear-gradient(to right, #fae8ff, #e9d5ff)"}}>
                                 <h4>{singleReseller.total_sale}</h4>
                                 <span>{t('RESELLER.VIEW.TOTALSALE')}</span>
                             </div>
                         </div>
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px',backgroundImage:"linear-gradient(to right, #cffafe, #bfdbfe)"}}>
                                 <h4>{singleReseller.today_profit}</h4>
                                 <span>{t('RESELLER.VIEW.TODAYPROFIT')}</span>
                             </div>
                         </div>
 
                         <div className="col-6 lg:col-6 xl:col-3" >
-                            <div className="card" style={{maxHeight:'120px'}}>
+                            <div className="card" style={{maxHeight:'120px',backgroundImage:"linear-gradient(to right, #e0e7ff, #e9d5ff)"}}>
                                 <h4>{singleReseller.total_profit}</h4>
                                 <span>{t('RESELLER.VIEW.TOTALPROFIT')}</span>
                             </div>
@@ -338,7 +318,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                     </p>
                 </TabPanel>
                 <TabPanel header="Settings">
-                    <div className="card" style={{margin:"-20px", marginTop:'10px',marginBottom:'30px'}}>
+                    <div className="card" style={{margin:"-20px", marginTop:'10px',marginBottom:'30px',backgroundImage:"linear-gradient(to right, #ffedd5, #fde68a)"}}>
                         <h5>{t('RESELLER.PASSWORDSETTING.RESELLERPASSWORDSETTING')}</h5>
                         <hr />
                         <div style={{paddingBottom:'40px',display:'flex', justifyContent:'space-between'}}>
@@ -353,7 +333,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                         <hr />
                     </div>
 
-                    <div className="card" style={{margin:"-20px"}}>
+                    <div className="card" style={{margin:"-20px",backgroundImage:"linear-gradient(to right, #d1fae5, #a7f3d0)"}}>
                         <h5>{t('RESELLER.PINSETTING.RESELLERPINSETTING')}</h5>
                         <hr />
                         <div style={{paddingBottom:'40px',display:'flex', justifyContent:'space-between'}}>
@@ -393,6 +373,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                             icon="pi pi-times"
                             severity="danger"
                             onClick={() => setShowPasswordDialog(false)}
+                            className={isRTL() ? 'rtl-button' : ''}
                         />
                         <Button
                             label={t("FORM.GENERAL.SUBMIT")}
@@ -400,6 +381,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                             severity="success"
                             onClick={handlePasswordChange}
                             autoFocus
+                            className={isRTL() ? 'rtl-button' : ''}
                         />
                     </div>
                 }
@@ -470,6 +452,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                                 setShowPinDialog(false);
                                 setPinFormData({ new_pin: '', confirm_new_pin: '' });
                             }}
+                            className={isRTL() ? 'rtl-button' : ''}
                         />
                         <Button
                             label={t("FORM.GENERAL.SUBMIT")}
@@ -477,6 +460,7 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
                             severity="success"
                             onClick={handlePinChange}
                             autoFocus
+                            className={isRTL() ? 'rtl-button' : ''}
                         />
                     </div>
                 }

@@ -712,7 +712,7 @@
   "VALIDATION_ERROR": "د اعتبار تېروتنه",
   "PLEASE_FILLED_ALL_REQUIRED_FIELDS": "مهرباني وکړئ ټول اړین برخې ډکې کړئ",
   "REQUIRED": "اړین دی",
-  "ARE_YOU_SURE_YOU_WANT_TO_DELETE": "ایا تاسو ډاډه یاست، تاسو غواړئ حذف کړئ؟",
+  "ARE_YOU_SURE_YOU_WANT_TO_DELETE": "ایا تاسو ډاډه یاست، تاسو غواړئ حذف کړئ ؟",
   "SUCCESSFULLY": "په بریالیتوب سره",
   "GROUP_PRICE_ADDED_SUCCESSFULLY": "د ډلې قیمت په بریالیتوب سره",
   "SUCCESSFUL": "بریالی",
@@ -889,5 +889,56 @@
   "USER_UPDATED": "کارن په بریالیتوب سره تازه شو",
   "USER_UPDATE_FAILED": "د کارونکي په نوي کولو کې پاتې راغلي",
   "USER_DELETED": "کارن په بریالیتوب سره حذف شو",
-  "USER_DELETE_FAILED": "د کارونکي په ړنګولو کې پاتې راغلي"
+  "USER_DELETE_FAILED": "د کارونکي په ړنګولو کې پاتې راغلي",
+
+"DATA_TABLE": {
+  "TABLE": {
+    "NO_DATA": "هیڅ معلومات ونه موندل شول",
+    "PAGINATOR": {
+      "SHOWING": "له {first} څخه تر {last} پورې د ټول {totalRecords} څخه ښودل کیږي",
+      "ITEMS_PER_PAGE": "توکي په هر پاڼه کې"
+    }
+  }
+},
+
+"ACTIVATE": "فعال کړئ",
+"DEACTIVATE": "غیرفعال کړئ",
+"VIEW_DETAILS": "جزیات وګورئ",
+
+
+
+  "FILTER": "فلټر",
+  "APPLY": "پلي کول",
+  "RESET": "بیا تنظیمول",
+
+  "ORDER": {
+    "FILTER": {
+      "FILTER": "فلټر",
+      "SELECT_STATUS": "حالت وټاکئ",
+      "SELECT_TYPE": "ډول وټاکئ",
+      "SELECT_COMPANY": "شرکت وټاکئ",
+      "SELECT_SERVICE": "خدمت وټاکئ",
+      "SELECT_DATE_RANGE": "د نیټې موده وټاکئ",
+      "STATUS": "حالت",
+      "BUNDLE_TYPE": "د بنډل ډول",
+      "SOCIAL": "ټولنیز",
+      "NONSOCIAL": "غیر ټولنیز",
+      "COMPANY": "شرکت",
+      "SERVICE": "خدمت",
+      "DATE_RANGE": "د نیټې موده",
+      "AMOUNT_RANGE": "د مبلغ موده",
+      "CLEAR_FILTERS": "فلټرونه پاک کړئ",
+      "APPLY_FILTERS": "فلټرونه پلي کړئ"
+    },
+    "STATUS": {
+      "PENDING": "په تمه",
+      "CONFIRMED": "تایید شوی",
+      "REJECTED": "رد شوی"
+    }
+  }
+
+
+
+
+
 }

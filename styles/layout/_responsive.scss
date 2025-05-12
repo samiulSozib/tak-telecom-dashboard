@@ -1,5 +1,6 @@
 @media screen and (min-width: 1960px) {
-    .layout-main, .landing-wrapper {
+    .layout-main,
+    .landing-wrapper {
         width: 1504px;
         margin-left: auto !important;
         margin-right: auto !important;
@@ -13,7 +14,6 @@
                 margin-left: 0;
                 padding-left: 2rem;
             }
-
             .layout-sidebar {
                 transform: translateX(-100%);
                 left: 0;
@@ -22,14 +22,12 @@
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
             }
-
             &.layout-overlay-active {
                 .layout-sidebar {
                     transform: translateX(0);
                 }
             }
         }
-
         &.layout-static {
             .layout-main-container {
                 margin-top: 10px;
@@ -39,24 +37,28 @@
                     margin-left: 10px;
                     margin-right: 280px;
                 }
-
             }
-
-
-
             &.layout-static-inactive {
                 .layout-sidebar {
                     transform: translateX(-100%);
                     left: 0;
+                    [dir="rtl"] & {
+                        transform: translateX(100%);
+                        right: 0;
+                        left: auto;
+                    }
                 }
-
                 .layout-main-container {
                     margin-left: 0;
                     padding-left: 2rem;
+                    [dir="rtl"] & {
+                        margin-right: 0;
+                        padding-right: 2rem;
+                        padding-left: 0;
+                    }
                 }
             }
         }
-
         .layout-mask {
             display: none;
         }
@@ -67,13 +69,11 @@
     .blocked-scroll {
         overflow: hidden;
     }
-
     .layout-wrapper {
         .layout-main-container {
             margin-left: 0;
             padding-left: 2rem;
         }
-
         .layout-sidebar {
             transform: translateX(-100%);
             left: 0;
@@ -82,7 +82,6 @@
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
         }
-
         .layout-mask {
             display: none;
             position: fixed;
@@ -93,12 +92,10 @@
             height: 100%;
             background-color: var(--maskbg);
         }
-
         &.layout-mobile-active {
             .layout-sidebar {
                 transform: translateX(0);
             }
-
             .layout-mask {
                 display: block;
                 animation: fadein $transitionDuration;

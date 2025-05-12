@@ -27,46 +27,43 @@ import { Checkbox } from 'primereact/checkbox';
 import { useTranslation } from 'react-i18next';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const RolesPage = () => {
-
-    let emptyRole:Roles={
+    let emptyRole: Roles = {
         id: 0,
-        name:'',
-        guard_name:'',
-        created_at:'',
-        updated_at:''
-    }
-
-
+        name: '',
+        guard_name: '',
+        created_at: '',
+        updated_at: ''
+    };
 
     const [roleDialog, setRoleDialog] = useState(false);
     const [deleteRoleDialog, setDeleteRoleDialog] = useState(false);
     const [deleteRolesDialog, setDeleteRolesDialog] = useState(false);
-    const [role,setRole]=useState<Roles>(emptyRole)
+    const [role, setRole] = useState<Roles>(emptyRole);
     const [selectedCompanies, setSelectedRole] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {roles,loading,singleRole}=useSelector((state:any)=>state.rolesReducer)
-    const {permissions}=useSelector((state:any)=>state.permissionsReducer)
+    const dispatch = useDispatch<AppDispatch>();
+    const { roles, loading, singleRole } = useSelector((state: any) => state.rolesReducer);
+    const { permissions } = useSelector((state: any) => state.permissionsReducer);
     const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>([]);
-    const {t}=useTranslation()
+    const { t } = useTranslation();
 
+    useEffect(() => {
+        dispatch(_fetchRoleList());
+        dispatch(_fetchPermissions());
+    }, [dispatch]);
 
-    useEffect(()=>{
-        dispatch(_fetchRoleList())
-        dispatch(_fetchPermissions())
-    },[dispatch])
-
-    dispatch(()=>{
+    dispatch(() => {
         //console.log(selectedPermissions)
-    },[dispatch,selectedPermissions])
+    }, [dispatch, selectedPermissions]);
 
     const openNew = () => {
-        setRole(emptyRole)
+        setRole(emptyRole);
         setSubmitted(false);
         setRoleDialog(true);
     };
@@ -74,50 +71,45 @@ const RolesPage = () => {
     const hideDialog = () => {
         setSubmitted(false);
         setRoleDialog(false);
-        setSelectedPermissions([])
+        setSelectedPermissions([]);
     };
 
     const hideDeleteRoleDialog = () => {
         setDeleteRoleDialog(false);
-        setSelectedPermissions([])
+        setSelectedPermissions([]);
     };
 
     const hideDeleteRolesDialog = () => {
         setDeleteRolesDialog(false);
-        setSelectedPermissions([])
+        setSelectedPermissions([]);
     };
-
-
 
     const saveRole = () => {
         setSubmitted(true);
         if (!role.name) {
-
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
-        return;
-    }
+            return;
+        }
         if (role.id && role.id !== 0) {
-            dispatch(_editRole(role.id,role,selectedPermissions,toast,t));
-
+            dispatch(_editRole(role.id, role, selectedPermissions, toast, t));
         } else {
-            dispatch(_addRole(role,selectedPermissions,toast,t));
+            dispatch(_addRole(role, selectedPermissions, toast, t));
         }
 
         setRoleDialog(false);
         setRole(emptyRole);
-        setSelectedPermissions([])
-        setSubmitted(false)
-
+        setSelectedPermissions([]);
+        setSubmitted(false);
     };
 
     const editRole = (id: number) => {
         //console.log(id)
-        dispatch(_fetchSingleRole(id))
+        dispatch(_fetchSingleRole(id));
         //setRole({ ...role,id:singleRole?.id,name:singleRole?.name,guard_name:singleRole?.guard_name,created_at:singleRole?.created_at,updated_at:singleRole?.updated_at});
         //setSelectedPermissions(singleRole.permissions)
         setRoleDialog(true);
@@ -130,9 +122,9 @@ const RolesPage = () => {
                 name: singleRole.name,
                 guard_name: singleRole.guard_name,
                 created_at: singleRole.created_at,
-                updated_at: singleRole.updated_at,
+                updated_at: singleRole.updated_at
             });
-            setSelectedPermissions(singleRole.permissions);  // Set permissions
+            setSelectedPermissions(singleRole.permissions); // Set permissions
         }
     }, [singleRole]);
 
@@ -143,27 +135,37 @@ const RolesPage = () => {
 
     const deleteRole = () => {
         if (!role?.id) {
-            console.error("Role  ID is undefined.");
+            console.error('Role  ID is undefined.');
             return;
         }
-        dispatch(_deleteRole(role?.id,toast,t))
+        dispatch(_deleteRole(role?.id, toast, t));
         setDeleteRoleDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteRolesDialog(true);
     };
 
-
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('ROLES.CREATENEW')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('ROLES.CREATENEW')}
+                        icon="pi pi-plus"
+                        severity="success"
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
+                        onClick={openNew}
+                    />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -185,9 +187,6 @@ const RolesPage = () => {
     //     );
     // };
 
-
-
-
     const roleNameBodyTemplate = (rowData: Roles) => {
         return (
             <>
@@ -206,16 +205,10 @@ const RolesPage = () => {
         );
     };
 
-
-
-
-
-
-
     const actionBodyTemplate = (rowData: Roles) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}  onClick={()=>editRole(rowData.id)}/>
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editRole(rowData.id)} />
                 <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteRole(rowData)} />
             </>
         );
@@ -233,38 +226,32 @@ const RolesPage = () => {
 
     const roleDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveRole} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveRole} />
         </>
     );
     const deleteRoleDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteRoleDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteRole} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteRoleDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteRole} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteRolesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteRolesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
 
-
     const togglePermission = (permission: Permission) => {
-        setSelectedPermissions((prev) =>
-            prev.includes(permission)
-                ? prev.filter((p) => p !== permission)
-                : [...prev, permission]
-        );
+        setSelectedPermissions((prev) => (prev.includes(permission) ? prev.filter((p) => p !== permission) : [...prev, permission]));
     };
 
     // Check if a permission is selected
-    const isSelected = (permission: Permission): boolean =>{
+    const isSelected = (permission: Permission): boolean => {
         //console.log(selectedPermissions.some((selected) => selected.id === permission.id))
         return selectedPermissions.some((selected) => selected.id === permission.id);
-    }
-
+    };
 
     // Handle Select All toggle
     const handleSelectAll = () => {
@@ -275,14 +262,13 @@ const RolesPage = () => {
         }
     };
 
-
     return (
         <div className="grid crud-demo -m-5">
             <div className="col-12">
                 <div className="card p-2">
                     {loading && <ProgressBar mode="indeterminate" style={{ height: '6px' }} />}
                     <Toast ref={toast} />
-                    <Toolbar className="mb-4"  right={rightToolbarTemplate}></Toolbar>
+                    <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
 
                     <DataTable
                         ref={dt}
@@ -294,27 +280,35 @@ const RolesPage = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} role code"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No Role s found."
                         // header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="name" header={t('ROLES.TABLE.ROLE')} sortable body={roleNameBodyTemplate}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="guard_name" header={t('ROLES.TABLE.GUARDNAME')} body={guardNameBodyTemplate} sortable></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="name" header={t('ROLES.TABLE.ROLE')} sortable body={roleNameBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="guard_name" header={t('ROLES.TABLE.GUARDNAME')} body={guardNameBodyTemplate} sortable></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
                     <Dialog
                         visible={roleDialog}
                         style={{
-                            width: "90vw",
-                            maxWidth: "900px",
-                            borderRadius: "10px",
-                            padding: "1rem",
-                            margin:'5px'
+                            width: '90vw',
+                            maxWidth: '900px',
+                            borderRadius: '10px',
+                            padding: '1rem',
+                            margin: '5px'
                         }}
                         header={t('ROLE.DETAILS')}
                         modal
@@ -325,16 +319,16 @@ const RolesPage = () => {
                         {/* Role Name Field */}
                         <div
                             style={{
-                                marginBottom: "1.5rem",
+                                marginBottom: '1.5rem'
                             }}
                         >
                             <label
                                 htmlFor="name"
                                 style={{
-                                    display: "block",
-                                    fontWeight: "bold",
-                                    marginBottom: "0.5rem",
-                                    fontSize: "14px",
+                                    display: 'block',
+                                    fontWeight: 'bold',
+                                    marginBottom: '0.5rem',
+                                    fontSize: '14px'
                                 }}
                             >
                                 {t('ROLE.FORM.ROLENAME')}
@@ -345,33 +339,29 @@ const RolesPage = () => {
                                 onChange={(e) =>
                                     setRole((prevRole) => ({
                                         ...prevRole,
-                                        name: e.target.value,
+                                        name: e.target.value
                                     }))
                                 }
                                 required
                                 autoFocus
                                 placeholder={t('ROLE.FORM.PLACEHOLDER.ROLENAME')}
                                 style={{
-                                    width: "100%",
-                                    padding: "0.5rem",
-                                    border: submitted && !role.name ? "1px solid red" : "1px solid #ced4da",
-                                    borderRadius: "5px",
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    border: submitted && !role.name ? '1px solid red' : '1px solid #ced4da',
+                                    borderRadius: '5px'
                                 }}
                             />
-                            {submitted && !role.name && (
-                                <small style={{ color: "red", fontSize: "12px" }}>
-                                    Role Name is required.
-                                </small>
-                            )}
+                            {submitted && !role.name && <small style={{ color: 'red', fontSize: '12px' }}>Role Name is required.</small>}
                         </div>
 
                         <h5>{t('PERMISSIONS')}</h5>
                         {/* Select All Checkbox */}
                         <div
                             style={{
-                                display: "flex",
-                                alignItems: "center",
-                                marginBottom: "1rem",
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginBottom: '1rem'
                             }}
                         >
                             <Checkbox
@@ -379,14 +369,14 @@ const RolesPage = () => {
                                 onChange={handleSelectAll}
                                 checked={selectedPermissions.length === permissions.length}
                                 style={{
-                                    marginRight: "0.5rem",
+                                    marginRight: '0.5rem'
                                 }}
                             />
                             <label
                                 htmlFor="selectAll"
                                 style={{
-                                    fontSize: "14px",
-                                    fontWeight: "500",
+                                    fontSize: '14px',
+                                    fontWeight: '500'
                                 }}
                             >
                                 {t('SELECTALL')}
@@ -396,18 +386,18 @@ const RolesPage = () => {
                         {/* Permissions Grid */}
                         <div
                             style={{
-                                display: "grid",
-                                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                                gap: "1rem",
-                                padding: "0.5rem",
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                gap: '1rem',
+                                padding: '0.5rem'
                             }}
                         >
                             {permissions.map((permission: Permission) => (
                                 <div
                                     key={permission.id}
                                     style={{
-                                        display: "flex",
-                                        alignItems: "center",
+                                        display: 'flex',
+                                        alignItems: 'center'
                                     }}
                                 >
                                     <Checkbox
@@ -415,14 +405,14 @@ const RolesPage = () => {
                                         onChange={() => togglePermission(permission)}
                                         checked={isSelected(permission)}
                                         style={{
-                                            marginRight: "0.5rem",
+                                            marginRight: '0.5rem'
                                         }}
                                     />
                                     <label
                                         htmlFor={permission.name}
                                         style={{
-                                            fontSize: "14px",
-                                            fontWeight: "500",
+                                            fontSize: '14px',
+                                            fontWeight: '500'
                                         }}
                                     >
                                         {permission.name}
@@ -432,13 +422,12 @@ const RolesPage = () => {
                         </div>
                     </Dialog>
 
-
                     <Dialog visible={deleteRoleDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteRoleDialogFooter} onHide={hideDeleteRoleDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {role && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{role.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{role.name}</b>
                                 </span>
                             )}
                         </div>

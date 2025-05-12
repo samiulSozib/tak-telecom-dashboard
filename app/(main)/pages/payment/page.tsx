@@ -32,54 +32,52 @@ import { useTranslation } from 'react-i18next';
 import { Reseller } from '../../../../types/interface';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const PaymentPage = () => {
-
-    let emptyPayment:Payment={
-        id:0,
-        reseller_id:0,
-        payment_method_id:0,
-        amount:'',
-        remaining_payment_amount:'',
-        currency_id:0,
-        transaction_id:0,
-        status:'',
-        notes:'',
-        payment_date:'',
-        created_at:'',
-        updated_date:'',
-        reseller:null,
-        payment_method:null,
-        currency:null
-    }
-
+    let emptyPayment: Payment = {
+        id: 0,
+        reseller_id: 0,
+        payment_method_id: 0,
+        amount: '',
+        remaining_payment_amount: '',
+        currency_id: 0,
+        transaction_id: 0,
+        status: '',
+        notes: '',
+        payment_date: '',
+        created_at: '',
+        updated_date: '',
+        reseller: null,
+        payment_method: null,
+        currency: null
+    };
 
     const [paymentDialog, setPaymentDialog] = useState(false);
     const [deletePaymentDialog, setDeletePaymentDialog] = useState(false);
     const [deletePaymentsDialog, setDeletePaymentsDialog] = useState(false);
-    const [payment,setPayment]=useState<Payment>(emptyPayment)
+    const [payment, setPayment] = useState<Payment>(emptyPayment);
     const [selectedCompanies, setSelectedPayment] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {payments,loading}=useSelector((state:any)=>state.paymentReducer)
-    const {resellers}=useSelector((state:any)=>state.resellerReducer)
-    const {paymentMethods}=useSelector((state:any)=>state.paymentMethodsReducer)
-    const {currencies}=useSelector((state:any)=>state.currenciesReducer)
-    const {t}=useTranslation()
+    const dispatch = useDispatch<AppDispatch>();
+    const { payments, loading } = useSelector((state: any) => state.paymentReducer);
+    const { resellers } = useSelector((state: any) => state.resellerReducer);
+    const { paymentMethods } = useSelector((state: any) => state.paymentMethodsReducer);
+    const { currencies } = useSelector((state: any) => state.currenciesReducer);
+    const { t } = useTranslation();
 
-
-    useEffect(()=>{
-        dispatch(_fetchPayments())
-        dispatch(_fetchResellers())
-        dispatch(_fetchPaymentMethods())
-        dispatch(_fetchCurrencies())
-    },[dispatch])
+    useEffect(() => {
+        dispatch(_fetchPayments());
+        dispatch(_fetchResellers());
+        dispatch(_fetchPaymentMethods());
+        dispatch(_fetchCurrencies());
+    }, [dispatch]);
 
     const openNew = () => {
-        setPayment(emptyPayment)
+        setPayment(emptyPayment);
         setSubmitted(false);
         setPaymentDialog(true);
     };
@@ -97,36 +95,30 @@ const PaymentPage = () => {
         setDeletePaymentsDialog(false);
     };
 
-
-
     const savePayment = () => {
         setSubmitted(true);
-        if (!payment.reseller || !payment.amount || !payment.notes
-            || !payment.payment_method|| !payment.currency || !payment.payment_date
-        ) {
-
+        if (!payment.reseller || !payment.amount || !payment.notes || !payment.payment_method || !payment.currency || !payment.payment_date) {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
-        return;
-    }
+            return;
+        }
         if (payment.id && payment.id !== 0) {
-            dispatch(_editPayment(payment.id,payment,toast,t));
-
+            dispatch(_editPayment(payment.id, payment, toast, t));
         } else {
-            dispatch(_addPayment(payment,toast,t));
+            dispatch(_addPayment(payment, toast, t));
         }
 
         setPaymentDialog(false);
         setPayment(emptyPayment);
-        setSubmitted(false)
+        setSubmitted(false);
     };
 
     const editPayment = (payment: Payment) => {
-        setPayment({ ...payment});
+        setPayment({ ...payment });
 
         setPaymentDialog(true);
     };
@@ -138,27 +130,37 @@ const PaymentPage = () => {
 
     const deletePayment = () => {
         if (!payment?.id) {
-            console.error("Payment  ID is undefined.");
+            console.error('Payment  ID is undefined.');
             return;
         }
-        dispatch(_deletePayment(payment?.id,toast,t))
+        dispatch(_deletePayment(payment?.id, toast, t));
         setDeletePaymentDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeletePaymentsDialog(true);
     };
 
-
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Add Payment" icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label="Add Payment"
+                        icon="pi pi-plus"
+                        severity="success"
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
+                        onClick={openNew}
+                    />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -180,7 +182,6 @@ const PaymentPage = () => {
     //     );
     // };
 
-
     const resellerNameBodyTemplate = (rowData: Payment) => {
         return (
             <>
@@ -199,7 +200,6 @@ const PaymentPage = () => {
         );
     };
 
-
     const amountBodyTemplate = (rowData: Payment) => {
         return (
             <>
@@ -217,7 +217,6 @@ const PaymentPage = () => {
             </>
         );
     };
-
 
     const remainingPaymentBodyTemplate = (rowData: Payment) => {
         return (
@@ -247,44 +246,41 @@ const PaymentPage = () => {
     };
 
     const paymentDateBodyTemplate = (rowData: Payment) => {
-            const formatDate = (dateString: string) => {
-                const date = new Date(dateString);
-                const optionsDate: Intl.DateTimeFormatOptions = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                };
-                const optionsTime: Intl.DateTimeFormatOptions = {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true,
-                };
-                const formattedDate = date.toLocaleDateString('en-US', optionsDate);
-                const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
-
-                return { formattedDate, formattedTime };
+        const formatDate = (dateString: string) => {
+            const date = new Date(dateString);
+            const optionsDate: Intl.DateTimeFormatOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             };
+            const optionsTime: Intl.DateTimeFormatOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+            const formattedDate = date.toLocaleDateString('en-US', optionsDate);
+            const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
 
-            const { formattedDate, formattedTime } = formatDate(rowData.payment_date);
-
-            return (
-                <>
-                    <span className="p-column-title">Created At</span>
-                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
-                    <br />
-                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
-                </>
-            );
+            return { formattedDate, formattedTime };
         };
 
+        const { formattedDate, formattedTime } = formatDate(rowData.payment_date);
 
-
+        return (
+            <>
+                <span className="p-column-title">Created At</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
+                <br />
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
+            </>
+        );
+    };
 
     const actionBodyTemplate = (rowData: Payment) => {
         return (
             <>
-                <Button  icon="pi pi-pencil" rounded severity="success" className="mr-2"  onClick={()=>editPayment(rowData)}/>
-                <Button  icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeletePayment(rowData)} />
+                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editPayment(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeletePayment(rowData)} />
             </>
         );
     };
@@ -301,25 +297,22 @@ const PaymentPage = () => {
 
     const paymentDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={savePayment} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={savePayment} />
         </>
     );
     const deletePaymentDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeletePaymentDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deletePayment} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeletePaymentDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deletePayment} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeletePaymentsDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeletePaymentsDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
-
-
-
 
     return (
         <div className="grid crud-demo -m-5">
@@ -327,7 +320,7 @@ const PaymentPage = () => {
                 <div className="card p-2">
                     {loading && <ProgressBar mode="indeterminate" style={{ height: '6px' }} />}
                     <Toast ref={toast} />
-                    <Toolbar className="mb-4"  right={rightToolbarTemplate}></Toolbar>
+                    <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
 
                     <DataTable
                         ref={dt}
@@ -339,161 +332,194 @@ const PaymentPage = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} payment code"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No Payment s found."
                         // header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.RESELLER')} body={resellerNameBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.PAYMENTMETHOD')} body={paymentMethodBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.REMAININGPAYMENTAMOUNT')} body={remainingPaymentBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.STATUS')} body={statusBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.NOTES')} body={noteBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('PAYMENT.TABLE.COLUMN.PAYMENTDATE')} body={paymentDateBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.RESELLER')} body={resellerNameBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.PAYMENTMETHOD')} body={paymentMethodBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.REMAININGPAYMENTAMOUNT')} body={remainingPaymentBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.STATUS')} body={statusBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.NOTES')} body={noteBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PAYMENT.TABLE.COLUMN.PAYMENTDATE')} body={paymentDateBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={paymentDialog}  style={{ width: '900px',padding:'5px' }} header={t('PAYMENT.DETAILS.TITLE')} modal className="p-fluid" footer={paymentDialogFooter} onHide={hideDialog}>
-                    <div className="card flex  flex-wrap p-fluid mt-3 gap-4">
-                        <div className=' flex-1 col-12 lg:col-6'>
-                            <div className="field">
-                                <label htmlFor="reseller" style={{fontWeight:'bold'}}>{t('PAYMENT.FORM.INPUT.RESELLER')}</label>
-                                <Dropdown
-                                    id="reseller"
-                                    value={payment.reseller}
-                                    options={resellers}
-                                    onChange={(e) =>
-                                        setPayment((prev) => ({
+                    <Dialog visible={paymentDialog} style={{ width: '900px', padding: '5px' }} header={t('PAYMENT.DETAILS.TITLE')} modal className="p-fluid" footer={paymentDialogFooter} onHide={hideDialog}>
+                        <div className="card flex  flex-wrap p-fluid mt-3 gap-4">
+                            <div className=" flex-1 col-12 lg:col-6">
+                                <div className="field">
+                                    <label htmlFor="reseller" style={{ fontWeight: 'bold' }}>
+                                        {t('PAYMENT.FORM.INPUT.RESELLER')}
+                                    </label>
+                                    <Dropdown
+                                        id="reseller"
+                                        value={payment.reseller}
+                                        options={resellers}
+                                        onChange={(e) =>
+                                            setPayment((prev) => ({
+                                                ...prev,
+                                                reseller: e.value
+                                            }))
+                                        }
+                                        optionLabel="reseller_name"
+                                        //optionValue='id'
+                                        placeholder={t('PAYMENT.FORM.INPUT.RESELLER')}
+                                        className="w-full"
+                                    />
+                                    {submitted && !payment.reseller && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Reseller is required.
+                                        </small>
+                                    )}
+                                </div>
 
-                                            ...prev,
-                                            reseller: e.value,
-                                        }))
-                                    }
-                                    optionLabel='reseller_name'
-                                    //optionValue='id'
-                                    placeholder={t('PAYMENT.FORM.INPUT.RESELLER')}
-                                    className="w-full"
-                                />
-                                {submitted && !payment.reseller && <small className="p-invalid" style={{ color: 'red' }}>Reseller is required.</small>}
-
+                                <div className="field">
+                                    <label htmlFor="email" style={{ fontWeight: 'bold' }}>
+                                        {t('PAYMENT.FORM.INPUT.AMOUNT')}
+                                    </label>
+                                    <InputText
+                                        id="amount"
+                                        value={payment.amount}
+                                        onChange={(e) =>
+                                            setPayment((prev) => ({
+                                                ...prev,
+                                                amount: e.target.value
+                                            }))
+                                        }
+                                        required
+                                        autoFocus
+                                        placeholder={t('PAYMENT.FORM.INPUT.AMOUNT')}
+                                        className={classNames({
+                                            'p-invalid': submitted && !payment.amount
+                                        })}
+                                    />
+                                    {submitted && !payment.amount && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Amount is required.
+                                        </small>
+                                    )}
+                                </div>
+                                <div className="field">
+                                    <label htmlFor="notes" style={{ fontWeight: 'bold' }}>
+                                        {t('PAYMENT.FORM.INPUT.NOTES')}
+                                    </label>
+                                    <InputTextarea
+                                        value={payment.notes}
+                                        onChange={(e) =>
+                                            setPayment((prev) => ({
+                                                ...prev,
+                                                notes: e.target.value
+                                            }))
+                                        }
+                                        rows={3}
+                                        cols={30}
+                                        placeholder={t('PAYMENT.FORM.INPUT.NOTES')}
+                                    />
+                                    {submitted && !payment.notes && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Notes is required.
+                                        </small>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="field">
-                                <label htmlFor="email" style={{fontWeight:'bold'}}>{t('PAYMENT.FORM.INPUT.AMOUNT')}</label>
-                                <InputText
-                                    id="amount"
-                                    value={payment.amount}
-                                    onChange={(e) =>
-                                        setPayment((prev) => ({
-                                            ...prev,
-                                            amount: e.target.value,
-                                        }))
-                                    }
-                                    required
-                                    autoFocus
-                                    placeholder={t('PAYMENT.FORM.INPUT.AMOUNT')}
-                                    className={classNames({
-                                        'p-invalid': submitted && !payment.amount
-                                    })}
-                                />
-                                {submitted && !payment.amount && <small className="p-invalid" style={{ color: 'red' }}>Amount is required.</small>}
-                            </div>
-                            <div className="field">
-                                <label htmlFor="notes" style={{fontWeight:'bold'}}>{t('PAYMENT.FORM.INPUT.NOTES')}</label>
-                                <InputTextarea
-                                value={payment.notes}
-                                onChange={(e) =>
-                                setPayment((prev) => ({
-                                    ...prev,
-                                    notes: e.target.value,
-                                }))
-                                } rows={3} cols={30}
-                                placeholder={t('PAYMENT.FORM.INPUT.NOTES')}
-                                />
-                                {submitted && !payment.notes && <small className="p-invalid" style={{ color: 'red' }}>Notes is required.</small>}
+                            <div className=" flex-1 col-12 lg:col-6">
+                                <div className="field">
+                                    <label htmlFor="payment_method" style={{ fontWeight: 'bold' }}>
+                                        {t('PAYMENT.FORM.INPUT.PAYMENTMETHOD')}
+                                    </label>
+                                    <Dropdown
+                                        id="payment_method"
+                                        value={payment.payment_method}
+                                        options={paymentMethods}
+                                        onChange={(e) =>
+                                            setPayment((prev) => ({
+                                                ...prev,
+                                                payment_method: e.value
+                                            }))
+                                        }
+                                        optionLabel="method_name"
+                                        // optionValue='id'
+                                        placeholder={t('PAYMENT.FORM.INPUT.PAYMENTMETHOD')}
+                                        className="w-full"
+                                    />
+                                    {submitted && !payment.payment_method && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Payment Method is required.
+                                        </small>
+                                    )}
+                                </div>
 
+                                <div className="field">
+                                    <label htmlFor="currency" style={{ fontWeight: 'bold' }}>
+                                        {t('PAYMENT.FORM.INPUT.CURRENCY')}
+                                    </label>
+                                    <Dropdown
+                                        id="currency"
+                                        value={payment.currency}
+                                        options={currencies}
+                                        onChange={(e) =>
+                                            setPayment((prev) => ({
+                                                ...prev,
+                                                currency: e.value
+                                            }))
+                                        }
+                                        optionLabel="name"
+                                        // optionValue='id'
+                                        placeholder={t('PAYMENT.FORM.INPUT.CURRENCY')}
+                                        className="w-full"
+                                    />
+                                    {submitted && !payment.currency && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Currency is required.
+                                        </small>
+                                    )}
+                                </div>
+                                <div className="field">
+                                    <label htmlFor="payment_date" style={{ fontWeight: 'bold' }}>
+                                        {t('PAYMENT.FORM.INPUT.PAYMENTDATE')}
+                                    </label>
+                                    <InputText
+                                        id="payment_date"
+                                        value={payment.payment_date}
+                                        onChange={(e) =>
+                                            setPayment((prev) => ({
+                                                ...prev,
+                                                payment_date: e.target.value
+                                            }))
+                                        }
+                                        type="date"
+                                        required
+                                        autoFocus
+                                        placeholder={t('PAYMENT.FORM.INPUT.PAYMENTDATE')}
+                                        className={classNames({
+                                            'p-invalid': submitted && !payment.payment_date
+                                        })}
+                                    />
 
+                                    {submitted && !payment.payment_date && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Payment Date is required.
+                                        </small>
+                                    )}
+                                </div>
                             </div>
                         </div>
-
-
-
-                        <div className=' flex-1 col-12 lg:col-6'>
-                            <div className="field">
-                                <label htmlFor="payment_method" style={{fontWeight:'bold'}}>{t('PAYMENT.FORM.INPUT.PAYMENTMETHOD')}</label>
-                                <Dropdown
-                                    id="payment_method"
-                                    value={payment.payment_method}
-                                    options={paymentMethods}
-                                    onChange={(e) =>
-                                        setPayment((prev) => ({
-
-                                            ...prev,
-                                            payment_method: e.value,
-                                        }))
-                                    }
-                                    optionLabel='method_name'
-                                    // optionValue='id'
-                                    placeholder={t('PAYMENT.FORM.INPUT.PAYMENTMETHOD')}
-                                    className="w-full"
-                                />
-                                 {submitted && !payment.payment_method && <small className="p-invalid" style={{ color: 'red' }}>Payment Method is required.</small>}
-
-                            </div>
-
-                            <div className="field">
-                                <label htmlFor="currency" style={{fontWeight:'bold'}}>{t('PAYMENT.FORM.INPUT.CURRENCY')}</label>
-                                <Dropdown
-                                    id="currency"
-                                    value={payment.currency}
-                                    options={currencies}
-                                    onChange={(e) =>
-                                        setPayment((prev) => ({
-
-                                            ...prev,
-                                            currency: e.value,
-                                        }))
-                                    }
-                                    optionLabel='name'
-                                    // optionValue='id'
-                                    placeholder={t('PAYMENT.FORM.INPUT.CURRENCY')}
-                                    className="w-full"
-                                />
-                                {submitted && !payment.currency && <small className="p-invalid" style={{ color: 'red' }}>Currency is required.</small>}
-
-                            </div>
-                            <div className="field">
-                                <label htmlFor="payment_date" style={{fontWeight:'bold'}}>{t('PAYMENT.FORM.INPUT.PAYMENTDATE')}</label>
-                                <InputText
-                                    id="payment_date"
-                                    value={payment.payment_date}
-                                    onChange={(e) =>
-                                        setPayment((prev) => ({
-                                            ...prev,
-                                            payment_date: e.target.value,
-                                        }))
-                                    }
-                                    type='date'
-                                    required
-                                    autoFocus
-                                    placeholder={t('PAYMENT.FORM.INPUT.PAYMENTDATE')}
-                                    className={classNames({
-                                        'p-invalid': submitted && !payment.payment_date
-                                    })}
-                                />
-
-                                {submitted && !payment.payment_date && <small className="p-invalid" style={{ color: 'red' }}>Payment Date is required.</small>}
-
-                            </div>
-                        </div>
-
-
-                    </div>
                     </Dialog>
 
                     <Dialog visible={deletePaymentDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deletePaymentDialogFooter} onHide={hideDeletePaymentDialog}>
@@ -501,7 +527,7 @@ const PaymentPage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {payment && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b></b>
                                 </span>
                             )}
                         </div>

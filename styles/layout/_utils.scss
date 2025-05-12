@@ -25,3 +25,37 @@
         top: 100px;
     }
 }
+
+/* global.css or your component CSS */
+.rtl-button {
+    gap: 0.5rem;
+    flex-direction: reverse;
+}
+
+/* Add to your global CSS */
+.rtl-table {
+    direction: rtl;
+}
+
+.rtl-table .p-paginator {
+    direction: rtl;
+}
+
+.rtl-table .p-column-header-content {
+    justify-content: flex-end;
+}
+
+.rtl-table .p-datatable-thead > tr > th {
+    text-align: right;
+}
+
+.rtl-table .p-datatable-tbody > tr > td {
+    text-align: right;
+}
+
+.rtl-table .p-checkbox {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+

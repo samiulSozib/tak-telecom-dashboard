@@ -724,7 +724,7 @@
     "VALIDATION_ERROR":"Validation Error",
     "PLEASE_FILLED_ALL_REQUIRED_FIELDS":"Please Filled All Required Fields",
     "REQUIRED":"Required",
-    "ARE_YOU_SURE_YOU_WANT_TO_DELETE":"Are You Sure, You Want to Delete?",
+    "ARE_YOU_SURE_YOU_WANT_TO_DELETE":"Are You Sure, You Want to Delete ? ",
     "SUCCESSFULLY":"Successfully",
     "GROUP_PRICE_ADDED_SUCCESSFULLY":"Group Price Added Successfully",
     "SUCCESSFUL": "Successful",
@@ -903,7 +903,57 @@
 "USER_UPDATED": "User updated successfully",
 "USER_UPDATE_FAILED": "Failed to update user",
 "USER_DELETED": "User deleted successfully",
-"USER_DELETE_FAILED": "Failed to delete user"
+"USER_DELETE_FAILED": "Failed to delete user",
+
+
+
+
+  "DATA_TABLE": {
+    "TABLE": {
+      "NO_DATA": "No Data found",
+      "PAGINATOR": {
+        "SHOWING": "Showing {first} to {last} of {totalRecords}",
+        "ITEMS_PER_PAGE":  "Items per page"
+      }
+    }
+  },
+
+  "ACTIVATE":"Activate",
+  "DEACTIVATE":"Deactivate",
+  "VIEW_DETAILS":"View Details",
+
+
+  "FILTER":"Filter",
+  "APPLY":"Apply",
+  "RESET":"Reset",
+
+
+
+  "ORDER": {
+    "FILTER": {
+      "FILTER": "Filter",
+      "SELECT_STATUS": "Select Status",
+      "SELECT_TYPE": "Select Type",
+      "SELECT_COMPANY": "Select Company",
+      "SELECT_SERVICE": "Select Service",
+      "SELECT_DATE_RANGE": "Select Date Range",
+      "STATUS": "Status",
+      "BUNDLE_TYPE": "Bundle Type",
+      "SOCIAL": "Social",
+      "NONSOCIAL": "Non-Social",
+      "COMPANY": "Company",
+      "SERVICE": "Service",
+      "DATE_RANGE": "Date Range",
+      "AMOUNT_RANGE": "Amount Range",
+      "CLEAR_FILTERS": "Clear Filters",
+      "APPLY_FILTERS": "Apply Filters"
+    },
+    "STATUS": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "REJECTED": "Rejected"
+    }
+  }
 
 
 }

@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { _addGroupPricing, _deleteGroupPricing, _editGroupPricing, _fetchGroupPricingList } from '@/app/redux/actions/groupPricingActions';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const GroupPricingPage = () => {
     let emptyGroupPricing: GroupPricing = {
@@ -36,7 +37,7 @@ const GroupPricingPage = () => {
         use_markup: true,
         created_at: '',
         updated_at: ''
-    }
+    };
 
     const [groupPricingDialog, setGroupPricingDialog] = useState(false);
     const [deleteGroupPricingDialog, setDeleteGroupPricingDialog] = useState(false);
@@ -114,9 +115,9 @@ const GroupPricingPage = () => {
 
         try {
             if (groupPricing.id && groupPricing.id !== 0) {
-                await dispatch(_editGroupPricing(groupPricing.id, groupPricing, toast,t));
+                await dispatch(_editGroupPricing(groupPricing.id, groupPricing, toast, t));
             } else {
-                await dispatch(_addGroupPricing(groupPricing, toast,t));
+                await dispatch(_addGroupPricing(groupPricing, toast, t));
             }
 
             setGroupPricingDialog(false);
@@ -129,9 +130,8 @@ const GroupPricingPage = () => {
         }
     };
 
-
     const editGroupPricing = (groupPricing: GroupPricing) => {
-        console.log(groupPricing)
+        console.log(groupPricing);
         setGroupPricing({ ...groupPricing });
         setGroupPricingDialog(true);
     };
@@ -142,12 +142,12 @@ const GroupPricingPage = () => {
     };
 
     const deleteGroupPricing = () => {
-        console.log(groupPricing)
+        console.log(groupPricing);
         if (!groupPricing?.id) {
-            console.error("Group Pricing ID is undefined.");
+            console.error('Group Pricing ID is undefined.');
             return;
         }
-        dispatch(_deleteGroupPricing(groupPricing?.id, toast,t));
+        dispatch(_deleteGroupPricing(groupPricing?.id, toast, t));
         setDeleteGroupPricingDialog(false);
     };
 
@@ -160,16 +160,16 @@ const GroupPricingPage = () => {
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
                     <Button
-                        style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }}
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
                         label={t('GROUP.PRICING.CREATENEW')}
                         icon="pi pi-plus"
                         severity="success"
-                        className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
                         onClick={openNew}
                     />
                     <Button
-                        style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }}
-                        label="Delete"
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
@@ -238,12 +238,7 @@ const GroupPricingPage = () => {
         return (
             <>
                 <span className="p-column-title">Status</span>
-                <span
-                    style={{borderRadius: '10px', textAlign: 'center'}}
-                    className={`px-2 py-2 text-center text-white font-semibold inline-block w-24 ${
-                        rowData?.status === "active" ? "bg-green-500" : "bg-red-500"
-                    }`}
-                >
+                <span style={{ borderRadius: '10px', textAlign: 'center' }} className={`px-2 py-2 text-center text-white font-semibold inline-block w-24 ${rowData?.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}>
                     {rowData?.status}
                 </span>
             </>
@@ -253,41 +248,30 @@ const GroupPricingPage = () => {
     const actionBodyTemplate = (rowData: GroupPricing) => {
         return (
             <>
-                <Button
-                    icon="pi pi-pencil"
-                    rounded
-                    severity="success"
-                    className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}
-                    onClick={() => editGroupPricing(rowData)}
-                />
-                <Button
-                    icon="pi pi-trash"
-                    rounded
-                    severity="warning"
-                    onClick={() => confirmDeleteGroupPricing(rowData)}
-                />
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editGroupPricing(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteGroupPricing(rowData)} />
             </>
         );
     };
 
     const groupPricingDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveGroupPricing} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveGroupPricing} />
         </>
     );
 
     const deleteGroupPricingDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteGroupPricingDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteGroupPricing} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteGroupPricingDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteGroupPricing} />
         </>
     );
 
     const deleteGroupPricingsDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteGroupPricingsDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteGroupPricingsDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
 
@@ -309,76 +293,42 @@ const GroupPricingPage = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} group pricings"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No group pricings found."
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="reseller_group" header={t('GROUP.PRICING.TABLE.RESELLER_GROUP')} body={ResellerGroupBodyTemplate} />
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="service" header={t('GROUP.PRICING.TABLE.SERVICE')} body={ServiceBodyTemplate} />
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="use_fixed_fee" header={t('GROUP.PRICING.TABLE.USE_FIXED_FEE')} body={useFixedFeeBodyTemplate} />
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="fixed_fee" header={t('GROUP.PRICING.TABLE.FIXED_FEE')} body={FixedFeeBodyTemplate} />
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="use_markup" header={t('GROUP.PRICING.TABLE.USE_MARKUP')} body={useMarkupBodyTemplate} />
                         <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="reseller_group"
-                            header={t("GROUP.PRICING.TABLE.RESELLER_GROUP")}
-                            body={ResellerGroupBodyTemplate}
-                        />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="service"
-                            header={t("GROUP.PRICING.TABLE.SERVICE")}
-                            body={ServiceBodyTemplate}
-                        />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="use_fixed_fee"
-                            header={t("GROUP.PRICING.TABLE.USE_FIXED_FEE")}
-                            body={useFixedFeeBodyTemplate}
-                        />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="fixed_fee"
-                            header={t("GROUP.PRICING.TABLE.FIXED_FEE")}
-                            body={FixedFeeBodyTemplate}
-                        />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="use_markup"
-                            header={t("GROUP.PRICING.TABLE.USE_MARKUP")}
-                            body={useMarkupBodyTemplate}
-                        />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="markup_percentage"
-                            header={t("GROUP.PRICING.TABLE.MARKUP_PERCENTAGE")}
+                            header={t('GROUP.PRICING.TABLE.MARKUP_PERCENTAGE')}
                             body={MarkUpPercentageBodyTemplate}
                         />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            field="status"
-                            header={t("GROUP.PRICING.TABLE.STATUS")}
-                            body={statusBodyTemplate}
-                        />
-                        <Column
-                            style={{...customCellStyle, textAlign: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? "right" : "left" }}
-                            body={actionBodyTemplate}
-                            headerStyle={{ minWidth: '10rem' }}
-                        />
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('GROUP.PRICING.TABLE.STATUS')} body={statusBodyTemplate} />
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }} />
                     </DataTable>
 
-                    <Dialog
-                        visible={groupPricingDialog}
-                        style={{ width: '900px', padding: '5px' }}
-                        header={t("GROUP.PRICING.DETAILS")}
-                        modal
-                        className="p-fluid"
-                        footer={groupPricingDialogFooter}
-                        onHide={hideDialog}
-                    >
+                    <Dialog visible={groupPricingDialog} style={{ width: '900px', padding: '5px' }} header={t('GROUP.PRICING.DETAILS')} modal className="p-fluid" footer={groupPricingDialogFooter} onHide={hideDialog}>
                         <div className="card flex flex-wrap p-fluid mt-3 gap-4">
-                            <div className='flex-1 col-12 lg:col-6'>
+                            <div className="flex-1 col-12 lg:col-6">
                                 <div className="field">
                                     <label htmlFor="reseller_group" style={{ fontWeight: 'bold' }}>
-                                        {t("GROUP.PRICING.LABEL.RESELLER_GROUP")}
+                                        {t('GROUP.PRICING.LABEL.RESELLER_GROUP')}
                                     </label>
                                     <Dropdown
                                         id="reseller_group"
@@ -392,14 +342,14 @@ const GroupPricingPage = () => {
                                             }))
                                         }
                                         optionLabel="name"
-                                        placeholder={t("GROUP.PRICING.PLACEHOLDER.RESELLER_GROUP")}
+                                        placeholder={t('GROUP.PRICING.PLACEHOLDER.RESELLER_GROUP')}
                                         className="w-full"
                                     />
                                 </div>
 
                                 <div className="field">
                                     <label htmlFor="fixed_fee" style={{ fontWeight: 'bold' }}>
-                                        {t("GROUP.PRICING.LABEL.FIXED_FEE")}
+                                        {t('GROUP.PRICING.LABEL.FIXED_FEE')}
                                     </label>
                                     <InputText
                                         id="fixed_fee"
@@ -408,36 +358,36 @@ const GroupPricingPage = () => {
                                         onChange={(e) =>
                                             setGroupPricing((prev) => ({
                                                 ...prev,
-                                                fixed_fee: parseFloat(e.target.value) || 0,
+                                                fixed_fee: parseFloat(e.target.value) || 0
                                             }))
                                         }
                                         required
-                                        placeholder={t("GROUP.PRICING.PLACEHOLDER.FIXED_FEE")}
+                                        placeholder={t('GROUP.PRICING.PLACEHOLDER.FIXED_FEE')}
                                     />
                                 </div>
 
                                 <div className="field-checkbox">
                                     <label htmlFor="use_fixed_fee" style={{ fontWeight: 'bold' }}>
-                                        {t("GROUP.PRICING.LABEL.USE_FIXED_FEE")}
+                                        {t('GROUP.PRICING.LABEL.USE_FIXED_FEE')}
                                     </label>
                                     <input
                                         id="use_fixed_fee"
                                         type="checkbox"
-                                        checked={groupPricing.use_fixed_fee??false}
+                                        checked={groupPricing.use_fixed_fee ?? false}
                                         onChange={(e) =>
                                             setGroupPricing((prev) => ({
                                                 ...prev,
-                                                use_fixed_fee: e.target.checked,
+                                                use_fixed_fee: e.target.checked
                                             }))
                                         }
                                     />
                                 </div>
                             </div>
 
-                            <div className='flex-1 col-12 lg:col-6'>
+                            <div className="flex-1 col-12 lg:col-6">
                                 <div className="field">
                                     <label htmlFor="service" style={{ fontWeight: 'bold' }}>
-                                        {t("GROUP.PRICING.LABEL.SERVICE")}
+                                        {t('GROUP.PRICING.LABEL.SERVICE')}
                                     </label>
                                     <Dropdown
                                         id="service"
@@ -451,10 +401,10 @@ const GroupPricingPage = () => {
                                             }))
                                         }
                                         optionLabel="service_category.category_name"
-                                        placeholder={t("GROUP.PRICING.PLACEHOLDER.SERVICE")}
+                                        placeholder={t('GROUP.PRICING.PLACEHOLDER.SERVICE')}
                                         className="w-full"
                                         itemTemplate={(option) => (
-                                            <div style={{ display: 'flex', gap: "5px" }}>
+                                            <div style={{ display: 'flex', gap: '5px' }}>
                                                 <div>{option.service_category?.category_name}</div>
                                                 <div>{option.company?.company_name}</div>
                                             </div>
@@ -464,7 +414,7 @@ const GroupPricingPage = () => {
 
                                 <div className="field">
                                     <label htmlFor="markup_percentage" style={{ fontWeight: 'bold' }}>
-                                        {t("GROUP.PRICING.LABEL.MARKUP_PERCENTAGE")}
+                                        {t('GROUP.PRICING.LABEL.MARKUP_PERCENTAGE')}
                                     </label>
                                     <InputText
                                         id="markup_percentage"
@@ -473,26 +423,26 @@ const GroupPricingPage = () => {
                                         onChange={(e) =>
                                             setGroupPricing((prev) => ({
                                                 ...prev,
-                                                markup_percentage: parseFloat(e.target.value) || 0,
+                                                markup_percentage: parseFloat(e.target.value) || 0
                                             }))
                                         }
                                         required
-                                        placeholder={t("GROUP.PRICING.PLACEHOLDER.MARKUP_PERCENTAGE")}
+                                        placeholder={t('GROUP.PRICING.PLACEHOLDER.MARKUP_PERCENTAGE')}
                                     />
                                 </div>
 
                                 <div className="field-checkbox">
                                     <label htmlFor="use_markup" style={{ fontWeight: 'bold' }}>
-                                        {t("GROUP.PRICING.LABEL.USE_MARKUP")}
+                                        {t('GROUP.PRICING.LABEL.USE_MARKUP')}
                                     </label>
                                     <input
                                         id="use_markup"
                                         type="checkbox"
-                                        checked={groupPricing.use_markup??false}
+                                        checked={groupPricing.use_markup ?? false}
                                         onChange={(e) =>
                                             setGroupPricing((prev) => ({
                                                 ...prev,
-                                                use_markup: e.target.checked,
+                                                use_markup: e.target.checked
                                             }))
                                         }
                                     />
@@ -501,32 +451,18 @@ const GroupPricingPage = () => {
                         </div>
                     </Dialog>
 
-                    <Dialog
-                        visible={deleteGroupPricingDialog}
-                        style={{ width: '450px' }}
-                        header="Confirm"
-                        modal
-                        footer={deleteGroupPricingDialogFooter}
-                        onHide={hideDeleteGroupPricingDialog}
-                    >
+                    <Dialog visible={deleteGroupPricingDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteGroupPricingDialogFooter} onHide={hideDeleteGroupPricingDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {groupPricing && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} pricing for <b>{groupPricing.reseller_group?.name}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{groupPricing.reseller_group?.name}</b>
                                 </span>
                             )}
                         </div>
                     </Dialog>
 
-                    <Dialog
-                        visible={deleteGroupPricingsDialog}
-                        style={{ width: '450px' }}
-                        header="Confirm"
-                        modal
-                        footer={deleteGroupPricingsDialogFooter}
-                        onHide={hideDeleteGroupPricingsDialog}
-                    >
+                    <Dialog visible={deleteGroupPricingsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteGroupPricingsDialogFooter} onHide={hideDeleteGroupPricingsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {groupPricing && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected group pricings?</span>}

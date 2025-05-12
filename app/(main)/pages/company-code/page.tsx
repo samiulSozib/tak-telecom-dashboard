@@ -10,7 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { _fetchCompanies,_deleteCompany, _addCompany,_editCompany } from '@/app/redux/actions/companyActions';
+import { _fetchCompanies, _deleteCompany, _addCompany, _editCompany } from '@/app/redux/actions/companyActions';
 import { useSelector } from 'react-redux';
 import { Dropdown } from 'primereact/dropdown';
 import { _fetchCountries } from '@/app/redux/actions/countriesActions';
@@ -23,43 +23,41 @@ import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
+import { isRTL } from '../../utilities/rtlUtil';
 
 const CompanyCodePage = () => {
-
-
-    let emptyCompanyCode:CompanyCode={
+    let emptyCompanyCode: CompanyCode = {
         id: 0,
         company_id: 0,
         reserved_digit: '',
         deleted_at: '',
         created_at: '',
         updated_at: '',
-        company: null,
-    }
+        company: null
+    };
 
     const [companyCodeDialog, setCompanyCodeDialog] = useState(false);
     const [deleteCompanyCodeDialog, setDeleteCompanyCodeDialog] = useState(false);
     const [deleteCompanyCodesDialog, setDeleteCompanyCodesDialog] = useState(false);
-    const [companyCode,setCompanyCode]=useState<CompanyCode>(emptyCompanyCode)
+    const [companyCode, setCompanyCode] = useState<CompanyCode>(emptyCompanyCode);
     const [selectedCompanies, setSelectedCompanyCode] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const dispatch=useDispatch<AppDispatch>()
-    const {companyCodes,loading}=useSelector((state:any)=>state.companyCodeReducer)
-    const {companies}=useSelector((state:any)=>state.companyReducer)
-    const {t}=useTranslation()
-    const [searchTag,setSearchTag]=useState("")
+    const dispatch = useDispatch<AppDispatch>();
+    const { companyCodes, loading } = useSelector((state: any) => state.companyCodeReducer);
+    const { companies } = useSelector((state: any) => state.companyReducer);
+    const { t } = useTranslation();
+    const [searchTag, setSearchTag] = useState('');
 
-
-    useEffect(()=>{
-        dispatch(_fetchCompanyCodes(searchTag))
-        dispatch(_fetchCompanies())
-    },[dispatch,searchTag])
+    useEffect(() => {
+        dispatch(_fetchCompanyCodes(searchTag));
+        dispatch(_fetchCompanies());
+    }, [dispatch, searchTag]);
 
     const openNew = () => {
-        setCompanyCode(emptyCompanyCode)
+        setCompanyCode(emptyCompanyCode);
         setSubmitted(false);
         setCompanyCodeDialog(true);
     };
@@ -67,20 +65,18 @@ const CompanyCodePage = () => {
     const hideDialog = () => {
         setSubmitted(false);
         setCompanyCodeDialog(false);
-        setCompanyCode(emptyCompanyCode)
+        setCompanyCode(emptyCompanyCode);
     };
 
     const hideDeleteCompanyCodeDialog = () => {
         setDeleteCompanyCodeDialog(false);
-        setCompanyCode(emptyCompanyCode)
+        setCompanyCode(emptyCompanyCode);
     };
 
     const hideDeleteCompanyCodesDialog = () => {
         setDeleteCompanyCodesDialog(false);
-        setCompanyCode(emptyCompanyCode)
+        setCompanyCode(emptyCompanyCode);
     };
-
-
 
     const saveCompanyCode = () => {
         setSubmitted(true);
@@ -89,25 +85,24 @@ const CompanyCodePage = () => {
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
                 detail: t('PLEASE_FILLED_ALL_REQUIRED_FIELDS'),
-                life: 3000,
+                life: 3000
             });
             return; // Prevent saving if validation fails
         }
         if (companyCode.id && companyCode.id !== 0) {
-            dispatch(_editCompanyCode(companyCode,toast,t));
-
+            dispatch(_editCompanyCode(companyCode, toast, t));
         } else {
-            dispatch(_addCompanyCode(companyCode,toast,t));
+            dispatch(_addCompanyCode(companyCode, toast, t));
         }
 
         setCompanyCodeDialog(false);
         setCompanyCode(emptyCompanyCode);
-        setSubmitted(false)
+        setSubmitted(false);
     };
 
     const editCompanyCode = (companyCode: CompanyCode) => {
         //console.log(companyCode.company)
-        setCompanyCode({ ...companyCode});
+        setCompanyCode({ ...companyCode });
 
         setCompanyCodeDialog(true);
     };
@@ -119,27 +114,37 @@ const CompanyCodePage = () => {
 
     const deleteCompanyCode = () => {
         if (!companyCode?.id) {
-            console.error("Company Code ID is undefined.");
+            console.error('Company Code ID is undefined.');
             return;
         }
-        dispatch(_deleteCompanyCode(companyCode?.id,toast,t))
+        dispatch(_deleteCompanyCode(companyCode?.id, toast, t));
         setDeleteCompanyCodeDialog(false);
-
     };
-
 
     const confirmDeleteSelected = () => {
         setDeleteCompanyCodesDialog(true);
     };
 
-
-
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2    ">
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label={t('COMPANYCODE.TABLE.CREATECOMPANYCODE')} icon="pi pi-plus" severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"} onClick={openNew} />
-                    <Button style={{ gap: ["ar", "fa", "ps", "bn"].includes(i18n.language) ? '0.5rem' : '' }} label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedCompanies || !(selectedCompanies as any).length} />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('COMPANYCODE.TABLE.CREATECOMPANYCODE')}
+                        icon="pi pi-plus"
+                        severity="success"
+                        className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
+                        onClick={openNew}
+                    />
+                    <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    />
                 </div>
             </React.Fragment>
         );
@@ -150,17 +155,11 @@ const CompanyCodePage = () => {
             <div className="flex items-center">
                 <span className="block mt-2 md:mt-0 p-input-icon-left w-full md:w-auto">
                     <i className="pi pi-search" />
-                    <InputText
-                        type="search"
-                        onInput={(e) => setSearchTag(e.currentTarget.value)}
-                        placeholder={t('ECOMMERCE.COMMON.SEARCH')}
-                        className="w-full md:w-auto"
-                    />
+                    <InputText type="search" onInput={(e) => setSearchTag(e.currentTarget.value)} placeholder={t('ECOMMERCE.COMMON.SEARCH')} className="w-full md:w-auto" />
                 </span>
             </div>
         );
     };
-
 
     const reservedDigitBodyTemplate = (rowData: CompanyCode) => {
         return (
@@ -170,8 +169,6 @@ const CompanyCodePage = () => {
             </>
         );
     };
-
-
 
     const countryNameBodyTemplate = (rowData: CompanyCode) => {
         return (
@@ -200,14 +197,10 @@ const CompanyCodePage = () => {
         );
     };
 
-
-
-
-
     const actionBodyTemplate = (rowData: CompanyCode) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className={["ar", "fa", "ps", "bn"].includes(i18n.language) ? "ml-2" : "mr-2"}  onClick={()=>editCompanyCode(rowData)}/>
+                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editCompanyCode(rowData)} />
                 <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteCompany(rowData)} />
             </>
         );
@@ -225,38 +218,35 @@ const CompanyCodePage = () => {
 
     const companyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={saveCompanyCode} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={saveCompanyCode} />
         </>
     );
     const deleteCompanyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteCompanyCodeDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" onClick={deleteCompanyCode} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteCompanyCodeDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteCompanyCode} />
         </>
     );
     const deleteCompaniesDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" onClick={hideDeleteCompanyCodesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success"  />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteCompanyCodesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
         </>
     );
 
     useEffect(() => {
         if (companyCode.company_id) {
-            const selectedCompany = companies.find((company:Company) => company.id === companyCode.company_id);
+            const selectedCompany = companies.find((company: Company) => company.id === companyCode.company_id);
 
             if (selectedCompany) {
                 setCompanyCode((prev) => ({
                     ...prev,
-                    company: selectedCompany, // Update with the selected company object
+                    company: selectedCompany // Update with the selected company object
                 }));
             }
         }
     }, [companyCode.company_id, companies]);
-
-
-
 
     return (
         <div className="grid -m-5">
@@ -276,33 +266,66 @@ const CompanyCodePage = () => {
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} company code"
+                        paginatorTemplate={
+                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
+                        dir={isRTL() ? 'rtl' : 'ltr'}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                         globalFilter={globalFilter}
-                        emptyMessage="No Company Codes found."
                         // header={header}
                         responsiveLayout="scroll"
-
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="reserved_digit" header={t('COMPANYCODE.TABLE.COLUMN.RESERVEDDIGIT')}  sortable body={reservedDigitBodyTemplate}></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="company.country.country_name" header={t('COMPANYCODE.TABLE.COLUMN.COUNTRYNAME')} body={countryNameBodyTemplate} sortable></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="company.company_name" header={t('COMPANYCODE.TABLE.COLUMN.COMPANYNAME')} sortable body={companyNameBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="company.country.country_telecom_code" header={t('COMPANYCODE.TABLE.COLUMN.COUNTRYCODE')} sortable body={countryCodeBodyTemplate} ></Column>
-                        <Column style={{...customCellStyle,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="reserved_digit"
+                            header={t('COMPANYCODE.TABLE.COLUMN.RESERVEDDIGIT')}
+                            sortable
+                            body={reservedDigitBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="company.country.country_name"
+                            header={t('COMPANYCODE.TABLE.COLUMN.COUNTRYNAME')}
+                            body={countryNameBodyTemplate}
+                            sortable
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="company.company_name"
+                            header={t('COMPANYCODE.TABLE.COLUMN.COMPANYNAME')}
+                            sortable
+                            body={companyNameBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="company.country.country_telecom_code"
+                            header={t('COMPANYCODE.TABLE.COLUMN.COUNTRYCODE')}
+                            sortable
+                            body={countryCodeBodyTemplate}
+                        ></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
-                    <Dialog visible={companyCodeDialog}  style={{ width: '700px',padding:'5px' }} header={t('MENU.COMPANYCODE')} modal className="p-fluid" footer={companyDialogFooter} onHide={hideDialog}>
-                        <div className='card' style={{padding:'40px'}}>
+                    <Dialog visible={companyCodeDialog} style={{ width: '700px', padding: '5px' }} header={t('MENU.COMPANYCODE')} modal className="p-fluid" footer={companyDialogFooter} onHide={hideDialog}>
+                        <div className="card" style={{ padding: '40px' }}>
                             <div className="field">
-                                <label htmlFor="name" style={{fontWeight:'bold'}}>{t('COMPANYCODE.FORM.INPUT.RESERVEDDIGIT')}</label>
+                                <label htmlFor="name" style={{ fontWeight: 'bold' }}>
+                                    {t('COMPANYCODE.FORM.INPUT.RESERVEDDIGIT')}
+                                </label>
                                 <InputText
                                     id="reserved_digit"
                                     value={companyCode?.reserved_digit}
                                     onChange={(e) =>
                                         setCompanyCode((prevCompanyCode) => ({
                                             ...prevCompanyCode,
-                                            reserved_digit: e.target.value,
+                                            reserved_digit: e.target.value
                                         }))
                                     }
                                     required
@@ -312,31 +335,38 @@ const CompanyCodePage = () => {
                                         'p-invalid': submitted && !companyCode.reserved_digit
                                     })}
                                 />
-                                {submitted && !companyCode?.reserved_digit  && (<small className="p-invalid" style={{ color: 'red' }}>Reserved Digit is required.</small>)}
+                                {submitted && !companyCode?.reserved_digit && (
+                                    <small className="p-invalid" style={{ color: 'red' }}>
+                                        Reserved Digit is required.
+                                    </small>
+                                )}
                             </div>
 
                             <div className="formgrid grid">
                                 <div className="field col">
-                                    <label htmlFor="company" style={{fontWeight:'bold'}}>{t('COMPANYCODE.FORM.INPUT.COMPANYNAME')}</label>
+                                    <label htmlFor="company" style={{ fontWeight: 'bold' }}>
+                                        {t('COMPANYCODE.FORM.INPUT.COMPANYNAME')}
+                                    </label>
                                     <Dropdown
                                         id="company"
                                         value={companyCode.company}
                                         options={companies}
                                         onChange={(e) =>
                                             setCompanyCode((prevCompanyCode) => ({
-
                                                 ...prevCompanyCode,
-                                                company: e.value,
+                                                company: e.value
                                             }))
                                         }
-                                        optionLabel='company_name'
-
+                                        optionLabel="company_name"
                                         placeholder={t('COMPANYCODE.FORM.PLACEHOLDER.COMPANYNAME')}
                                         className="w-full"
                                     />
-                                {submitted && !companyCode?.company_id  && (<small className="p-invalid" style={{ color: 'red' }}>Company is required.</small>)}
+                                    {submitted && !companyCode?.company_id && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            Company is required.
+                                        </small>
+                                    )}
                                 </div>
-
                             </div>
                         </div>
                     </Dialog>
@@ -346,7 +376,7 @@ const CompanyCodePage = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {companyCode && (
                                 <span>
-                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{companyCode.reserved_digit}</b>?
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{companyCode.reserved_digit}</b>
                                 </span>
                             )}
                         </div>
