@@ -8,8 +8,8 @@ i18n
     .use(LanguageDetector) // Detect user language
     .use(initReactI18next) // Pass the instance to react-i18next
     .init({
-        lng:'en',
-        fallbackLng: 'en', // Default language
+        lng:'fa',
+        fallbackLng: 'fa', // Default language
         debug: process.env.NODE_ENV === 'development', // Debug in development mode
         interpolation: {
             escapeValue: false, // React already escapes values

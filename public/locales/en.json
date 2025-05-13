@@ -935,40 +935,46 @@
     },
 
 
-    "DASHBOARD.TODAY_PENDING_ORDERS":"Today Pending Orders",
-    "DASHBOARD.TODAY_SUCCESS_ORDERS":"Today Success Orders",
-    "DASHBOARD.TODAY_REJECTED_ORDERS":"Today Rejected Orders",
-
-
-
-   "THIS_FIELD_IS_REQUIRED":"This Field is Required",
-
-
-  "validation": {
-    "new_password": {
-      "min": "Minimum length is 8 characters",
-      "required": "New Password is required"
+    "DASHBOARD.TODAY_PENDING_ORDERS": "Today Pending Orders",
+    "DASHBOARD.TODAY_SUCCESS_ORDERS": "Today Success Orders",
+    "DASHBOARD.TODAY_REJECTED_ORDERS": "Today Rejected Orders",
+    "THIS_FIELD_IS_REQUIRED": "This Field is Required",
+    "validation": {
+        "new_password": {
+            "min": "Minimum length is 8 characters",
+            "required": "New Password is required"
+        },
+        "confirm_new_password": {
+            "oneOf": "Passwords do not match",
+            "required": "Confirm Password is required"
+        },
+        "new_pin": {
+            "length": "PIN must be exactly 4 digits",
+            "required": "PIN is required"
+        },
+        "confirm_new_pin": {
+            "oneOf": "PINs do not match",
+            "required": "Confirm PIN is required"
+        }
     },
-    "confirm_new_password": {
-      "oneOf": "Passwords do not match",
-      "required": "Confirm Password is required"
+    "group_pricing": {
+        "missing_group_or_service": "Please select both Reseller Group and Service",
+        "fixed_fee_required": "Fixed Fee is required when Use Fixed Fee is enabled",
+        "markup_required": "Markup Percentage is required when Use Markup is enabled"
     },
-    "new_pin": {
-      "length": "PIN must be exactly 4 digits",
-      "required": "PIN is required"
-    },
-    "confirm_new_pin": {
-      "oneOf": "PINs do not match",
-      "required": "Confirm PIN is required"
+    "login": {
+        "welcome": "Welcome, Tak Telecom!",
+        "signin_continue": "Sign in to continue",
+        "email_label": "Email",
+        "email_placeholder": "Email address",
+        "password_label": "Password",
+        "password_placeholder": "Password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "sign_in": "Sign In",
+        "signing_in": "Signing In...",
+        "login_success": "Login Success!",
+        "login_fail": "Login Failed!",
+        "unexpected_error": "An unexpected error occurred. Please try again."
     }
-  },
-
-  "group_pricing": {
-      "missing_group_or_service": "Please select both Reseller Group and Service",
-      "fixed_fee_required": "Fixed Fee is required when Use Fixed Fee is enabled",
-      "markup_required": "Markup Percentage is required when Use Markup is enabled"
-    }
-
-
-
 }

@@ -11,8 +11,10 @@ import { useDispatch } from 'react-redux';
 import { _login } from '../../../../app/redux/actions/authActions';
 import { Toast } from 'primereact/toast';
 import Swal from 'sweetalert2';
+import { useTranslation } from 'react-i18next';
 
 const LoginPage = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(false);
@@ -20,7 +22,6 @@ const LoginPage = () => {
     const [error, setError] = useState<string | null>(null);
     const dispatch = useDispatch();
     const toast = useRef<Toast>(null);
-
 
     const { layoutConfig } = useContext(LayoutContext);
     const router = useRouter();
@@ -30,17 +31,16 @@ const LoginPage = () => {
         { 'p-input-filled': layoutConfig.inputStyle === 'filled' }
     );
 
-    // Load saved email from localStorage when component mounts
     useEffect(() => {
         const savedEmail = localStorage.getItem('rememberedEmail');
-        const savePassword=localStorage.getItem('rememberedPassword')
+        const savePassword = localStorage.getItem('rememberedPassword');
         if (savedEmail) {
             setEmail(savedEmail);
             setChecked(true);
         }
-        if(savePassword){
-            setPassword(savePassword)
-            setChecked(true)
+        if (savePassword) {
+            setPassword(savePassword);
+            setChecked(true);
         }
     }, []);
 
@@ -49,37 +49,38 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            const result = await dispatch<any>(_login(email, password,toast)); // Use the return value
+            const result = await dispatch<any>(_login(email, password, toast));
             if (result.success) {
                 if (checked) {
                     localStorage.setItem('rememberedEmail', email);
-                    localStorage.setItem('rememberedPassword',password)
+                    localStorage.setItem('rememberedPassword', password);
                 } else {
                     localStorage.removeItem('rememberedEmail');
+                    localStorage.removeItem('rememberedPassword');
                 }
+
                 Swal.fire({
-                    title: "Login Success!",
-                    icon: "success",
+                    title: t('login.login_success'),
+                    icon: 'success',
                     draggable: true
-                  });
-                router.push('/'); // Navigate only on success
+                });
 
-
+                router.push('/');
             } else {
                 Swal.fire({
-                    title: "Login Fail!",
-                    icon: "error",
+                    title: t('login.login_fail'),
+                    icon: 'error',
                     draggable: true
-                  });
-                setError(result.error || 'Login failed. Please try again.');
+                });
+                setError(result.error || t('login.login_fail'));
             }
         } catch (err) {
             Swal.fire({
-                title: "Login Fail!",
-                icon: "error",
+                title: t('login.login_fail'),
+                icon: 'error',
                 draggable: true
-              });
-            setError('An unexpected error occurred. Please try again.');
+            });
+            setError(t('login.unexpected_error'));
         } finally {
             setLoading(false);
         }
@@ -103,23 +104,21 @@ const LoginPage = () => {
                     <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
                         <div className="text-center mb-5">
                             <img src="/layout/images/tak_telecom.jpeg" alt="Image" height="50" className="mb-3" />
-                            <div className="text-900 text-3xl font-medium mb-3">Welcome, Tak Telecom!</div>
-                            <span className="text-600 font-medium">Sign in to continue</span>
+                            <div className="text-900 text-3xl font-medium mb-3">{t('login.welcome')}</div>
+                            <span className="text-600 font-medium">{t('login.signin_continue')}</span>
                         </div>
 
                         <div>
                             {error && (
-                                <div className="text-red-500 text-center mb-4">
-                                    {error}
-                                </div>
+                                <div className="text-red-500 text-center mb-4">{error}</div>
                             )}
                             <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
-                                Email
+                                {t('login.email_label')}
                             </label>
                             <InputText
                                 id="email1"
                                 type="text"
-                                placeholder="Email address"
+                                placeholder={t('login.email_placeholder')}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full md:w-30rem mb-5"
@@ -127,13 +126,13 @@ const LoginPage = () => {
                             />
 
                             <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
-                                Password
+                                {t('login.password_label')}
                             </label>
                             <Password
                                 inputId="password1"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
+                                placeholder={t('login.password_placeholder')}
                                 toggleMask
                                 className="w-full mb-5"
                                 inputClassName="w-full p-3 md:w-30rem"
@@ -146,22 +145,23 @@ const LoginPage = () => {
                                         checked={checked}
                                         onChange={(e) => setChecked(e.checked ?? false)}
                                         className="mr-2"
-                                    ></Checkbox>
-                                    <label htmlFor="rememberme1">Remember me</label>
+                                    />
+                                    <label htmlFor="rememberme1">{t('login.remember_me')}</label>
                                 </div>
                                 <a
                                     className="font-medium no-underline ml-2 text-right cursor-pointer"
                                     style={{ color: 'var(--primary-color)' }}
                                 >
-                                    Forgot password?
+                                    {t('login.forgot_password')}
                                 </a>
                             </div>
+
                             <Button
-                                label={loading ? 'Signing In...' : 'Sign In'}
+                                label={loading ? t('login.signing_in') : t('login.sign_in')}
                                 className="w-full p-3 text-xl"
                                 onClick={() => handleLogin()}
                                 disabled={loading}
-                            ></Button>
+                            />
                         </div>
                     </div>
                 </div>
