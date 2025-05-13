@@ -209,25 +209,33 @@ const OrderPage = () => {
         );
     };
 
-    const statusBodyTemplate = (rowData: Order) => {
-        // Define the text and background color based on the status value
-        const getStatusText = (status: number) => {
-            return status === 1 ? 'Active' : 'Deactivated';
-        };
+ const statusBodyTemplate = (rowData: Order) => {
+        const status = rowData.status;
 
-        const getStatusClasses = (status: number) => {
-            return status === 1 ? 'bg-green-500 text-white' : 'bg-red-500 text-white';
-        };
+        let statusText = 'Unknown';
+        let statusClass = 'bg-gray-500';
+
+        if (status == '0') {
+            statusText = t('ORDER.STATUS.PENDING');
+            statusClass = 'bg-yellow-500 text-white';
+        } else if (status == '1') {
+            statusText = t('ORDER.STATUS.CONFIRMED');
+            statusClass = 'bg-green-500 text-white';
+        } else if (status == '2') {
+            statusText = t('ORDER.STATUS.REJECTED');
+            statusClass = 'bg-red-500 text-white';
+        }
 
         return (
             <>
                 <span className="p-column-title">Status</span>
-                <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${getStatusClasses(rowData.status)}`}>
-                    {getStatusText(rowData.status)}
+                <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${statusClass}}`}>
+                    {statusText}
                 </span>
             </>
         );
     };
+
 
     // const actionBodyTemplate = (rowData: Order) => {
     //     return (
