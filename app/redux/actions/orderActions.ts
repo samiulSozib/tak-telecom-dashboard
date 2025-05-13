@@ -15,6 +15,9 @@ import {
     DELETE_ORDER_REQUEST,
     DELETE_ORDER_SUCCESS,
     DELETE_ORDER_FAIL,
+    CHANGE_ORDER_STATUS_REQUEST,
+  CHANGE_ORDER_STATUS_SUCCESS,
+  CHANGE_ORDER_STATUS_FAIL,
 } from '../constants/orderConstants';
 import { Toast } from 'primereact/toast';
 
@@ -132,4 +135,74 @@ export const _deleteOrder = (orderId: number, toast: React.RefObject<Toast>) => 
             life: 3000,
         });
     }
+};
+
+
+
+export const _changeOrderStatus = (
+  orderId: number,
+  status: number,
+  toast: React.RefObject<Toast>,
+  rejectReason?: string
+) => {
+  return async (dispatch: Dispatch) => {
+    dispatch({ type: CHANGE_ORDER_STATUS_REQUEST });
+
+    try {
+
+      const token = localStorage.getItem('api_token') || '';
+      const baseURL = `${process.env.NEXT_PUBLIC_BASE_URL}/orders`;
+      let response;
+
+      switch (status) {
+        case 3:
+          response = await axios.get(`${baseURL}/underprocess-order/${orderId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          break;
+        case 1:
+          response = await axios.get(`${baseURL}/confirm-order/${orderId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          break;
+        case 2:
+          response = await axios.get(`${baseURL}/reject-order/${orderId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { rejectReason },
+          });
+          break;
+        default:
+          throw new Error('Invalid order status');
+      }
+      //console.log(response)
+      if (response.data.success === true) {
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.data.message,
+          life: 3000,
+        });
+
+        dispatch({
+          type: CHANGE_ORDER_STATUS_SUCCESS,
+          payload: { orderId, status, message: response.data.message },
+        });
+
+      } else {
+        throw new Error(response.data.message || 'Status change failed');
+      }
+    } catch (error: any) {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.message || 'Failed to update order status',
+        life: 3000,
+      });
+
+      dispatch({
+        type: CHANGE_ORDER_STATUS_FAIL,
+        payload: error.message,
+      });
+    }
+  };
 };

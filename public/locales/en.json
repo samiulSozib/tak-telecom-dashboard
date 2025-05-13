@@ -930,7 +930,9 @@
         "STATUS": {
             "PENDING": "Pending",
             "CONFIRMED": "Confirmed",
-            "REJECTED": "Rejected"
+            "REJECTED": "Rejected",
+            "UNDER_PROCESS": "Under Process",
+            "CANCELLED": "Cancelled"
         }
     },
     "DASHBOARD.TODAY_PENDING_ORDERS": "Today Pending Orders",
@@ -974,5 +976,23 @@
         "login_success": "Login Success!",
         "login_fail": "Login Failed!",
         "unexpected_error": "An unexpected error occurred. Please try again."
+    },
+    "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "Are you sure you want to change the status of",
+    "HAWALA": {
+        "TABLE": {
+            "COLUMN": {
+                "HAWALA_NUMBER": "Hawala Number",
+                "SENDER_NAME": "Sender Name",
+                "RECEIVER_NAME": "Receiver Name",
+                "AMOUNT": "Amount",
+                "CURRENCY": "Currency",
+                "CONVERTED_AMOUNT": "Converted Amount",
+                "RESELLER_CURRENCY": "Reseller Currency",
+                "COMMISSION": "Commission",
+                "ADMIN_NOTE": "Admin Note",
+                "RESELLER_NAME": "Reseller Name",
+                "STATUS": "Status"
+            }
+        }
     }
 }

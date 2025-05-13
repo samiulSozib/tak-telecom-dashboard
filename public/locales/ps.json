@@ -930,7 +930,9 @@
         "STATUS": {
             "PENDING": "په تمه",
             "CONFIRMED": "تایید شوی",
-            "REJECTED": "رد شوی"
+            "REJECTED": "رد شوی",
+            "UNDER_PROCESS": "تر پروسې لاندې",
+            "CANCELLED": "لغوه شوی"
         }
     },
     "DASHBOARD.TODAY_PENDING_ORDERS": "د نن ورځې معطل امرونه",
@@ -974,5 +976,23 @@
         "login_success": "ننوتل بریالي وو!",
         "login_fail": "ننوتل ناکام شول!",
         "unexpected_error": "ناڅاپي تېروتنه وشوه. مهرباني وکړئ بیا هڅه وکړئ."
+    },
+    "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "ایا تاسو ډاډه یاست چې د حالت بدلول غواړئ؟",
+    "HAWALA": {
+        "TABLE": {
+            "COLUMN": {
+                "HAWALA_NUMBER": "د حوالې شمېره",
+                "SENDER_NAME": "د لېږونکي نوم",
+                "RECEIVER_NAME": "د ترلاسه کوونکي نوم",
+                "AMOUNT": "مقدار",
+                "CURRENCY": "پیسه",
+                "CONVERTED_AMOUNT": "تبدیل شوی مقدار",
+                "RESELLER_CURRENCY": "د بیاپلورونکي کرنسي",
+                "COMMISSION": "کمیسیون",
+                "ADMIN_NOTE": "د اډمین یادښت",
+                "RESELLER_NAME": "د بیاپلورونکي نوم",
+                "STATUS": "حالت"
+            }
+        }
     }
 }

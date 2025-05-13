@@ -461,15 +461,48 @@ export interface HawalaBranch {
 export interface Hawala {
   id?: number | string;
   reseller_id?: number | string;
-  rechargeble_account?: string;
-  bundle?: Bundle | null;
   reseller?: Reseller | null;
-  transaction_id?: string | number | null;
+
+  hawala_number?: string;
+  sender_name?: string;
+  receiver_name?: string;
+  receiver_father_name?: string | null;
+  receiver_id_card_number?: string | null;
+
+  hawala_amount?: string | number;
+  hawala_amount_currency_id?: number | string;
+  hawala_amount_currency_code?: string;
+  hawala_amount_currency_rate?: string | number;
+
+  reseller_prefered_currency_id?: number | string;
+  reseller_prefered_currency_code?: string;
+  reseller_prefered_currency_rate?: string | number;
+
+  converted_amount_taken_from_reseller?: string | number;
+
+  commission_amount?: string | number;
+  commission_paid_by_sender?: boolean;
+  commission_paid_by_receiver?: boolean;
+
+  reseller_commission_share?: string | number | null;
+  branch_commission_share?: string | number | null;
+  admin_commission_share?: string | number | null;
+
+  admin_note?: string | null;
+  branch?: HawalaBranch | null; // Replace `any` with your `Branch` type if available
+  hawala_branch_id?: number | string | null;
+
+  status?: string | number;
   is_paid?: boolean | number;
-  status?: number | string;
+
+  rechargeble_account?: string;
+  transaction_id?: string | number | null;
+  bundle?: Bundle | null;
+
   created_at?: Date | string;
   updated_at?: Date | string;
 }
+
 
 export interface GroupPricing{
     id:number,

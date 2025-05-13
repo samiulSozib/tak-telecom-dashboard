@@ -930,7 +930,9 @@
         "STATUS": {
             "PENDING": "در انتظار",
             "CONFIRMED": "تایید شده",
-            "REJECTED": "رد شده"
+            "REJECTED": "رد شده",
+            "UNDER_PROCESS": "در حال بررسی",
+            "CANCELLED": "لغو شده"
         }
     },
     "DASHBOARD.TODAY_PENDING_ORDERS": "سفارش‌های در انتظار امروز",
@@ -974,5 +976,23 @@
         "login_success": "ورود موفقیت‌آمیز بود!",
         "login_fail": "ورود ناموفق بود!",
         "unexpected_error": "خطای غیرمنتظره‌ای رخ داد. لطفاً دوباره تلاش کنید."
+    },
+    "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "آیا مطمئن هستید که می‌خواهید وضعیت را تغییر دهید؟",
+    "HAWALA": {
+        "TABLE": {
+            "COLUMN": {
+                "HAWALA_NUMBER": "شماره حواله",
+                "SENDER_NAME": "نام فرستنده",
+                "RECEIVER_NAME": "نام گیرنده",
+                "AMOUNT": "مقدار",
+                "CURRENCY": "واحد پول",
+                "CONVERTED_AMOUNT": "مقدار تبدیل‌شده",
+                "RESELLER_CURRENCY": "واحد پول فروشنده",
+                "COMMISSION": "کمیسیون",
+                "ADMIN_NOTE": "یادداشت مدیر",
+                "RESELLER_NAME": "نام فروشنده",
+                "STATUS": "وضعیت"
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ import { Paginator } from 'primereact/paginator';
 import { AppDispatch } from '@/app/redux/store';
 import { Order } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
-import { _deleteOrder, _fetchOrders } from '@/app/redux/actions/orderActions';
+import { _changeOrderStatus, _deleteOrder, _fetchOrders } from '@/app/redux/actions/orderActions';
 import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { SplitButton } from 'primereact/splitbutton';
@@ -45,6 +45,8 @@ const OrderPage = () => {
     const [order, setOrder] = useState<Order>();
     const { t } = useTranslation();
     const [searchTag, setSearchTag] = useState('');
+    const [statusChangeDialog, setStatusChangeDialog] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState<number|null>();
 
     // Add these state variables near your other state declarations
     const [filterDialogVisible, setFilterDialogVisible] = useState(false);
@@ -403,6 +405,10 @@ const OrderPage = () => {
             statusText = t('ORDER.STATUS.REJECTED');
             statusClass = 'bg-red-500 text-white';
         }
+        else if (status == '3') {
+            statusText = t('ORDER.STATUS.UNDER_PROCESS');
+            statusClass = 'bg-gray-500 text-white';
+        }
 
         return (
             <>
@@ -439,19 +445,22 @@ const OrderPage = () => {
                 icon: 'pi pi-trash',
                 command: () => confirmDeleteOrder(rowData)
                 //disabled: menuType !== 'admin', // Example condition
-            }
-            // {
-            //     label: 'Activate',
-            //     icon: 'pi pi-check',
-            //     command: () => confirmChangeStatus(rowData),
-            //     visible: rowData.status === 0, // Disable if already active
-            // },
-            // {
-            //     label: 'Deactivate',
-            //     icon: 'pi pi-times',
-            //     command: () => confirmChangeStatus(rowData),
-            //     visible: rowData.status === 1, // Disable if already inactive
-            // },
+            },
+            {
+                label: t('CONFIRMED'),
+                icon: 'pi pi-check',
+                command: () => confirmChangeStatus(rowData, 1), // 1 for confirmed
+            },
+            {
+                label: t('UNDER_PROCESS'),
+                icon: 'pi pi-spinner',
+                command: () => confirmChangeStatus(rowData, 3), // 3 for pending/under process
+            },
+            {
+                label: t('REJECTED'),
+                icon: 'pi pi-times',
+                command: () => confirmChangeStatus(rowData, 2), // 2 for rejected
+            },
         ];
 
         return (
@@ -465,6 +474,24 @@ const OrderPage = () => {
             />
         );
     };
+
+    const confirmChangeStatus = (order: Order, newStatus: number) => {
+        setOrder(order);
+        setSelectedStatus(newStatus);
+        setStatusChangeDialog(true);
+    };
+
+    const changeOrderStatus = () => {
+    if (!order?.id || selectedStatus === null) {
+        console.error('Order ID or status is undefined.');
+        return;
+    }
+
+    // Dispatch an action to update the order status
+    // You'll need to implement this action in your orderActions.ts
+    dispatch(_changeOrderStatus(order.id, selectedStatus as number, toast));
+    setStatusChangeDialog(false);
+};
 
     // const header = (
     //     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -617,6 +644,31 @@ const OrderPage = () => {
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {order && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
+                        </div>
+                    </Dialog>
+                    <Dialog
+                        visible={statusChangeDialog}
+                        style={{ width: '450px' }}
+                        header={t('TABLE.GENERAL.CONFIRM')}
+                        modal
+                        footer={
+                            <>
+                                <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" text onClick={() => setStatusChangeDialog(false)} />
+                                <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" text onClick={changeOrderStatus} />
+                            </>
+                        }
+                        onHide={() => setStatusChangeDialog(false)}
+                    >
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {order && (
+                                <span>
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS')} <b>{order.rechargeble_account}</b> to{' '}
+                                    {selectedStatus === 0 && t('ORDER.STATUS.PENDING')}
+                                    {selectedStatus === 1 && t('ORDER.STATUS.CONFIRMED')}
+                                    {selectedStatus === 2 && t('ORDER.STATUS.REJECTED')}?
+                                </span>
+                            )}
                         </div>
                     </Dialog>
                 </div>

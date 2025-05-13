@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { Dropdown } from 'primereact/dropdown';
 import { Paginator } from 'primereact/paginator';
 import { AppDispatch } from '@/app/redux/store';
-import { Order } from '@/types/interface';
+import { Hawala, Order } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
 import { _deleteOrder, _fetchOrders } from '@/app/redux/actions/orderActions';
 import withAuth from '../../authGuard';
@@ -45,6 +45,10 @@ const OrderPage = () => {
     useEffect(() => {
         dispatch(_fetchHawalaList(1, searchTag));
     }, [dispatch, searchTag]);
+
+    useEffect(() => {
+        console.log(hawalas);
+    }, [dispatch, hawalas]);
 
     const hideDialog = () => {
         setSubmitted(false);
@@ -106,6 +110,87 @@ const OrderPage = () => {
         );
     };
 
+    const hawalaNumberBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Hawala Number</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.hawala_number}</span>
+            </>
+        );
+    };
+
+    const senderNameBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Sender Name</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.sender_name}</span>
+            </>
+        );
+    };
+
+    const receiverNameBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Receiver Name</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.receiver_name}</span>
+            </>
+        );
+    };
+
+    const hawalaAmountBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Hawala Amount</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.hawala_amount}</span>
+            </>
+        );
+    };
+
+    const hawalaAmounCurrencyCodetBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Hawala Amount Currency Code</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.hawala_amount_currency_code}</span>
+            </>
+        );
+    };
+
+    const convertedAmountTakenResellerBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Converted Amount Taken Reseller</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.converted_amount_taken_from_reseller}</span>
+            </>
+        );
+    };
+
+    const resellerPreferedCurrencyCodeBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Reseller Prefered Currency Code</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.reseller_prefered_currency_code}</span>
+            </>
+        );
+    };
+
+    const commissionAmountBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Commission Amount</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.commission_amount}</span>
+            </>
+        );
+    };
+
+    const adminNoteBodyTemplate = (rowData: Hawala) => {
+        return (
+            <>
+                <span className="p-column-title">Admin Node</span>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.admin_note}</span>
+            </>
+        );
+    };
+
     const resellerNameBodyTemplate = (rowData: Order) => {
         return (
             <>
@@ -115,127 +200,67 @@ const OrderPage = () => {
         );
     };
 
-    const rechargeableAccountBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Account</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.rechargeble_account}</span>
-            </>
-        );
-    };
+    // const createdAtBodyTemplate = (rowData: Hawala) => {
+    //     const formatDate = (dateString: string) => {
+    //         const date = new Date(dateString);
+    //         const optionsDate: Intl.DateTimeFormatOptions = {
+    //             year: 'numeric',
+    //             month: 'long',
+    //             day: 'numeric'
+    //         };
+    //         const optionsTime: Intl.DateTimeFormatOptions = {
+    //             hour: '2-digit',
+    //             minute: '2-digit',
+    //             hour12: true
+    //         };
+    //         const formattedDate = date.toLocaleDateString('en-US', optionsDate);
+    //         const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
 
-    const bundleIdBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Bundle ID</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.bundle?.id}</span>
-            </>
-        );
-    };
+    //         return { formattedDate, formattedTime };
+    //     };
 
-    const payableAmountBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Payable Amount</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.bundle?.buying_price}</span>
-            </>
-        );
-    };
+    //     const { formattedDate, formattedTime } = formatDate(rowData.created_at);
 
-    const bundleTitleBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Bundle Title</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.bundle?.bundle_title}</span>
-            </>
-        );
-    };
+    //     return (
+    //         <>
+    //             <span className="p-column-title">Created At</span>
+    //             <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
+    //             <br />
+    //             <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
+    //         </>
+    //     );
+    // };
 
-    const rejectedReasonBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Reject Reason</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.reject_reason}</span>
-            </>
-        );
-    };
+    const statusBodyTemplate = (rowData: Hawala) => {
+            const status = rowData.status;
 
-    const companyNameBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Company Name</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.bundle?.service?.company?.company_name}</span>
-            </>
-        );
-    };
+            let statusText = 'Unknown';
+            let statusClass = 'bg-gray-500';
 
-    const categoryNameNameBodyTemplate = (rowData: Order) => {
-        return (
-            <>
-                <span className="p-column-title">Category Name</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.bundle?.service?.service_category?.category_name}</span>
-            </>
-        );
-    };
+            if (status == 'pending') {
+                statusText = t('ORDER.STATUS.PENDING');
+                statusClass = 'bg-yellow-500 text-white';
+            } else if (status == 'confirm') {
+                statusText = t('ORDER.STATUS.CONFIRMED');
+                statusClass = 'bg-green-500 text-white';
+            } else if (status == 'cancelled') {
+                statusText = t('ORDER.STATUS.REJECTED');
+                statusClass = 'bg-red-500 text-white';
+            }
+            else if (status == 'under_process') {
+                statusText = t('ORDER.STATUS.UNDER_PROCESS');
+                statusClass = 'bg-gray-500 text-white';
+            }
 
-    const createdAtBodyTemplate = (rowData: Order) => {
-        const formatDate = (dateString: string) => {
-            const date = new Date(dateString);
-            const optionsDate: Intl.DateTimeFormatOptions = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            const optionsTime: Intl.DateTimeFormatOptions = {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            };
-            const formattedDate = date.toLocaleDateString('en-US', optionsDate);
-            const formattedTime = date.toLocaleTimeString('en-US', optionsTime);
-
-            return { formattedDate, formattedTime };
+            return (
+                <>
+                    <span className="p-column-title">Status</span>
+                    <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${statusClass}}`}>
+                        {statusText}
+                    </span>
+                </>
+            );
         };
-
-        const { formattedDate, formattedTime } = formatDate(rowData.created_at);
-
-        return (
-            <>
-                <span className="p-column-title">Created At</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedDate}</span>
-                <br />
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{formattedTime}</span>
-            </>
-        );
-    };
-
- const statusBodyTemplate = (rowData: Order) => {
-        const status = rowData.status;
-
-        let statusText = 'Unknown';
-        let statusClass = 'bg-gray-500';
-
-        if (status == '0') {
-            statusText = t('ORDER.STATUS.PENDING');
-            statusClass = 'bg-yellow-500 text-white';
-        } else if (status == '1') {
-            statusText = t('ORDER.STATUS.CONFIRMED');
-            statusClass = 'bg-green-500 text-white';
-        } else if (status == '2') {
-            statusText = t('ORDER.STATUS.REJECTED');
-            statusClass = 'bg-red-500 text-white';
-        }
-
-        return (
-            <>
-                <span className="p-column-title">Status</span>
-                <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${statusClass}}`}>
-                    {statusText}
-                </span>
-            </>
-        );
-    };
-
 
     // const actionBodyTemplate = (rowData: Order) => {
     //     return (
@@ -354,21 +379,68 @@ const OrderPage = () => {
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.RESELLERNAME')} body={resellerNameBodyTemplate}></Column>
+
                         <Column
                             style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
-                            field="rechargeble_account"
-                            header={t('ORDER.TABLE.COLUMN.RECHARGEABLEACCOUNT')}
-                            body={rechargeableAccountBodyTemplate}
+                            field="hawala_number"
+                            header={t('HAWALA.TABLE.COLUMN.HAWALA_NUMBER')}
+                            body={hawalaNumberBodyTemplate}
+                            sortable
                         ></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="bundle.id" header={t('ORDER.TABLE.COLUMN.BUNDLEID')} body={bundleIdBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.PAYABLEAMOUNT')} body={payableAmountBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.BUNDLETITLE')} body={bundleTitleBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.REJECTREASON')} body={rejectedReasonBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.COMPANYNAME')} body={companyNameBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.CATEGORYNAME')} body={categoryNameNameBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.ORDEREDDATE')} body={createdAtBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('ORDER.TABLE.COLUMN.STATUS')} sortable body={statusBodyTemplate}></Column>
+
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="sender_name" header={t('HAWALA.TABLE.COLUMN.SENDER_NAME')} body={senderNameBodyTemplate}></Column>
+
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="receiver_name"
+                            header={t('HAWALA.TABLE.COLUMN.RECEIVER_NAME')}
+                            body={receiverNameBodyTemplate}
+                        ></Column>
+
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="hawala_amount"
+                            header={t('HAWALA.TABLE.COLUMN.AMOUNT')}
+                            body={hawalaAmountBodyTemplate}
+                            sortable
+                        ></Column>
+
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="hawala_amount_currency_code"
+                            header={t('HAWALA.TABLE.COLUMN.CURRENCY')}
+                            body={hawalaAmounCurrencyCodetBodyTemplate}
+                        ></Column>
+
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="converted_amount_taken_from_reseller"
+                            header={t('HAWALA.TABLE.COLUMN.CONVERTED_AMOUNT')}
+                            body={convertedAmountTakenResellerBodyTemplate}
+                            sortable
+                        ></Column>
+
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="reseller_prefered_currency_code"
+                            header={t('HAWALA.TABLE.COLUMN.RESELLER_CURRENCY')}
+                            body={resellerPreferedCurrencyCodeBodyTemplate}
+                        ></Column>
+
+                        <Column
+                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="commission_amount"
+                            header={t('HAWALA.TABLE.COLUMN.COMMISSION')}
+                            body={commissionAmountBodyTemplate}
+                            sortable
+                        ></Column>
+
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="admin_note" header={t('HAWALA.TABLE.COLUMN.ADMIN_NOTE')} body={adminNoteBodyTemplate}></Column>
+
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('HAWALA.TABLE.COLUMN.RESELLER_NAME')} body={resellerNameBodyTemplate}></Column>
+
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('HAWALA.TABLE.COLUMN.STATUS')} body={statusBodyTemplate} sortable></Column>
+
                     </DataTable>
                     <Paginator
                         first={(pagination?.page - 1) * pagination?.items_per_page}
