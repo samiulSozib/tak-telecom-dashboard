@@ -933,8 +933,6 @@
             "REJECTED": "Rejected"
         }
     },
-
-
     "DASHBOARD.TODAY_PENDING_ORDERS": "Today Pending Orders",
     "DASHBOARD.TODAY_SUCCESS_ORDERS": "Today Success Orders",
     "DASHBOARD.TODAY_REJECTED_ORDERS": "Today Rejected Orders",

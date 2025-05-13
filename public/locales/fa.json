@@ -932,5 +932,47 @@
             "CONFIRMED": "تایید شده",
             "REJECTED": "رد شده"
         }
+    },
+    "DASHBOARD.TODAY_PENDING_ORDERS": "سفارش‌های در انتظار امروز",
+    "DASHBOARD.TODAY_SUCCESS_ORDERS": "سفارش‌های موفق امروز",
+    "DASHBOARD.TODAY_REJECTED_ORDERS": "سفارش‌های رد شده امروز",
+    "THIS_FIELD_IS_REQUIRED": "این فیلد الزامی است",
+    "validation": {
+        "new_password": {
+            "min": "حداقل طول باید ۸ کاراکتر باشد",
+            "required": "رمز عبور جدید الزامی است"
+        },
+        "confirm_new_password": {
+            "oneOf": "رمزهای عبور مطابقت ندارند",
+            "required": "تأیید رمز عبور الزامی است"
+        },
+        "new_pin": {
+            "length": "پین باید دقیقاً ۴ رقم باشد",
+            "required": "پین الزامی است"
+        },
+        "confirm_new_pin": {
+            "oneOf": "پین‌ها مطابقت ندارند",
+            "required": "تأیید پین الزامی است"
+        }
+    },
+    "group_pricing": {
+        "missing_group_or_service": "لطفاً هر دو گروه فروشنده و سرویس را انتخاب کنید",
+        "fixed_fee_required": "هنگامی که هزینه ثابت فعال است، وارد کردن آن الزامی است",
+        "markup_required": "در صورت فعال بودن درصد سود، وارد کردن آن الزامی است"
+    },
+    "login": {
+        "welcome": "خوش آمدید، تاک تلکام!",
+        "signin_continue": "برای ادامه وارد شوید",
+        "email_label": "ایمیل",
+        "email_placeholder": "آدرس ایمیل",
+        "password_label": "رمز عبور",
+        "password_placeholder": "رمز عبور",
+        "remember_me": "مرا به خاطر بسپار",
+        "forgot_password": "رمز عبور را فراموش کرده‌اید؟",
+        "sign_in": "ورود",
+        "signing_in": "در حال ورود...",
+        "login_success": "ورود موفقیت‌آمیز بود!",
+        "login_fail": "ورود ناموفق بود!",
+        "unexpected_error": "خطای غیرمنتظره‌ای رخ داد. لطفاً دوباره تلاش کنید."
     }
 }
