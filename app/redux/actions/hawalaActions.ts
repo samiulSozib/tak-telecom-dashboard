@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_HAWALA_LIST_REQUEST, FETCH_HAWALA_LIST_SUCCESS, FETCH_HAWALA_LIST_FAIL, ADD_HAWALA_REQUEST, ADD_HAWALA_SUCCESS, ADD_HAWALA_FAIL, EDIT_HAWALA_REQUEST, EDIT_HAWALA_SUCCESS, EDIT_HAWALA_FAIL, DELETE_HAWALA_REQUEST, DELETE_HAWALA_SUCCESS, DELETE_HAWALA_FAIL } from '../constants/hawalaConstants';
+import { FETCH_HAWALA_LIST_REQUEST, FETCH_HAWALA_LIST_SUCCESS, FETCH_HAWALA_LIST_FAIL, ADD_HAWALA_REQUEST, ADD_HAWALA_SUCCESS, ADD_HAWALA_FAIL, EDIT_HAWALA_REQUEST, EDIT_HAWALA_SUCCESS, EDIT_HAWALA_FAIL, DELETE_HAWALA_REQUEST, DELETE_HAWALA_SUCCESS, DELETE_HAWALA_FAIL, CHANGE_HAWALA_STATUS_REQUEST, CHANGE_HAWALA_STATUS_SUCCESS, CHANGE_HAWALA_STATUS_FAIL } from '../constants/hawalaConstants';
 import { Toast } from "primereact/toast";
 import { HawalaBranch } from "@/types/interface";
 import { Dispatch } from "redux";
@@ -182,4 +182,74 @@ export const _deleteHawala = (hawalaId: number, toast: React.RefObject<Toast>) =
       life: 3000,
     });
   }
+};
+
+
+export const _changeHawalaStatus = (
+  hawalaId: number,
+  status: number,
+  toast: React.RefObject<Toast>,
+  rejectReason?: string
+) => {
+  return async (dispatch: Dispatch) => {
+    dispatch({ type: CHANGE_HAWALA_STATUS_REQUEST });
+
+    try {
+
+      const token = localStorage.getItem('api_token') || '';
+      const baseURL = `${process.env.NEXT_PUBLIC_BASE_URL}/hawala-orders`;
+      let response;
+
+      switch (status) {
+        case 3:
+          response = await axios.get(`${baseURL}/underprocess-hawala/${hawalaId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          break;
+        case 1:
+          response = await axios.post(`${baseURL}/confirm/${hawalaId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          break;
+        case 2:
+          response = await axios.post(`${baseURL}/reject/${hawalaId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { rejectReason },
+          });
+          break;
+        default:
+          throw new Error('Invalid order status');
+      }
+      console.log(response)
+      if (response.data.success === true) {
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.data.message,
+          life: 3000,
+        });
+
+        dispatch({
+          type: CHANGE_HAWALA_STATUS_SUCCESS,
+          payload: { hawalaId, status, message: response.data.message },
+        });
+
+      } else {
+        throw new Error(response.data.message || 'Status change failed');
+      }
+    } catch (error: any) {
+        console.log(error)
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.message || 'Failed to update order status',
+        life: 3000,
+      });
+
+      dispatch({
+        type: CHANGE_HAWALA_STATUS_FAIL,
+        payload: error.message,
+      });
+    }
+  };
 };

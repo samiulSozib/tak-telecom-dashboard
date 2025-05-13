@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { SplitButton } from 'primereact/splitbutton';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { _fetchHawalaList } from '@/app/redux/actions/hawalaActions';
+import { _changeHawalaStatus, _fetchHawalaList } from '@/app/redux/actions/hawalaActions';
 import { hawalaReducer } from '../../../redux/reducers/hawalaReducer';
 import { isRTL } from '../../utilities/rtlUtil';
 
@@ -41,6 +41,8 @@ const OrderPage = () => {
     const [order, setOrder] = useState<Order>();
     const { t } = useTranslation();
     const [searchTag, setSearchTag] = useState('');
+    const [statusChangeDialog, setStatusChangeDialog] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState<number | null>();
 
     useEffect(() => {
         dispatch(_fetchHawalaList(1, searchTag));
@@ -232,35 +234,34 @@ const OrderPage = () => {
     // };
 
     const statusBodyTemplate = (rowData: Hawala) => {
-            const status = rowData.status;
+        const status = rowData.status;
 
-            let statusText = 'Unknown';
-            let statusClass = 'bg-gray-500';
+        let statusText = 'Unknown';
+        let statusClass = 'bg-gray-500';
 
-            if (status == 'pending') {
-                statusText = t('ORDER.STATUS.PENDING');
-                statusClass = 'bg-yellow-500 text-white';
-            } else if (status == 'confirm') {
-                statusText = t('ORDER.STATUS.CONFIRMED');
-                statusClass = 'bg-green-500 text-white';
-            } else if (status == 'cancelled') {
-                statusText = t('ORDER.STATUS.REJECTED');
-                statusClass = 'bg-red-500 text-white';
-            }
-            else if (status == 'under_process') {
-                statusText = t('ORDER.STATUS.UNDER_PROCESS');
-                statusClass = 'bg-gray-500 text-white';
-            }
+        if (status == 'pending') {
+            statusText = t('ORDER.STATUS.PENDING');
+            statusClass = 'bg-yellow-500 text-white';
+        } else if (status == 'confirm') {
+            statusText = t('ORDER.STATUS.CONFIRMED');
+            statusClass = 'bg-green-500 text-white';
+        } else if (status == 'cancelled') {
+            statusText = t('ORDER.STATUS.REJECTED');
+            statusClass = 'bg-red-500 text-white';
+        } else if (status == 'under_process') {
+            statusText = t('ORDER.STATUS.UNDER_PROCESS');
+            statusClass = 'bg-gray-500 text-white';
+        }
 
-            return (
-                <>
-                    <span className="p-column-title">Status</span>
-                    <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${statusClass}}`}>
-                        {statusText}
-                    </span>
-                </>
-            );
-        };
+        return (
+            <>
+                <span className="p-column-title">Status</span>
+                <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${statusClass}}`}>
+                    {statusText}
+                </span>
+            </>
+        );
+    };
 
     // const actionBodyTemplate = (rowData: Order) => {
     //     return (
@@ -270,6 +271,24 @@ const OrderPage = () => {
     //         </>
     //     );
     // };
+
+    const confirmChangeStatus = (order: Order, newStatus: number) => {
+        setOrder(order);
+        setSelectedStatus(newStatus);
+        setStatusChangeDialog(true);
+    };
+
+    const changeOrderStatus = () => {
+        if (!order?.id || selectedStatus === null) {
+            console.error('Order ID or status is undefined.');
+            return;
+        }
+
+        // Dispatch an action to update the order status
+        // You'll need to implement this action in your orderActions.ts
+        dispatch(_changeHawalaStatus(order.id, selectedStatus as number, toast));
+        setStatusChangeDialog(false);
+    };
 
     const actionBodyTemplate = (rowData: Order) => {
         //const menuType = rowData.menuType; // Assuming `menuType` is part of your data
@@ -282,24 +301,28 @@ const OrderPage = () => {
             //     command: () => editReseller(rowData),
             //     //disabled: menuType === 'guest', // Example condition
             // },
+            // },
             {
-                label: 'Delete',
+                label: t('DELETE'),
                 icon: 'pi pi-trash',
                 command: () => confirmDeleteOrder(rowData)
                 //disabled: menuType !== 'admin', // Example condition
+            },
+            {
+                label: t('CONFIRMED'),
+                icon: 'pi pi-check',
+                command: () => confirmChangeStatus(rowData, 1) // 1 for confirmed
+            },
+            {
+                label: t('UNDER_PROCESS'),
+                icon: 'pi pi-spinner',
+                command: () => confirmChangeStatus(rowData, 3) // 3 for under process
+            },
+            {
+                label: t('REJECTED'),
+                icon: 'pi pi-times',
+                command: () => confirmChangeStatus(rowData, 2) // 2 for rejected
             }
-            // {
-            //     label: 'Activate',
-            //     icon: 'pi pi-check',
-            //     command: () => confirmChangeStatus(rowData),
-            //     visible: rowData.status === 0, // Disable if already active
-            // },
-            // {
-            //     label: 'Deactivate',
-            //     icon: 'pi pi-times',
-            //     command: () => confirmChangeStatus(rowData),
-            //     visible: rowData.status === 1, // Disable if already inactive
-            // },
         ];
 
         return (
@@ -309,6 +332,7 @@ const OrderPage = () => {
                 model={items}
                 className="p-button-rounded"
                 severity="info" // Optional: change severity or style
+                dir="ltr"
             />
         );
     };
@@ -440,7 +464,6 @@ const OrderPage = () => {
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('HAWALA.TABLE.COLUMN.RESELLER_NAME')} body={resellerNameBodyTemplate}></Column>
 
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('HAWALA.TABLE.COLUMN.STATUS')} body={statusBodyTemplate} sortable></Column>
-
                     </DataTable>
                     <Paginator
                         first={(pagination?.page - 1) * pagination?.items_per_page}
@@ -511,6 +534,31 @@ const OrderPage = () => {
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {order && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
+                        </div>
+                    </Dialog>
+
+                    <Dialog
+                        visible={statusChangeDialog}
+                        style={{ width: '450px' }}
+                        header={t('TABLE.GENERAL.CONFIRM')}
+                        modal
+                        footer={
+                            <>
+                                <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={() => setStatusChangeDialog(false)} />
+                                <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={changeOrderStatus} />
+                            </>
+                        }
+                        onHide={() => setStatusChangeDialog(false)}
+                    >
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {order && (
+                                <span>
+                                    {t('ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS')} <b>{order.rechargeble_account}</b> to {selectedStatus === 0 && t('ORDER.STATUS.PENDING')}
+                                    {selectedStatus === 1 && t('ORDER.STATUS.CONFIRMED')}
+                                    {selectedStatus === 2 && t('ORDER.STATUS.REJECTED')}?
+                                </span>
+                            )}
                         </div>
                     </Dialog>
                 </div>

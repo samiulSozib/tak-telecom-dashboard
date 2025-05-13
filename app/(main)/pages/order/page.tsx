@@ -454,7 +454,7 @@ const OrderPage = () => {
             {
                 label: t('UNDER_PROCESS'),
                 icon: 'pi pi-spinner',
-                command: () => confirmChangeStatus(rowData, 3), // 3 for pending/under process
+                command: () => confirmChangeStatus(rowData, 3), // 3 for under process
             },
             {
                 label: t('REJECTED'),
@@ -653,8 +653,8 @@ const OrderPage = () => {
                         modal
                         footer={
                             <>
-                                <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" text onClick={() => setStatusChangeDialog(false)} />
-                                <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" text onClick={changeOrderStatus} />
+                                <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={() => setStatusChangeDialog(false)} />
+                                <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={changeOrderStatus} />
                             </>
                         }
                         onHide={() => setStatusChangeDialog(false)}
