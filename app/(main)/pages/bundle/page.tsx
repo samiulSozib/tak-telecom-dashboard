@@ -68,6 +68,15 @@ const BundlePage = () => {
     const { currencies } = useSelector((state: any) => state.currenciesReducer);
     const { t } = useTranslation();
     const [searchTag, setSearchTag] = useState('');
+    const [filterDialogVisible, setFilterDialogVisible] = useState(false);
+    const [filters, setFilters] = useState({
+        filter_status: null as number | null,
+        filter_service_category_type: null as string | null,
+        filter_company_id: null as number | null,
+        filter_service_id: null as number | null
+    });
+
+    const [activeFilters, setActiveFilters] = useState({});
 
     useEffect(() => {
         dispatch(_fetchBundleList(1, searchTag));
@@ -78,7 +87,13 @@ const BundlePage = () => {
     }, [dispatch, searchTag]);
 
     useEffect(() => {
-        //console.log(bundles)
+            if (Object.keys(activeFilters).length > 0) {
+                dispatch(_fetchBundleList(1, searchTag, activeFilters));
+            }
+        }, [dispatch, activeFilters, searchTag]);
+
+    useEffect(() => {
+        console.log(bundles)
     }, [dispatch, bundles]);
 
     const openNew = () => {
@@ -149,10 +164,149 @@ const BundlePage = () => {
         setDeleteServicesDialog(true);
     };
 
+    // Add this useEffect hook to your component
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+
+            // Ignore clicks on dropdown panels (they have .p-dropdown-panel class)
+            if (target.closest('.p-dropdown-panel')) {
+                return;
+            }
+
+            // Normal check for clicking outside the filter dialog
+            if (filterDialogVisible && filterRef.current && !filterRef.current.contains(target)) {
+                setFilterDialogVisible(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [filterDialogVisible]);
+
+    const filterRef = useRef<HTMLDivElement>(null);
+
+    const handleSubmitFilter = (filters: any) => {
+        setActiveFilters(filters);
+    };
+
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <div className="flex justify-end items-center space-x-2">
+                <div className="my-2" style={{ display: 'flex', gap: '0.5rem', position: 'relative' }}>
+                    <div ref={filterRef} style={{ position: 'relative' }}>
+                        <Button label={t('ORDER.FILTER.FILTER')} icon="pi pi-filter" className="p-button-info" onClick={() => setFilterDialogVisible(!filterDialogVisible)} />
+                        {filterDialogVisible && (
+                            <div
+                                className="p-card p-fluid"
+                                style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: isRTL() ? 0 : '',
+                                    right: isRTL() ? '' : 0,
+                                    width: '300px',
+                                    zIndex: 1000,
+                                    marginTop: '0.5rem',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                <div className="p-card-body" style={{ padding: '1rem' }}>
+                                    <div className="grid">
+
+                                        {/* Bundle Type Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="bundleTypeFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.BUNDLE_TYPE')}
+                                            </label>
+                                            <Dropdown
+                                                id="bundleTypeFilter"
+                                                options={[
+                                                    { label: t('ORDER.FILTER.SOCIAL'), value: 'social' },
+                                                    { label: t('ORDER.FILTER.NONSOCIAL'), value: 'nonsocial' }
+                                                ]}
+                                                value={filters.filter_service_category_type}
+                                                onChange={(e) => setFilters({ ...filters, filter_service_category_type: e.value })}
+                                                placeholder={t('ORDER.FILTER.SELECT_TYPE')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
+
+                                        {/* Company Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="companyFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.COMPANY')}
+                                            </label>
+                                            <Dropdown
+                                                id="companyFilter"
+                                                options={companies}
+                                                value={filters.filter_company_id}
+                                                onChange={(e) => setFilters({ ...filters, filter_company_id: e.value })}
+                                                optionLabel="company_name"
+                                                optionValue="id"
+                                                placeholder={t('ORDER.FILTER.SELECT_COMPANY')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
+
+                                        {/* Service Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="serviceFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('ORDER.FILTER.SERVICE')}
+                                            </label>
+                                            <Dropdown
+                                                id="serviceFilter"
+                                                options={services}
+                                                value={filters.filter_service_id}
+                                                onChange={(e) => setFilters({ ...filters, filter_service_id: e.value })}
+                                                optionLabel="service_name" // Adjust based on your service object structure
+                                                optionValue="id"
+                                                placeholder={t('ORDER.FILTER.SELECT_SERVICE')}
+                                                style={{ width: '100%' }}
+                                                itemTemplate={(option) => (
+                                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                                        <div>{option.service_category?.category_name}</div>
+                                                        <div>- {option.company?.company_name}</div>
+                                                    </div>
+                                                )}
+                                            />
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div className="col-12 mt-3 flex justify-content-between gap-2">
+                                            <Button
+                                                label={t('RESET')}
+                                                icon="pi pi-times"
+                                                className="p-button-secondary p-button-sm"
+                                                onClick={() => {
+                                                    setFilters({
+                                                        filter_status: null,
+                                                        filter_service_category_type: null,
+                                                        filter_service_id: null,
+                                                        filter_company_id: null
+                                                    });
+                                                }}
+                                            />
+                                            <Button
+                                                label={t('APPLY')}
+                                                icon="pi pi-check"
+                                                className="p-button-sm"
+                                                onClick={() => {
+                                                    // Apply filters here
+                                                    // You might want to dispatch an action to fetch filtered orders
+                                                    //dispatch(_fetchOrders(1, searchTag, filters));
+                                                    //console.log(filters)
+                                                    handleSubmitFilter(filters);
+                                                    setFilterDialogVisible(false);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <Button
                         style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
                         label={t('BUNDLE.TABLE.CREATEBUNDLE')}
@@ -248,14 +402,30 @@ const BundlePage = () => {
         );
     };
 
-    const serviceNameBodyTemplate = (rowData: Bundle) => {
-        return (
-            <>
-                <span className="p-column-title">Service Name</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.service?.company?.company_name}</span>
-            </>
-        );
-    };
+const serviceNameBodyTemplate = (rowData: Bundle) => {
+    return (
+        <>
+            <span className="p-column-title">Service Name</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <img
+                    src={`${rowData.service?.company?.company_logo}`}
+                    alt={rowData.service?.company?.company_name || 'Company Logo'}
+                    style={{
+                        padding: '2px',
+                        width: '35px',
+                        height: '35px',
+                        borderRadius: '50%',
+                        objectFit: 'contain',
+                    }}
+                />
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                    {rowData.service?.company?.company_name}
+                </span>
+            </div>
+        </>
+    );
+};
+
 
     const serviceCategoryBodyTemplate = (rowData: Bundle) => {
         return (
@@ -512,7 +682,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.admin_buying_price && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                           {t('THIS_FIELD_IS_REQUIRED')}
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -632,7 +802,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.service && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                           {t('THIS_FIELD_IS_REQUIRED')}
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

@@ -22,11 +22,25 @@ const getAuthToken = () => {
   };
 
 // Fetch Bundle List
-export const _fetchBundleList = (page: number = 1,search:string='') => async (dispatch: Dispatch) => {
+export const _fetchBundleList = (page: number = 1,search:string='',filters={}) => async (dispatch: Dispatch) => {
   dispatch({ type: FETCH_BUNDLE_LIST_REQUEST });
   try {
     const token = getAuthToken();
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/bundles?page=${page}&search=${search}`, {
+    const queryParams = new URLSearchParams();
+
+        queryParams.append('page', String(page));
+        queryParams.append('search', search);
+
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                queryParams.append(key, String(value));
+            }
+        });
+
+
+        const queryString = queryParams.toString();
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/bundles?${queryString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

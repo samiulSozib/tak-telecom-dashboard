@@ -9,26 +9,33 @@
     top: 5.5rem;
     left: 1rem;
     transition: transform $transitionDuration, left $transitionDuration;
-    background-color: var(--surface-overlay);
-    border-radius: $borderRadius;
+    background: linear-gradient(to right, #c9e1e4, #d4dcda);    border-radius: $borderRadius;
     padding: 0.5rem 1.5rem;
     box-shadow: 0px 3px 5px rgba(0, 0, 0, .02), 0px 0px 2px rgba(0, 0, 0, .05), 0px 1px 4px rgba(0, 0, 0, .08);
 
     left: 1rem;
     right: auto;
+    margin-top: 0;
+
 
     // RTL positioning
     [dir="rtl"] & {
         left: auto;
     }
 
+    @media (min-width: 992px) {
+        margin-top: 10px;
+    }
 }
+
+
 
 .layout-menu {
     margin: 0;
     padding: 0;
     list-style-type: none;
     user-select: none;
+
 
     .layout-root-menuitem {
         >.layout-menuitem-root-text {
