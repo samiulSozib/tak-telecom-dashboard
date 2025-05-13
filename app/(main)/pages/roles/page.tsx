@@ -352,7 +352,7 @@ const RolesPage = () => {
                                     borderRadius: '5px'
                                 }}
                             />
-                            {submitted && !role.name && <small style={{ color: 'red', fontSize: '12px' }}>Role Name is required.</small>}
+                            {submitted && !role.name && <small style={{ color: 'red', fontSize: '12px' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
                         </div>
 
                         <h5>{t('PERMISSIONS')}</h5>

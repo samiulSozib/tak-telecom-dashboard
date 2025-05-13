@@ -618,7 +618,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.reseller_name && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Name is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -667,7 +667,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.email && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Email is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -692,7 +692,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.phone && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Phone is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -720,7 +720,7 @@ const ResellerPage = () => {
                                         />
                                         {submitted && !reseller.account_password && (
                                             <small className="p-invalid" style={{ color: 'red' }}>
-                                                Password is required.
+                                                {t('THIS_FIELD_IS_REQUIRED')}
                                             </small>
                                         )}
                                     </div>
@@ -748,7 +748,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.country_id && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Country is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -773,7 +773,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.province_id && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Province is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -801,7 +801,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.districts_id && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            District is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -826,7 +826,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.code && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Currency is required.
+                                           {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -854,7 +854,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.reseller_group_id && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Reseller Group is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -878,7 +878,7 @@ const ResellerPage = () => {
                                     />
                                     {submitted && !reseller.sub_reseller_limit && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Sub reseller Limit is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

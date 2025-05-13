@@ -383,7 +383,7 @@ const PaymentPage = () => {
                                     />
                                     {submitted && !payment.reseller && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Reseller is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -410,7 +410,7 @@ const PaymentPage = () => {
                                     />
                                     {submitted && !payment.amount && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Amount is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -432,7 +432,7 @@ const PaymentPage = () => {
                                     />
                                     {submitted && !payment.notes && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Notes is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -460,7 +460,7 @@ const PaymentPage = () => {
                                     />
                                     {submitted && !payment.payment_method && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Payment Method is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -486,7 +486,7 @@ const PaymentPage = () => {
                                     />
                                     {submitted && !payment.currency && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Currency is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -514,7 +514,7 @@ const PaymentPage = () => {
 
                                     {submitted && !payment.payment_date && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Payment Date is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

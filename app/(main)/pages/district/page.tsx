@@ -308,7 +308,7 @@ const DistrictPage = () => {
                                 />
                                 {submitted && !district.district_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        District Name is required.
+                                       {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -334,7 +334,7 @@ const DistrictPage = () => {
                                 />
                                 {submitted && !district.province && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Province is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>

@@ -18,25 +18,23 @@ import { _fetchPurchasedProducts } from '../redux/actions/purchasedProductsActio
 import withAuth from './authGuard';
 import { useTranslation } from 'react-i18next';
 
-
-
 const Dashboard = () => {
     const { layoutConfig } = useContext(LayoutContext);
-    const {data}=useSelector((state:any)=>state.dashboardDataReducer)
+    const { data } = useSelector((state: any) => state.dashboardDataReducer);
     //const {userInfo}=useSelector((state:any)=>state.authReducer)
     const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}'); // Default to empty object
     const [lineOptions, setLineOptions] = useState<ChartOptions>({});
     const { t } = useTranslation();
 
-    const dispatch=useDispatch<AppDispatch>()
-    useEffect(()=>{
-        dispatch(fetchDashboardData())
-        dispatch(_fetchPurchasedProducts())
-    },[dispatch])
+    const dispatch = useDispatch<AppDispatch>();
+    useEffect(() => {
+        dispatch(fetchDashboardData());
+        dispatch(_fetchPurchasedProducts());
+    }, [dispatch]);
 
-    useEffect(()=>{
-        console.log(userInfo)
-    },[dispatch,userInfo])
+    useEffect(() => {
+        //console.log(data);
+    }, [dispatch, data]);
 
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
@@ -102,8 +100,6 @@ const Dashboard = () => {
         setLineOptions(lineOptions);
     };
 
-
-
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
             applyLightTheme();
@@ -119,13 +115,10 @@ const Dashboard = () => {
         });
     };
 
-
-
-
     return (
         <div className="grid -m-5">
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0 bg-gradient-to-r from-indigo-100 to-purple-200" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #dbeafe, #c7d2fe)"}} >
+                <div className="card mb-0 bg-gradient-to-r from-indigo-100 to-purple-200" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #dbeafe, #c7d2fe)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TODAYORDER')}</span>
@@ -140,7 +133,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #f3e8ff, #fbcfe8)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #f3e8ff, #fbcfe8)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALORDER')}</span>
@@ -156,16 +149,18 @@ const Dashboard = () => {
             </div>
 
             <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #d1fae5, #99f6e4)"}}>
-                    <div className="flex justify-content-between mb-3" style={{fontSize:"12px"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #d1fae5, #99f6e4)' }}>
+                    <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
-                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.PENDINGORDERS')}</span>
-                            <div className="text-900 font-medium text-xl">{data?.pending_orders??0}</div>
+                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TODAY_PENDING_ORDERS')}</span>
+                            <div className="text-900 font-medium text-xl">{data?.today_pending_orders ?? 0}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-clock text-cyan-500 text-xl" />
                         </div>
                     </div>
+                    {/* <span className="text-green-500 font-medium">24 new </span>
+                    <span className="text-500">since last visit</span> */}
                 </div>
             </div>
 
@@ -173,23 +168,24 @@ const Dashboard = () => {
                 <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #fef9c3, #fed7aa)"}}>
                     <div className="flex justify-content-between mb-3" style={{fontSize:"12px"}}>
                         <div>
-                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.SUCCESSORDERS')}</span>
-                            <div className="text-900 font-medium text-xl">{data?.success_orders??0}</div>
+                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TODAY_SUCCESS_ORDERS')}</span>
+                            <div className="text-900 font-medium text-xl">{data?.today_successful_orders??0}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-green-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-check-circle text-green-500 text-xl" />
                         </div>
                     </div>
-                    {/* <span className="text-green-500 font-medium">85 </span>
-                    <span className="text-500">responded</span> */}
+                    {/* <span className="text-green-500 font-medium">24 new </span>
+                    <span className="text-500">since last visit</span> */}
                 </div>
             </div>
+
             <div className="col-6 lg:col-6 xl:col-2">
                 <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #fae8ff, #e9d5ff)"}}>
                     <div className="flex justify-content-between mb-3" style={{fontSize:"12px"}}>
                         <div>
-                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.REJECTEDORDERS')}</span>
-                            <div className="text-900 font-medium text-xl">{data?.rejected_orders??0}</div>
+                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TODAY_REJECTED_ORDERS')}</span>
+                            <div className="text-900 font-medium text-xl">{data?.today_rejected_orders??0}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-times text-red-500 text-xl" />
@@ -199,12 +195,16 @@ const Dashboard = () => {
                     <span className="text-500">since last visit</span> */}
                 </div>
             </div>
+
+            {/*  */}
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #cffafe, #bfdbfe)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #cffafe, #bfdbfe)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TODAYSALE')}</span>
-                            <div className="text-900 font-medium text-xl">{userInfo?.currency?.symbol} {data?.today_sale.toFixed(2)}</div>
+                            <div className="text-900 font-medium text-xl">
+                                {userInfo?.currency?.symbol} {data?.today_sale.toFixed(2)}
+                            </div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-yellow-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-dollar text-yellow-500 text-xl" />
@@ -215,11 +215,13 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #e0e7ff, #e9d5ff)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #e0e7ff, #e9d5ff)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TODAYPROFIT')}</span>
-                            <div className="text-900 font-medium text-xl">{userInfo?.currency?.symbol} {data?.today_profit.toFixed(2)}</div>
+                            <div className="text-900 font-medium text-xl">
+                                {userInfo?.currency?.symbol} {data?.today_profit.toFixed(2)}
+                            </div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-chart-line text-cyan-500 text-xl" />
@@ -229,12 +231,66 @@ const Dashboard = () => {
                     <span className="text-500">newly registered</span> */}
                 </div>
             </div>
+
+            {/*  */}
+
+            <div className="col-6 lg:col-6 xl:col-2">
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #d1fae5, #99f6e4)' }}>
+                    <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
+                        <div>
+                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.PENDINGORDERS')}</span>
+                            <div className="text-900 font-medium text-xl">{data?.pending_orders ?? 0}</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <i className="pi pi-clock text-cyan-500 text-xl" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="col-6 lg:col-6 xl:col-2">
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fed7aa)' }}>
+                    <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
+                        <div>
+                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.SUCCESSORDERS')}</span>
+                            <div className="text-900 font-medium text-xl">{data?.success_orders ?? 0}</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-green-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <i className="pi pi-check-circle text-green-500 text-xl" />
+                        </div>
+                    </div>
+                    {/* <span className="text-green-500 font-medium">85 </span>
+                    <span className="text-500">responded</span> */}
+                </div>
+            </div>
+            <div className="col-6 lg:col-6 xl:col-2">
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #fae8ff, #e9d5ff)' }}>
+                    <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
+                        <div>
+                            <span className="block text-500 font-medium mb-3">{t('DASHBOARD.REJECTEDORDERS')}</span>
+                            <div className="text-900 font-medium text-xl">{data?.rejected_orders ?? 0}</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <i className="pi pi-times text-red-500 text-xl" />
+                        </div>
+                    </div>
+                    {/* <span className="text-green-500 font-medium">24 new </span>
+                    <span className="text-500">since last visit</span> */}
+                </div>
+            </div>
+
+
+
+            {/*  */}
+
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #ffedd5, #fde68a)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #ffedd5, #fde68a)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALSALE')}</span>
-                            <div className="text-900 font-medium text-xl">{userInfo?.currency?.symbol} {data?.total_sale.toFixed(2)}</div>
+                            <div className="text-900 font-medium text-xl">
+                                {userInfo?.currency?.symbol} {data?.total_sale.toFixed(2)}
+                            </div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-wallet text-blue-500 text-xl" />
@@ -245,11 +301,13 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #d1fae5, #a7f3d0)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #d1fae5, #a7f3d0)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALPROFIT')}</span>
-                            <div className="text-900 font-medium text-xl">{userInfo?.currency?.symbol} {data?.total_profit.toFixed(2)}</div>
+                            <div className="text-900 font-medium text-xl">
+                                {userInfo?.currency?.symbol} {data?.total_profit.toFixed(2)}
+                            </div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-green-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-thumbs-up text-green-500 text-xl" />
@@ -260,7 +318,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0"style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #fef9c3, #fef08a)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fef08a)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALRESELLER')}</span>
@@ -275,7 +333,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #fee2e2, #fbcfe8)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #fee2e2, #fbcfe8)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALCOMPANY')}</span>
@@ -290,7 +348,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #cffafe, #99f6e4)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #cffafe, #99f6e4)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALSERVICE')}</span>
@@ -305,7 +363,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #e0f2fe, #bfdbfe)"}}>
+                <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #e0f2fe, #bfdbfe)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">{t('DASHBOARD.TOTALBUNDLE')}</span>
@@ -320,30 +378,27 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div className='col-12'>
-                <Divider/>
-                    <span className="block text-900 text-xl mb-3">{t('DASHBOARD.BALANCES')}</span>
-                    <span className='block text-700 text-medium'>{t('DASHBOARD.BALANCES.HINT')}</span>
-                <Divider/>
+            <div className="col-12">
+                <Divider />
+                <span className="block text-900 text-xl mb-3">{t('DASHBOARD.BALANCES')}</span>
+                <span className="block text-700 text-medium">{t('DASHBOARD.BALANCES.HINT')}</span>
+                <Divider />
             </div>
 
-            {data?.balances_by_currency?.map((balance:any, index:number) => (
-            <div key={index} className="col-6 lg:col-6 xl:col-4">
-                <div className="card mb-0" style={{maxHeight:"120px",backgroundImage:"linear-gradient(to right, #ecfccb, #bbf7d0)"}}>
-                    <div className="flex justify-content-between mb-1">
-                        <div>
-                            <span className="block text-500 font-medium mb-3">{balance.currency_code}</span>
-                            <div className="text-900 font-medium text-xl">{balance.total_balance}</div>
+            {data?.balances_by_currency?.map((balance: any, index: number) => (
+                <div key={index} className="col-6 lg:col-6 xl:col-4">
+                    <div className="card mb-0" style={{ maxHeight: '120px', backgroundImage: 'linear-gradient(to right, #ecfccb, #bbf7d0)' }}>
+                        <div className="flex justify-content-between mb-1">
+                            <div>
+                                <span className="block text-500 font-medium mb-3">{balance.currency_code}</span>
+                                <div className="text-900 font-medium text-xl">{balance.total_balance}</div>
+                            </div>
                         </div>
-
-                    </div>
-                    {/* <span className="text-green-500 font-medium">85 </span>
+                        {/* <span className="text-green-500 font-medium">85 </span>
                     <span className="text-500">responded</span> */}
+                    </div>
                 </div>
-            </div>
             ))}
-
-
         </div>
     );
 };

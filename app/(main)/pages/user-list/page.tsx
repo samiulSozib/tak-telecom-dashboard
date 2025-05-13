@@ -331,7 +331,7 @@ const UserListGroupPage = () => {
                                             'p-invalid': submitted && !user.name
                                         })}
                                     />
-                                    {submitted && !user.name && (<small style={{ color: "red", fontSize: "12px" }}>Name is required.</small>)}
+                                    {submitted && !user.name && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}</small>)}
                                 </div>
 
                                 <div className="field ">
@@ -352,7 +352,7 @@ const UserListGroupPage = () => {
                                             'p-invalid': submitted
                                         })}
                                     />
-                                    {submitted && !user.password && (<small style={{ color: "red", fontSize: "12px" }}>Password is required.</small>)}
+                                    {submitted && !user.password && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}</small>)}
                                 </div>
 
                                 <div className="field ">
@@ -373,7 +373,7 @@ const UserListGroupPage = () => {
                                             'p-invalid': submitted && !user.confirm_password
                                         })}
                                     />
-                                    {submitted && !user.confirm_password && (<small style={{ color: "red", fontSize: "12px" }}>Confirm Password is required.</small>)}
+                                    {submitted && !user.confirm_password && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}</small>)}
                                 </div>
                                 <div className="field ">
                                     <label htmlFor="discount_type" style={{fontWeight:'bold'}}>{t('USER.FORM.LABEL.ROLE')}</label>
@@ -392,7 +392,7 @@ const UserListGroupPage = () => {
                                         placeholder={t('USER.FORM.PLACEHOLDER.ROLE')}
                                         className="w-full"
                                     />
-                                    {submitted && !user.roles && (<small style={{ color: "red", fontSize: "12px" }}>Roles is required.</small>)}
+                                    {submitted && !user.roles && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}.</small>)}
                                 </div>
 
                             </div>
@@ -415,7 +415,7 @@ const UserListGroupPage = () => {
                                             'p-invalid': submitted && !user.email
                                         })}
                                     />
-                                    {submitted && !user.email && (<small style={{ color: "red", fontSize: "12px" }}>Email is required.</small>)}
+                                    {submitted && !user.email && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}</small>)}
                                 </div>
                                 <div className="field ">
                                     <label htmlFor="supplier" style={{fontWeight:'bold'}}>{t('USER.FORM.LABEL.PHONENUMBER')}</label>
@@ -435,7 +435,7 @@ const UserListGroupPage = () => {
                                             'p-invalid': submitted && !user.phone
                                         })}
                                     />
-                                    {submitted && !user.phone && (<small style={{ color: "red", fontSize: "12px" }}>Phone is required.</small>)}
+                                    {submitted && !user.phone && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}</small>)}
                                 </div>
 
                                 <div className="field ">
@@ -455,7 +455,7 @@ const UserListGroupPage = () => {
                                         placeholder={t('USER.FORM.PLACEHOLDER.CURRENCY')}
                                         className="w-full"
                                     />
-                                    {submitted && !user.currency_preference_id && (<small style={{ color: "red", fontSize: "12px" }}>Currency is required.</small>)}
+                                    {submitted && !user.currency_preference_id && (<small style={{ color: "red", fontSize: "12px" }}>{t('THIS_FIELD_IS_REQUIRED')}</small>)}
                                 </div>
 
                             </div>

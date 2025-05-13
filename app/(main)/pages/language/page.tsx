@@ -307,7 +307,7 @@ const LanguagePage = () => {
                                 />
                                 {submitted && !language.language_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Language Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -334,7 +334,7 @@ const LanguagePage = () => {
                                 />
                                 {submitted && !language.language_code && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Language Code is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>

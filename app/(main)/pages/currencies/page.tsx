@@ -309,7 +309,7 @@ const CurrencyPage = () => {
                                 />
                                 {submitted && !currency.name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Currency Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -336,7 +336,7 @@ const CurrencyPage = () => {
                                 />
                                 {submitted && !currency.code && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Code is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -363,7 +363,7 @@ const CurrencyPage = () => {
                                 />
                                 {submitted && !currency.symbol && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Symbol is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -390,7 +390,7 @@ const CurrencyPage = () => {
                                 />
                                 {submitted && !currency.exchange_rate_per_usd && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Exchange Rate is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>

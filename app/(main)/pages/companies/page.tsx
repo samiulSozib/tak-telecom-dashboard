@@ -395,7 +395,7 @@ const CompanyPage = () => {
                                     'p-invalid': submitted && !company.company_name
                                 })}
                             />
-                            {submitted && !company.company_name && <small className="p-invalid" style={{ color: 'red' }}>Name is required.</small>}
+                            {submitted && !company.company_name && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
                         </div>
 
                         <div className="formgrid grid">
@@ -416,7 +416,7 @@ const CompanyPage = () => {
                                     placeholder={t('COMPANY.FORM.PLACEHOLDER.COUNTRY')}
                                     className="w-full"
                                 />
-                                {submitted && !company.country && <small className="p-invalid" style={{ color: 'red' }}>Country is required.</small>}
+                                {submitted && !company.country && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
                             </div>
 
                             <div className="field col">
@@ -435,7 +435,7 @@ const CompanyPage = () => {
                                     placeholder={t('COMPANY.FORM.PLACEHOLDER.TELEGRAM_GROUP')}
                                     className="w-full"
                                 />
-                            {submitted && !company.telegram_chat_id && <small className="p-invalid" style={{ color: 'red' }}>Telegram is required.</small>}
+                            {submitted && !company.telegram_chat_id && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
                             </div>
 
                         </div>

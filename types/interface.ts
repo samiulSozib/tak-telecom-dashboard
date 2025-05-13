@@ -338,7 +338,7 @@ export interface Order{
     order_type: string;
     transaction_id: string | null;
     is_paid: number;
-    status: number;
+    status: number|string|null;
     reject_reason: string | null;
     deleted_at: string | null;
     created_at: string;

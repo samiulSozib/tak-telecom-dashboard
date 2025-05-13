@@ -365,7 +365,7 @@ const PurchasedProductPage = () => {
                                     />
                                     {submitted && !purchasedProduct.supplier && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Supplier is required.
+                                           {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -392,7 +392,7 @@ const PurchasedProductPage = () => {
                                     />
                                     {submitted && !purchasedProduct.product_name && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Product Name is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -418,7 +418,7 @@ const PurchasedProductPage = () => {
                                     />
                                     {submitted && !purchasedProduct.purchase_price && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Purchase Price is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -475,7 +475,7 @@ const PurchasedProductPage = () => {
                                     />
                                     {submitted && !purchasedProduct.service && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Service is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -501,7 +501,7 @@ const PurchasedProductPage = () => {
                                     />
                                     {submitted && !purchasedProduct.quantity && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Quantity is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -529,7 +529,7 @@ const PurchasedProductPage = () => {
                                     />
                                     {submitted && !purchasedProduct.purchase_date && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Date is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

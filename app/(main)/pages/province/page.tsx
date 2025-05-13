@@ -308,7 +308,7 @@ const ProvincePage = () => {
                                 />
                                 {submitted && !province.province_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Province Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -334,7 +334,7 @@ const ProvincePage = () => {
                                 />
                                 {submitted && !province.country && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Country is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>

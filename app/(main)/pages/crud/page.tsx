@@ -366,7 +366,7 @@ const Crud = () => {
                                     'p-invalid': submitted && !product.name
                                 })}
                             />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                            {submitted && !product.name && <small className="p-invalid">{t('THIS_FIELD_IS_REQUIRED')}</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="description">Description</label>

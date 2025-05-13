@@ -456,7 +456,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.bundle_title && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Bundle Title is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -483,7 +483,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.bundle_description && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Bundle Description is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -512,7 +512,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.admin_buying_price && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Admin Buying Price is required.
+                                           {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -539,7 +539,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.buying_price && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Buying Price is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -568,7 +568,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.selling_price && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Selling Price is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -598,7 +598,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.validity_type && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Validity Type is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -632,7 +632,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.service && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Service is required.
+                                           {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -657,7 +657,7 @@ const BundlePage = () => {
                                     />
                                     {submitted && !bundle.currency && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Currency is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

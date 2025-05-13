@@ -290,7 +290,7 @@ const Category = () => {
                                 />
                                 {submitted && !serviceCategory.category_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Category Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -318,7 +318,7 @@ const Category = () => {
                                     />
                                     {submitted && !serviceCategory.type && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Category Type is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

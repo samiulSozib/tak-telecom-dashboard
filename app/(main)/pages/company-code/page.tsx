@@ -337,7 +337,7 @@ const CompanyCodePage = () => {
                                 />
                                 {submitted && !companyCode?.reserved_digit && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Reserved Digit is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -363,7 +363,7 @@ const CompanyCodePage = () => {
                                     />
                                     {submitted && !companyCode?.company_id && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Company is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

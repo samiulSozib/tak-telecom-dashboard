@@ -310,7 +310,7 @@ const SupplierPage = () => {
                                 />
                                 {submitted && !supplier.supplier_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -333,7 +333,7 @@ const SupplierPage = () => {
                                 />
                                 {submitted && !supplier.contact_details && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Contact Details is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -356,7 +356,7 @@ const SupplierPage = () => {
                                 />
                                 {submitted && !supplier.address && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Address is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>

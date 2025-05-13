@@ -340,7 +340,7 @@ const Services = () => {
                                 />
                                 {submitted && !service.service_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Service Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -367,7 +367,7 @@ const Services = () => {
                                     />
                                     {submitted && !service.company && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Company is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
@@ -394,7 +394,7 @@ const Services = () => {
                                     />
                                     {submitted && !service.service_category && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                            Service Category is required.
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>

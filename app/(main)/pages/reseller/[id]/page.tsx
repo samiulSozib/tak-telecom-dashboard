@@ -90,23 +90,41 @@ const ResellerDetailsPage = ({params}: ResellerDetailsPageProps) => {
         return <p>Loading...</p>;
     }
 
-    const passwordSchema = Yup.object({
-        new_password: Yup.string()
-            .min(8, "Min length 8")
-            .required("New Password is required"),
-        confirm_new_password: Yup.string()
-            .oneOf([Yup.ref('new_password'), ''], "Password does't match")
-            .required("Confirm Password required"),
-    });
+    // const passwordSchema = Yup.object({
+    //     new_password: Yup.string()
+    //         .min(8, "Min length 8")
+    //         .required("New Password is required"),
+    //     confirm_new_password: Yup.string()
+    //         .oneOf([Yup.ref('new_password'), ''], "Password does't match")
+    //         .required("Confirm Password required"),
+    // });
 
-    const pinSchema = Yup.object({
-        new_pin: Yup.string()
-            .length(4, "Min Length 4")
-            .required("Pin is required"),
-        confirm_new_pin: Yup.string()
-            .oneOf([Yup.ref('new_pin'), ''], "Pin does't match")
-            .required("Pin is required"),
-    });
+    // const pinSchema = Yup.object({
+    //     new_pin: Yup.string()
+    //         .length(4, "Min Length 4")
+    //         .required("Pin is required"),
+    //     confirm_new_pin: Yup.string()
+    //         .oneOf([Yup.ref('new_pin'), ''], "Pin does't match")
+    //         .required("Pin is required"),
+    // });
+
+    const passwordSchema = Yup.object({
+    new_password: Yup.string()
+      .min(8, t('validation.new_password.min'))
+      .required(t('validation.new_password.required')),
+    confirm_new_password: Yup.string()
+      .oneOf([Yup.ref('new_password'), ''], t('validation.confirm_new_password.oneOf'))
+      .required(t('validation.confirm_new_password.required')),
+  });
+
+  const pinSchema = Yup.object({
+    new_pin: Yup.string()
+      .length(4, t('validation.new_pin.length'))
+      .required(t('validation.new_pin.required')),
+    confirm_new_pin: Yup.string()
+      .oneOf([Yup.ref('new_pin'), ''], t('validation.confirm_new_pin.oneOf'))
+      .required(t('validation.confirm_new_pin.required')),
+  });
 
 
 

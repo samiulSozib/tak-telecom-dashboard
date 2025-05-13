@@ -383,7 +383,7 @@ const CountryPage = () => {
                                 />
                                 {submitted && !country.country_name && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Country Name is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -410,7 +410,7 @@ const CountryPage = () => {
                                 />
                                 {submitted && !country.country_telecom_code && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Country Code is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -437,7 +437,7 @@ const CountryPage = () => {
                                 />
                                 {submitted && !country.phone_number_length && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Phone Number Length is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -463,7 +463,7 @@ const CountryPage = () => {
                                 />
                                 {submitted && !country.currency && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Currency is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>
@@ -489,7 +489,7 @@ const CountryPage = () => {
                                 />
                                 {submitted && !country.language && (
                                     <small className="p-invalid" style={{ color: 'red' }}>
-                                        Language is required.
+                                        {t('THIS_FIELD_IS_REQUIRED')}
                                     </small>
                                 )}
                             </div>

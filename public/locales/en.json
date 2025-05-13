@@ -932,5 +932,43 @@
             "CONFIRMED": "Confirmed",
             "REJECTED": "Rejected"
         }
+    },
+
+
+    "DASHBOARD.TODAY_PENDING_ORDERS":"Today Pending Orders",
+    "DASHBOARD.TODAY_SUCCESS_ORDERS":"Today Success Orders",
+    "DASHBOARD.TODAY_REJECTED_ORDERS":"Today Rejected Orders",
+
+
+
+   "THIS_FIELD_IS_REQUIRED":"This Field is Required",
+
+
+  "validation": {
+    "new_password": {
+      "min": "Minimum length is 8 characters",
+      "required": "New Password is required"
+    },
+    "confirm_new_password": {
+      "oneOf": "Passwords do not match",
+      "required": "Confirm Password is required"
+    },
+    "new_pin": {
+      "length": "PIN must be exactly 4 digits",
+      "required": "PIN is required"
+    },
+    "confirm_new_pin": {
+      "oneOf": "PINs do not match",
+      "required": "Confirm PIN is required"
     }
+  },
+
+  "group_pricing": {
+      "missing_group_or_service": "Please select both Reseller Group and Service",
+      "fixed_fee_required": "Fixed Fee is required when Use Fixed Fee is enabled",
+      "markup_required": "Markup Percentage is required when Use Markup is enabled"
+    }
+
+
+
 }

@@ -347,7 +347,7 @@ const PaymentMethodPage = () => {
                                         'p-invalid': submitted && !paymentMethod.method_name
                                     })}
                                 />
-                                {submitted && !paymentMethod.method_name && <small className="p-invalid" style={{ color: 'red' }}>Name is required.</small>}
+                                {submitted && !paymentMethod.method_name && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
                             </div>
 
                             <div className="field">
@@ -370,7 +370,7 @@ const PaymentMethodPage = () => {
                                     placeholder="Choose a status"
                                     className="w-full"
                                 />
-                                {submitted && !paymentMethod.status && <small className="p-invalid" style={{ color: 'red' }}>Status is required.</small>}
+                                {submitted && !paymentMethod.status && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
 
                             </div>
 
@@ -392,7 +392,7 @@ const PaymentMethodPage = () => {
                                     className="w-full p-2 border rounded"
                                     rows={4} // Adjust the number of visible rows as needed
                                 />
-                                {submitted && !paymentMethod.account_details && <small className="p-invalid" style={{ color: 'red' }}>Account Details is required.</small>}
+                                {submitted && !paymentMethod.account_details && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
 
                             </div>
                         </div>

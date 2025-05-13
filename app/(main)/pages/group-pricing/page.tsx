@@ -87,7 +87,7 @@ const GroupPricingPage = () => {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
-                detail: 'Please select both Reseller Group and Service',
+                detail: t('group_pricing.missing_group_or_service'),
                 life: 3000
             });
             return;
@@ -97,7 +97,7 @@ const GroupPricingPage = () => {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
-                detail: 'Fixed Fee is required when Use Fixed Fee is enabled',
+                detail: t('group_pricing.fixed_fee_required'),
                 life: 3000
             });
             return;
@@ -107,7 +107,7 @@ const GroupPricingPage = () => {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),
-                detail: 'Markup Percentage is required when Use Markup is enabled',
+                detail: t('group_pricing.markup_required'),
                 life: 3000
             });
             return;
