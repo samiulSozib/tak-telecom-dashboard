@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { SplitButton } from 'primereact/splitbutton';
 import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { _changeHawalaStatus, _fetchHawalaList } from '@/app/redux/actions/hawalaActions';
+import { _changeHawalaStatus, _deleteHawala, _fetchHawalaList } from '@/app/redux/actions/hawalaActions';
 import { hawalaReducer } from '../../../redux/reducers/hawalaReducer';
 import { isRTL } from '../../utilities/rtlUtil';
 
@@ -75,7 +75,7 @@ const OrderPage = () => {
             console.error('Order ID is undefined.');
             return;
         }
-        dispatch(_deleteOrder(order?.id, toast));
+        dispatch(_deleteHawala(order?.id, toast,t));
         setDeleteOrderDialog(false);
     };
 
@@ -242,15 +242,18 @@ const OrderPage = () => {
         if (status == 'pending') {
             statusText = t('ORDER.STATUS.PENDING');
             statusClass = 'bg-yellow-500 text-white';
-        } else if (status == 'confirm') {
+        } else if (status == 'confirmed') {
             statusText = t('ORDER.STATUS.CONFIRMED');
             statusClass = 'bg-green-500 text-white';
-        } else if (status == 'cancelled') {
+        } else if (status == 'rejected') {
             statusText = t('ORDER.STATUS.REJECTED');
             statusClass = 'bg-red-500 text-white';
         } else if (status == 'under_process') {
             statusText = t('ORDER.STATUS.UNDER_PROCESS');
             statusClass = 'bg-gray-500 text-white';
+        }else if (status == 'cancelled') {
+            statusText = t('ORDER.STATUS.CANCELLED');
+            statusClass = 'bg-red-500 text-white';
         }
 
         return (
@@ -286,7 +289,7 @@ const OrderPage = () => {
 
         // Dispatch an action to update the order status
         // You'll need to implement this action in your orderActions.ts
-        dispatch(_changeHawalaStatus(order.id, selectedStatus as number, toast));
+        dispatch(_changeHawalaStatus(order.id, selectedStatus as number, toast,t));
         setStatusChangeDialog(false);
     };
 
@@ -303,26 +306,26 @@ const OrderPage = () => {
             // },
             // },
             {
-                label: t('DELETE'),
+                label: t('APP.GENERAL.DELETE'),
                 icon: 'pi pi-trash',
                 command: () => confirmDeleteOrder(rowData)
                 //disabled: menuType !== 'admin', // Example condition
             },
             {
-                label: t('CONFIRMED'),
+                label: t('ORDER.STATUS.CONFIRMED'),
                 icon: 'pi pi-check',
                 command: () => confirmChangeStatus(rowData, 1) // 1 for confirmed
             },
             {
-                label: t('UNDER_PROCESS'),
+                label: t('ORDER.STATUS.REJECTED'),
                 icon: 'pi pi-spinner',
                 command: () => confirmChangeStatus(rowData, 3) // 3 for under process
             },
-            {
-                label: t('REJECTED'),
-                icon: 'pi pi-times',
-                command: () => confirmChangeStatus(rowData, 2) // 2 for rejected
-            }
+            // {
+            //     label: t('REJECTED'),
+            //     icon: 'pi pi-times',
+            //     command: () => confirmChangeStatus(rowData, 2) // 2 for rejected
+            // }
         ];
 
         return (
@@ -349,14 +352,14 @@ const OrderPage = () => {
 
     const companyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" text onClick={hideDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" text onClick={() => {}} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={() => {}} />
         </>
     );
     const deleteCompanyDialogFooter = (
         <>
-            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" text onClick={hideDeleteOrderDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" text onClick={deleteOrder} />
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteOrderDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteOrder} />
         </>
     );
     const deleteCompaniesDialogFooter = (

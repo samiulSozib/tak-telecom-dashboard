@@ -994,5 +994,14 @@
                 "STATUS": "حالت"
             }
         }
-    }
+    },
+    "HAWALA_DELETED": "حواله په بریالیتوب سره ړنګه شوه",
+    "HAWALA_DELETE_FAILED": "د حوالې ړنګول پاتې شول",
+    "HAWALA_STATUS_CHANGED": "د حوالې حالت په بریالیتوب سره بدل شو",
+    "HAWALA_STATUS_CHANGED_FAILED": "د حوالې حالت بدلول پاتې شول",
+    "ORDER_DELETED": "سفارش په بریالیتوب سره ړنګ شو",
+    "ORDER_DELETE_FAILED": "د سفارش ړنګول پاتې شول",
+    "ORDER_STATUS_CHANGED": "د سفارش حالت په بریالیتوب سره بدل شو",
+    "ORDER_STATUS_CHANGED_FAILED": "د سفارش حالت بدلول پاتې شول",
+    "ADMIN_USER": "اداري کاروونکی"
 }

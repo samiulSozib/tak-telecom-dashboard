@@ -99,7 +99,7 @@ const OrderPage = () => {
             console.error('Order ID is undefined.');
             return;
         }
-        dispatch(_deleteOrder(order?.id, toast));
+        dispatch(_deleteOrder(order?.id, toast,t));
         setDeleteOrderDialog(false);
     };
 
@@ -441,23 +441,23 @@ const OrderPage = () => {
             //     //disabled: menuType === 'guest', // Example condition
             // },
             {
-                label: t('DELETE'),
+                label: t('APP.GENERAL.DELETE'),
                 icon: 'pi pi-trash',
                 command: () => confirmDeleteOrder(rowData)
                 //disabled: menuType !== 'admin', // Example condition
             },
             {
-                label: t('CONFIRMED'),
+                label: t('ORDER.STATUS.CONFIRMED'),
                 icon: 'pi pi-check',
                 command: () => confirmChangeStatus(rowData, 1), // 1 for confirmed
             },
             {
-                label: t('UNDER_PROCESS'),
+                label: t('ORDER.STATUS.UNDER_PROCESS'),
                 icon: 'pi pi-spinner',
                 command: () => confirmChangeStatus(rowData, 3), // 3 for under process
             },
             {
-                label: t('REJECTED'),
+                label: t('ORDER.STATUS.REJECTED'),
                 icon: 'pi pi-times',
                 command: () => confirmChangeStatus(rowData, 2), // 2 for rejected
             },
@@ -489,7 +489,7 @@ const OrderPage = () => {
 
     // Dispatch an action to update the order status
     // You'll need to implement this action in your orderActions.ts
-    dispatch(_changeOrderStatus(order.id, selectedStatus as number, toast));
+    dispatch(_changeOrderStatus(order.id, selectedStatus as number, toast,t));
     setStatusChangeDialog(false);
 };
 

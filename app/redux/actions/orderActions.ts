@@ -108,7 +108,7 @@ export const _editOrder = (orderId: number, orderData: any) => async (dispatch: 
 };
 
 // Delete an order
-export const _deleteOrder = (orderId: number, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteOrder = (orderId: number, toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
     dispatch({ type: DELETE_ORDER_REQUEST });
 
     try {
@@ -122,16 +122,16 @@ export const _deleteOrder = (orderId: number, toast: React.RefObject<Toast>) => 
         dispatch({ type: DELETE_ORDER_SUCCESS, payload: orderId });
         toast.current?.show({
             severity: "success",
-            summary: "Successful",
-            detail: "Order deleted",
+            summary: t('SUCCESS'),
+            detail: t('ORDER_DELETED'),
             life: 3000,
         });
     } catch (error: any) {
         dispatch({ type: DELETE_ORDER_FAIL, payload: error.message });
         toast.current?.show({
             severity: "error",
-            summary: "Error",
-            detail: "Failed to delete order",
+            summary: t('ERROR'),
+            detail: t('ORDER_DELETE_FAILED'),
             life: 3000,
         });
     }
@@ -143,7 +143,9 @@ export const _changeOrderStatus = (
   orderId: number,
   status: number,
   toast: React.RefObject<Toast>,
-  rejectReason?: string
+  t: (key: string) => string,
+  rejectReason?: string,
+
 ) => {
   return async (dispatch: Dispatch) => {
     dispatch({ type: CHANGE_ORDER_STATUS_REQUEST });
@@ -178,8 +180,8 @@ export const _changeOrderStatus = (
       if (response.data.success === true) {
         toast.current?.show({
           severity: 'success',
-          summary: 'Success',
-          detail: response.data.message,
+          summary: t('SUCCESS'),
+          detail: t('ORDER_STATUS_CHANGED'),
           life: 3000,
         });
 
@@ -189,13 +191,13 @@ export const _changeOrderStatus = (
         });
 
       } else {
-        throw new Error(response.data.message || 'Status change failed');
+        throw new Error(response.data.message || t('ORDER_STATUS_CHANGED_FAILED'));
       }
     } catch (error: any) {
       toast.current?.show({
         severity: 'error',
-        summary: 'Error',
-        detail: error.message || 'Failed to update order status',
+        summary: t('ERROR'),
+        detail: error.message || t('ORDER_STATUS_CHANGED_FAILED'),
         life: 3000,
       });
 

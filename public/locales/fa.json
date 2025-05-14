@@ -994,5 +994,14 @@
                 "STATUS": "وضعیت"
             }
         }
-    }
+    },
+    "HAWALA_DELETED": "حواله با موفقیت حذف شد",
+    "HAWALA_DELETE_FAILED": "حذف حواله با شکست مواجه شد",
+    "HAWALA_STATUS_CHANGED": "وضعیت حواله با موفقیت تغییر کرد",
+    "HAWALA_STATUS_CHANGED_FAILED": "تغییر وضعیت حواله با شکست مواجه شد",
+    "ORDER_DELETED": "سفارش با موفقیت حذف شد",
+    "ORDER_DELETE_FAILED": "حذف سفارش با شکست مواجه شد",
+    "ORDER_STATUS_CHANGED": "وضعیت سفارش با موفقیت تغییر کرد",
+    "ORDER_STATUS_CHANGED_FAILED": "تغییر وضعیت سفارش با شکست مواجه شد",
+    "ADMIN_USER": "کاربر مدیر"
 }

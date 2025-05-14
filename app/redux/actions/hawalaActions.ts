@@ -151,11 +151,11 @@ export const _editHawala = (hawalaId: number, updatedData: any, toast: React.Ref
 };
 
 // Delete Hawala Branch
-export const _deleteHawala = (hawalaId: number, toast: React.RefObject<Toast>) => async (dispatch: Dispatch) => {
+export const _deleteHawala = (hawalaId: number, toast: React.RefObject<Toast>,t: (key: string) => string) => async (dispatch: Dispatch) => {
   dispatch({ type: DELETE_HAWALA_REQUEST });
   try {
     const token = getAuthToken();
-    await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/hawala-branches/${hawalaId}`, {
+    await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/hawala-orders/${hawalaId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -166,8 +166,8 @@ export const _deleteHawala = (hawalaId: number, toast: React.RefObject<Toast>) =
     });
     toast.current?.show({
       severity: "success",
-      summary: "Successful",
-      detail: "Hawala Branch deleted successfully",
+      summary: t('SUCCESS'),
+      detail: t('HAWALA_DELETED'),
       life: 3000,
     });
   } catch (error: any) {
@@ -177,8 +177,8 @@ export const _deleteHawala = (hawalaId: number, toast: React.RefObject<Toast>) =
     });
     toast.current?.show({
       severity: "error",
-      summary: "Error",
-      detail: "Failed to delete Hawala",
+      summary: t('ERROR'),
+      detail: t('HAWALA_DELETE_FAILED'),
       life: 3000,
     });
   }
@@ -189,32 +189,32 @@ export const _changeHawalaStatus = (
   hawalaId: number,
   status: number,
   toast: React.RefObject<Toast>,
-  rejectReason?: string
+  t: (key: string) => string
 ) => {
   return async (dispatch: Dispatch) => {
     dispatch({ type: CHANGE_HAWALA_STATUS_REQUEST });
 
     try {
 
-      const token = localStorage.getItem('api_token') || '';
+      const token = getAuthToken();
+      console.log(token)
       const baseURL = `${process.env.NEXT_PUBLIC_BASE_URL}/hawala-orders`;
       let response;
 
       switch (status) {
         case 3:
-          response = await axios.get(`${baseURL}/underprocess-hawala/${hawalaId}`, {
+          response = await axios.get(`${baseURL}/cancel/${hawalaId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           break;
         case 1:
-          response = await axios.post(`${baseURL}/confirm/${hawalaId}`, {
+          response = await axios.get(`${baseURL}/confirm-order/${hawalaId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           break;
         case 2:
-          response = await axios.post(`${baseURL}/reject/${hawalaId}`, {
+          response = await axios.get(`${baseURL}/reject-order/${hawalaId}`, {
             headers: { Authorization: `Bearer ${token}` },
-            params: { rejectReason },
           });
           break;
         default:
@@ -224,8 +224,8 @@ export const _changeHawalaStatus = (
       if (response.data.success === true) {
         toast.current?.show({
           severity: 'success',
-          summary: 'Success',
-          detail: response.data.message,
+          summary: t('SUCCESS'),
+          detail:  t('HAWALA_STATUS_CHANGED'),
           life: 3000,
         });
 
@@ -235,14 +235,14 @@ export const _changeHawalaStatus = (
         });
 
       } else {
-        throw new Error(response.data.message || 'Status change failed');
+        throw new Error(response.data.message ||  t('HAWALA_STATUS_CHANGED_FAILED'),);
       }
     } catch (error: any) {
         console.log(error)
       toast.current?.show({
         severity: 'error',
-        summary: 'Error',
-        detail: error.message || 'Failed to update order status',
+        summary: t('ERROR'),
+        detail: error.message || t('HAWALA_STATUS_CHANGED_FAILED'),
         life: 3000,
       });
 

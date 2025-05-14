@@ -13,6 +13,7 @@ import { LayoutContext } from './context/layoutcontext';
 import { classNames } from 'primereact/utils';
 import Swal from 'sweetalert2';
 import { isRTL } from '@/app/(main)/utilities/rtlUtil';
+import { useTranslation } from 'react-i18next';
 
 interface MyLanguage {
     name:string,
@@ -27,6 +28,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
     const { languages } = useSelector((state: any) => state.languageReducer);
+    const {t}=useTranslation()
 
     const [currentLanguage, setCurrentLanguage] = useState(i18n.language); // Track current language
 
@@ -140,8 +142,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                     onClick={toggleProfileMenu}
                     style={{ display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                    <i className="pi pi-user" style={{ fontSize: '24px', marginRight: '8px' }}></i>
-                    <span>Admin User</span>
+                    <i className="pi pi-user" style={{ fontSize: '24px', [isRTL() ? 'marginLeft' : 'marginRight']: isRTL() ? '8px' : '8px' }}></i>
+                    <span>{t('ADMIN_USER')}</span>
                 </button>
 
                 {/* Profile Dropdown Menu */}
@@ -160,7 +162,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                             zIndex: 1000,
                             width: '300px',
                             padding: '20px',
-                            marginLeft: isRTL() && isMobile ? '-100px' : '',
+                            marginLeft: isRTL() && isMobile ? '50px' : '',
                         }}
                     >
                         {/* User Info */}

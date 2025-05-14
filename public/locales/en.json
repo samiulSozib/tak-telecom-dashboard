@@ -994,5 +994,14 @@
                 "STATUS": "Status"
             }
         }
-    }
+    },
+    "HAWALA_DELETED": "Hawala deleted successfully",
+    "HAWALA_DELETE_FAILED": "Failed to delete hawala",
+    "HAWALA_STATUS_CHANGED": "Hawala Status Changed successfully",
+    "HAWALA_STATUS_CHANGED_FAILED": "Failed to Change hawala Status",
+    "ORDER_DELETED": "Order deleted successfully",
+    "ORDER_DELETE_FAILED": "Failed to delete Order",
+    "ORDER_STATUS_CHANGED": "Order Status Changed successfully",
+    "ORDER_STATUS_CHANGED_FAILED": "Failed to Change Order Status",
+    "ADMIN_USER": "Admin User"
 }

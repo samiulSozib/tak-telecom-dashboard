@@ -81,16 +81,25 @@ export const hawalaReducer = (state = initialState, action: any): HawalaState =>
       };
 
     case CHANGE_HAWALA_STATUS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        hawalas: state.hawalas.map((hawala) =>
-          hawala.id === action.payload.hawalaId
-            ? { ...hawala, status: action.payload.status }
-            : hawala
-        ),
-        error: null,
-      };
+  return {
+    ...state,
+    loading: false,
+    hawalas: state.hawalas.map((hawala) =>
+      hawala.id === action.payload.hawalaId
+        ? {
+            ...hawala,
+            status:
+              action.payload.status == 1
+                ? "confirmed"
+                : action.payload.status == 3
+                ? "rejected"
+                : "Pending",
+          }
+        : hawala
+    ),
+    error: null,
+  };
+
 
     case FETCH_HAWALA_LIST_FAIL:
     case DELETE_HAWALA_FAIL:

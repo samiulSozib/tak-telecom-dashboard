@@ -73,14 +73,24 @@
         .layout-main-container {
             margin-left: 0;
             padding-left: 2rem;
+            [dir="rtl"] & {
+                margin-right: 0;
+                padding-right: 4rem;
+                padding-left: 0;
+            }
         }
         .layout-sidebar {
             transform: translateX(-100%);
             left: 0;
             top: 0;
             height: 100vh;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
+
+            [dir="rtl"] & {
+                transform: translateX(100%);
+                left: auto;
+                right: 0;
+
+            }
         }
         .layout-mask {
             display: none;
