@@ -1003,5 +1003,11 @@
     "ORDER_DELETE_FAILED": "حذف سفارش با شکست مواجه شد",
     "ORDER_STATUS_CHANGED": "وضعیت سفارش با موفقیت تغییر کرد",
     "ORDER_STATUS_CHANGED_FAILED": "تغییر وضعیت سفارش با شکست مواجه شد",
-    "ADMIN_USER": "کاربر مدیر"
+    "ADMIN_USER": "کاربر مدیر",
+    "LOGOUT_SUCCESS": "خروج با موفقیت انجام شد",
+
+
+  "TELEGRAM_SYNC_SUCCESS": "گروه‌های تلگرام با موفقیت همگام‌سازی شدند.",
+  "TELEGRAM_SYNC_FAILED": "هنگام همگام‌سازی گروه‌های تلگرام خطایی رخ داد."
+
 }

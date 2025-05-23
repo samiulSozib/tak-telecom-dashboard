@@ -24,16 +24,20 @@ const Settings = () => {
 
         try {
             // Call your actual API here
-            const response = await axios.post(`${API_URL}/telegram-chat-ids/fetch`,{
+            const response = await axios.post(
+            `${API_URL}/telegram-chat-ids/fetch`,
+            {}, // empty JSON body
+            {
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            })
-            console.log(response)
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
 
             Swal.fire({
-                title: 'Success!',
-                text: 'Telegram groups synced successfully.',
+                title: t('SUCCESSFUL'),
+                text: t('TELEGRAM_SYNC_SUCCESS'),
                 icon: 'success',
                 confirmButtonText: 'OK'
               })
@@ -41,8 +45,8 @@ const Settings = () => {
         } catch (error) {
             console.log(error)
             Swal.fire({
-                title: 'Error!',
-                text: 'There was an error syncing the telegram groups.',
+                title: t('ERROR'),
+                text: t('TELEGRAM_SYNC_FAILED'),
                 icon: 'error',
                 confirmButtonText: 'OK'
               })

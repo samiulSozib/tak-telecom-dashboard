@@ -1003,5 +1003,12 @@
     "ORDER_DELETE_FAILED": "د سفارش ړنګول پاتې شول",
     "ORDER_STATUS_CHANGED": "د سفارش حالت په بریالیتوب سره بدل شو",
     "ORDER_STATUS_CHANGED_FAILED": "د سفارش حالت بدلول پاتې شول",
-    "ADMIN_USER": "اداري کاروونکی"
+    "ADMIN_USER": "اداري کاروونکی",
+
+    "LOGOUT_SUCCESS": "په بریالیتوب سره وتل",
+
+
+  "TELEGRAM_SYNC_SUCCESS": "د ټیلیګرام ګروپونه بریالیتوب سره همغږي شول.",
+  "TELEGRAM_SYNC_FAILED": "د ټیلیګرام ګروپونو د همغږي کولو پر مهال تېروتنه وشوه."
+
 }

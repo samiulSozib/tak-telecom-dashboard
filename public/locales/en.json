@@ -1003,5 +1003,10 @@
     "ORDER_DELETE_FAILED": "Failed to delete Order",
     "ORDER_STATUS_CHANGED": "Order Status Changed successfully",
     "ORDER_STATUS_CHANGED_FAILED": "Failed to Change Order Status",
-    "ADMIN_USER": "Admin User"
+    "ADMIN_USER": "Admin User",
+
+    "LOGOUT_SUCCESS":"Logout Success",
+
+    "TELEGRAM_SYNC_SUCCESS": "Telegram groups synced successfully.",
+    "TELEGRAM_SYNC_FAILED": "There was an error syncing the telegram groups."
 }
