@@ -62,31 +62,21 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         router.push('/auth/login');
     };
 
-    // const handleLanguageClick = (language: MyLanguage) => {
-    //     i18n.changeLanguage(language.language_code) // Change language dynamically
-    //         .then(() => {
-    //             setCurrentLanguage(language.language_code); // Update state
-    //             //console.log(`Language changed to: ${language.language_code}`);
-    //             router.refresh()
-    //             setProfileMenuVisible(false)
-    //             setLanguageDropdownVisible(false)
-    //             //window.location.reload()
+    const handleLanguageClick = (language: MyLanguage) => {
+        i18n.changeLanguage(language.language_code) // Change language dynamically
+            .then(() => {
+                setCurrentLanguage(language.language_code); // Update state
+                //console.log(`Language changed to: ${language.language_code}`);
+                //router.refresh()
+                setProfileMenuVisible(false)
+                setLanguageDropdownVisible(false)
+                //window.location.reload()
 
-    //         })
-    //         .catch((err) => {
-    //             console.error('Error changing language:', err);
-    //         });
-    // };
-    const handleLanguageClick = async (language: MyLanguage) => {
-  try {
-    await i18n.changeLanguage(language.language_code);
-    setCurrentLanguage(language.language_code);
-    // Force a full page reload to ensure all content updates
-    window.location.reload();
-  } catch (err) {
-    console.error('Error changing language:', err);
-  }
-};
+            })
+            .catch((err) => {
+                console.error('Error changing language:', err);
+            });
+    };
 
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
