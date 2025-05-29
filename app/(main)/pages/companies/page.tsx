@@ -94,8 +94,7 @@ const CompanyPage = () => {
         setSubmitted(true);
         //console.log(company)
         if (!company.company_name || company.company_name.length === 0 ||
-            !company.country ||
-            !company.telegram_chat_id
+            !company.country
             ) {
 
                 toast.current?.show({
@@ -120,7 +119,7 @@ const CompanyPage = () => {
 
     const editCompany = (company: Company) => {
         //console.log(company)
-        setCompany({ ...company,country:company.country});
+        setCompany({ ...company,country_id:company.country_id,country:company.country});
 
         setCompanyDialog(true);
     };
@@ -222,14 +221,14 @@ const CompanyPage = () => {
         );
     };
 
-    const chatIdBodyTemplate = (rowData: Company) => {
-        return (
-            <>
-                <span className="p-column-title">Chat ID</span>
-                {rowData.telegram_chat_id?.chat_id}
-            </>
-        );
-    };
+    // const chatIdBodyTemplate = (rowData: Company) => {
+    //     return (
+    //         <>
+    //             <span className="p-column-title">Chat ID</span>
+    //             {rowData.telegram_chat_id?.chat_id}
+    //         </>
+    //     );
+    // };
 
     const telegramGroupNameBodyTemplate = (rowData: Company) => {
         return (
@@ -340,7 +339,7 @@ const CompanyPage = () => {
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="company_name" header={t('COMPANY.TABLE.COLUMN.COMPANYNAME')} sortable body={nameBodyTemplate}></Column>
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('COMPANY.TABLE.COLUMN.COMPANYNAME')} body={imageBodyTemplate}></Column>
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="country_name" header={t('COMPANY.TABLE.COLUMN.COUNTRYNAME')} body={countryBodyTemplate}></Column>
-                        <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Chat Id" header={t('COMPANY.TABLE.COLUMN.COMPANYNAME')} body={chatIdBodyTemplate} ></Column>
+                        {/* <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Chat Id" header={t('COMPANY.TABLE.COLUMN.COMPANYNAME')} body={chatIdBodyTemplate} ></Column> */}
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} field="Group Name" header={t('COMPANY.TABLE.COLUMN.CHATGROUPNAME')} body={telegramGroupNameBodyTemplate} ></Column>
                         <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
@@ -435,7 +434,7 @@ const CompanyPage = () => {
                                     placeholder={t('COMPANY.FORM.PLACEHOLDER.TELEGRAM_GROUP')}
                                     className="w-full"
                                 />
-                            {submitted && !company.telegram_chat_id && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>}
+                            {/* {submitted && !company.telegram_chat_id && <small className="p-invalid" style={{ color: 'red' }}>{t('THIS_FIELD_IS_REQUIRED')}</small>} */}
                             </div>
 
                         </div>

@@ -98,9 +98,9 @@ const ResellerGroupPage = () => {
 
     const saveResellerGroup = () => {
         setSubmitted(true);
-        //console.log(groupDiscount)
+        console.log(groupDiscount)
         //return;
-        if (!groupDiscount.reseller_group_id || !groupDiscount.service_id || !groupDiscount.bundle_id || !groupDiscount.discount_type || !groupDiscount.discount_value) {
+        if (!groupDiscount.reseller_group || !groupDiscount.service || !groupDiscount.bundle || !groupDiscount.discount_type || !groupDiscount.discount_value) {
             toast.current?.show({
                 severity: 'error',
                 summary: t('VALIDATION_ERROR'),

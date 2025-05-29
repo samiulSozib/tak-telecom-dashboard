@@ -87,13 +87,13 @@ const BundlePage = () => {
     }, [dispatch, searchTag]);
 
     useEffect(() => {
-            if (Object.keys(activeFilters).length > 0) {
-                dispatch(_fetchBundleList(1, searchTag, activeFilters));
-            }
-        }, [dispatch, activeFilters, searchTag]);
+        if (Object.keys(activeFilters).length > 0) {
+            dispatch(_fetchBundleList(1, searchTag, activeFilters));
+        }
+    }, [dispatch, activeFilters, searchTag]);
 
     useEffect(() => {
-        console.log(bundles)
+        //console.log(bundles)
     }, [dispatch, bundles]);
 
     const openNew = () => {
@@ -214,7 +214,6 @@ const BundlePage = () => {
                             >
                                 <div className="p-card-body" style={{ padding: '1rem' }}>
                                     <div className="grid">
-
                                         {/* Bundle Type Filter */}
                                         <div className="col-12">
                                             <label htmlFor="bundleTypeFilter" style={{ fontSize: '0.875rem' }}>
@@ -402,30 +401,27 @@ const BundlePage = () => {
         );
     };
 
-const serviceNameBodyTemplate = (rowData: Bundle) => {
-    return (
-        <>
-            <span className="p-column-title">Service Name</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <img
-                    src={`${rowData.service?.company?.company_logo}`}
-                    alt={rowData.service?.company?.company_name || 'Company Logo'}
-                    style={{
-                        padding: '2px',
-                        width: '35px',
-                        height: '35px',
-                        borderRadius: '50%',
-                        objectFit: 'contain',
-                    }}
-                />
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>
-                    {rowData.service?.company?.company_name}
-                </span>
-            </div>
-        </>
-    );
-};
-
+    const serviceNameBodyTemplate = (rowData: Bundle) => {
+        return (
+            <>
+                <span className="p-column-title">Service Name</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <img
+                        src={`${rowData.service?.company?.company_logo}`}
+                        alt={rowData.service?.company?.company_name || 'Company Logo'}
+                        style={{
+                            padding: '2px',
+                            width: '35px',
+                            height: '35px',
+                            borderRadius: '50%',
+                            objectFit: 'contain'
+                        }}
+                    />
+                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.service?.company?.company_name}</span>
+                </div>
+            </>
+        );
+    };
 
     const serviceCategoryBodyTemplate = (rowData: Bundle) => {
         return (
@@ -831,6 +827,58 @@ const serviceNameBodyTemplate = (rowData: Bundle) => {
                                         </small>
                                     )}
                                 </div>
+                            </div>
+
+                            <div className="formgrid grid">
+                                <div className="field col">
+                                    <label htmlFor="bundleTypeFilter" style={{ fontWeight: 'bold' }}>
+                                        {t('ORDER.FILTER.BUNDLE_TYPE')}
+                                    </label>
+                                    <Dropdown
+                                        id="bundleTypeFilter"
+                                        options={[
+                                            { label: t('BUNDLE.FORM.INPUT.SELECT.BUNDLETYPE.OPTION.CREDIT'), value: 'credit' },
+                                            { label: t('BUNDLE.FORM.INPUT.SELECT.BUNDLETYPE.OPTION.PACKAGE'), value: 'package' }
+                                        ]}
+                                        value={bundle.bundle_type}
+                                        onChange={(e) => setBundle({ ...bundle, bundle_type: e.value })}
+                                        placeholder={t('ORDER.FILTER.SELECT_TYPE')}
+                                        style={{ width: '100%' }}
+                                    />
+                                    {submitted && !bundle.bundle_type && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            {t('THIS_FIELD_IS_REQUIRED')}
+                                        </small>
+                                    )}
+                                </div>
+                                {bundle.bundle_type==='credit'&&(
+                                <div className="field col">
+                                    <label htmlFor="name" style={{ fontWeight: 'bold' }}>
+                                        {t('BUNDLE.FORM.INPUT.AMOUNT')}
+                                    </label>
+                                    <InputText
+                                        id="amount"
+                                        value={bundle.amount?.toString()}
+                                        onChange={(e) =>
+                                            setBundle((perv) => ({
+                                                ...perv,
+                                                amount: e.target.value
+                                            }))
+                                        }
+                                        required
+                                        autoFocus
+                                        placeholder={t('BUNDLE.FORM.PLACEHOLDER.AMOUNT')}
+                                        className={classNames({
+                                            'p-invalid': submitted && !bundle.amount
+                                        })}
+                                    />
+                                    {submitted && bundle.bundle_type==='credit' && !bundle.bundle_title && (
+                                        <small className="p-invalid" style={{ color: 'red' }}>
+                                            {t('THIS_FIELD_IS_REQUIRED')}
+                                        </small>
+                                    )}
+                                </div>
+                                )}
                             </div>
                         </div>
                     </Dialog>

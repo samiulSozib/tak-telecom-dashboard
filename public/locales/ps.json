@@ -639,7 +639,20 @@
             "PHONE": "تلیفون",
             "COMMISSION_TYPE": "د کمیسیون ډول",
             "AMOUNT": "مقدار",
-            "STATUS": "حالت"
+            "STATUS": "حالت",
+            "COLUMN": {
+                "HAWALA_NUMBER": "د حوالې شمېره",
+                "SENDER_NAME": "د لېږونکي نوم",
+                "RECEIVER_NAME": "د ترلاسه کوونکي نوم",
+                "AMOUNT": "مقدار",
+                "CURRENCY": "پیسه",
+                "CONVERTED_AMOUNT": "تبدیل شوی مقدار",
+                "RESELLER_CURRENCY": "د بیاپلورونکي کرنسي",
+                "COMMISSION": "کمیسیون",
+                "ADMIN_NOTE": "د اډمین یادښت",
+                "RESELLER_NAME": "د بیاپلورونکي نوم",
+                "STATUS": "حالت"
+            }
         }
     },
     "APP": {
@@ -978,23 +991,7 @@
         "unexpected_error": "ناڅاپي تېروتنه وشوه. مهرباني وکړئ بیا هڅه وکړئ."
     },
     "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "ایا تاسو ډاډه یاست چې د حالت بدلول غواړئ؟",
-    "HAWALA": {
-        "TABLE": {
-            "COLUMN": {
-                "HAWALA_NUMBER": "د حوالې شمېره",
-                "SENDER_NAME": "د لېږونکي نوم",
-                "RECEIVER_NAME": "د ترلاسه کوونکي نوم",
-                "AMOUNT": "مقدار",
-                "CURRENCY": "پیسه",
-                "CONVERTED_AMOUNT": "تبدیل شوی مقدار",
-                "RESELLER_CURRENCY": "د بیاپلورونکي کرنسي",
-                "COMMISSION": "کمیسیون",
-                "ADMIN_NOTE": "د اډمین یادښت",
-                "RESELLER_NAME": "د بیاپلورونکي نوم",
-                "STATUS": "حالت"
-            }
-        }
-    },
+
     "HAWALA_DELETED": "حواله په بریالیتوب سره ړنګه شوه",
     "HAWALA_DELETE_FAILED": "د حوالې ړنګول پاتې شول",
     "HAWALA_STATUS_CHANGED": "د حوالې حالت په بریالیتوب سره بدل شو",
@@ -1009,6 +1006,23 @@
 
 
   "TELEGRAM_SYNC_SUCCESS": "د ټیلیګرام ګروپونه بریالیتوب سره همغږي شول.",
-  "TELEGRAM_SYNC_FAILED": "د ټیلیګرام ګروپونو د همغږي کولو پر مهال تېروتنه وشوه."
+  "TELEGRAM_SYNC_FAILED": "د ټیلیګرام ګروپونو د همغږي کولو پر مهال تېروتنه وشوه.",
+
+  "RESELLER_GROUPS_FETCHED": "د استازو ډلې بریالۍ ترلاسه شوې.",
+  "RESELLER_GROUP_ADDED": "د استازو ډله بریالۍ اضافه شوه.",
+  "RESELLER_GROUP_ADD_FAILED": "د استازو د ډلې اضافه کولو کې تېروتنه وشوه.",
+  "RESELLER_GROUP_UPDATED": "د استازو ډله بریالۍ تازه شوه.",
+  "RESELLER_GROUP_UPDATE_FAILED": "د استازو د ډلې تازه کولو کې تېروتنه وشوه.",
+  "RESELLER_GROUP_DELETED": "د استازو ډله بریالۍ ړنګه شوه.",
+  "RESELLER_GROUP_DELETE_FAILED": "د استازو د ډلې ړنګولو کې تېروتنه وشوه.",
+
+  "BALANCE.FORM.RESELLER.BALANCE": "د استازي موجودي",
+"BALANCE.FORM.RESELLER.PAYMENT": "د استازي پیسې",
+"BALANCE.FORM.RESELLER.LOAN": "د استازي پور",
+
+"USER.FORM.PLACEHOLDER.CURRENCY": "کرنسي وټاکئ",
+  "USER.FORM.PLACEHOLDER.ROLE": "رول وټاکئ"
+
+
 
 }

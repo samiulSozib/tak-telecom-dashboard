@@ -639,7 +639,20 @@
             "PHONE": "تلفن",
             "COMMISSION_TYPE": "نوع کمیسیون",
             "AMOUNT": "مقدار",
-            "STATUS": "وضعیت"
+            "STATUS": "وضعیت",
+            "COLUMN": {
+                "HAWALA_NUMBER": "شماره حواله",
+                "SENDER_NAME": "نام فرستنده",
+                "RECEIVER_NAME": "نام گیرنده",
+                "AMOUNT": "مقدار",
+                "CURRENCY": "واحد پول",
+                "CONVERTED_AMOUNT": "مقدار تبدیل‌شده",
+                "RESELLER_CURRENCY": "واحد پول فروشنده",
+                "COMMISSION": "کمیسیون",
+                "ADMIN_NOTE": "یادداشت مدیر",
+                "RESELLER_NAME": "نام فروشنده",
+                "STATUS": "وضعیت"
+            }
         }
     },
     "APP": {
@@ -978,23 +991,7 @@
         "unexpected_error": "خطای غیرمنتظره‌ای رخ داد. لطفاً دوباره تلاش کنید."
     },
     "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "آیا مطمئن هستید که می‌خواهید وضعیت را تغییر دهید؟",
-    "HAWALA": {
-        "TABLE": {
-            "COLUMN": {
-                "HAWALA_NUMBER": "شماره حواله",
-                "SENDER_NAME": "نام فرستنده",
-                "RECEIVER_NAME": "نام گیرنده",
-                "AMOUNT": "مقدار",
-                "CURRENCY": "واحد پول",
-                "CONVERTED_AMOUNT": "مقدار تبدیل‌شده",
-                "RESELLER_CURRENCY": "واحد پول فروشنده",
-                "COMMISSION": "کمیسیون",
-                "ADMIN_NOTE": "یادداشت مدیر",
-                "RESELLER_NAME": "نام فروشنده",
-                "STATUS": "وضعیت"
-            }
-        }
-    },
+
     "HAWALA_DELETED": "حواله با موفقیت حذف شد",
     "HAWALA_DELETE_FAILED": "حذف حواله با شکست مواجه شد",
     "HAWALA_STATUS_CHANGED": "وضعیت حواله با موفقیت تغییر کرد",
@@ -1008,6 +1005,21 @@
 
 
   "TELEGRAM_SYNC_SUCCESS": "گروه‌های تلگرام با موفقیت همگام‌سازی شدند.",
-  "TELEGRAM_SYNC_FAILED": "هنگام همگام‌سازی گروه‌های تلگرام خطایی رخ داد."
+  "TELEGRAM_SYNC_FAILED": "هنگام همگام‌سازی گروه‌های تلگرام خطایی رخ داد.",
+
+  "RESELLER_GROUPS_FETCHED": "گروه‌های نمایندگی با موفقیت دریافت شدند.",
+  "RESELLER_GROUP_ADDED": "گروه نمایندگی با موفقیت اضافه شد.",
+  "RESELLER_GROUP_ADD_FAILED": "افزودن گروه نمایندگی ناموفق بود.",
+  "RESELLER_GROUP_UPDATED": "گروه نمایندگی با موفقیت بروزرسانی شد.",
+  "RESELLER_GROUP_UPDATE_FAILED": "بروزرسانی گروه نمایندگی ناموفق بود.",
+  "RESELLER_GROUP_DELETED": "گروه نمایندگی با موفقیت حذف شد.",
+  "RESELLER_GROUP_DELETE_FAILED": "حذف گروه نمایندگی ناموفق بود.",
+
+  "BALANCE.FORM.RESELLER.BALANCE": "موجودی نماینده فروش",
+"BALANCE.FORM.RESELLER.PAYMENT": "پرداخت نماینده فروش",
+"BALANCE.FORM.RESELLER.LOAN": "وام نماینده فروش",
+
+"USER.FORM.PLACEHOLDER.CURRENCY": "انتخاب ارز",
+  "USER.FORM.PLACEHOLDER.ROLE": "انتخاب نقش"
 
 }

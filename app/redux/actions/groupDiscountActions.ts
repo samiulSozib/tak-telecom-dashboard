@@ -98,7 +98,7 @@ export const _editGroupDiscount = (groupDiscountId: number, groupDiscountData: G
     formData.append('discount_type', groupDiscountData.discount_type);
     formData.append('discount_value', groupDiscountData.discount_value);
 
-    const response = await axios.put(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/group-discounts/${groupDiscountId}`,
       formData,
       {

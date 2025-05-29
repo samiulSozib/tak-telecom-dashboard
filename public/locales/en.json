@@ -639,7 +639,20 @@
             "PHONE": "Phone",
             "COMMISSION_TYPE": "Commission Type",
             "AMOUNT": "Amount",
-            "STATUS": "Status"
+            "STATUS": "Status",
+            "COLUMN": {
+                "HAWALA_NUMBER": "Hawala Number",
+                "SENDER_NAME": "Sender Name",
+                "RECEIVER_NAME": "Receiver Name",
+                "AMOUNT": "Amount",
+                "CURRENCY": "Currency",
+                "CONVERTED_AMOUNT": "Converted Amount",
+                "RESELLER_CURRENCY": "Reseller Currency",
+                "COMMISSION": "Commission",
+                "ADMIN_NOTE": "Admin Note",
+                "RESELLER_NAME": "Reseller Name",
+                "STATUS": "Status"
+            }
         }
     },
     "APP": {
@@ -978,23 +991,7 @@
         "unexpected_error": "An unexpected error occurred. Please try again."
     },
     "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "Are you sure you want to change the status of",
-    "HAWALA": {
-        "TABLE": {
-            "COLUMN": {
-                "HAWALA_NUMBER": "Hawala Number",
-                "SENDER_NAME": "Sender Name",
-                "RECEIVER_NAME": "Receiver Name",
-                "AMOUNT": "Amount",
-                "CURRENCY": "Currency",
-                "CONVERTED_AMOUNT": "Converted Amount",
-                "RESELLER_CURRENCY": "Reseller Currency",
-                "COMMISSION": "Commission",
-                "ADMIN_NOTE": "Admin Note",
-                "RESELLER_NAME": "Reseller Name",
-                "STATUS": "Status"
-            }
-        }
-    },
+
     "HAWALA_DELETED": "Hawala deleted successfully",
     "HAWALA_DELETE_FAILED": "Failed to delete hawala",
     "HAWALA_STATUS_CHANGED": "Hawala Status Changed successfully",
@@ -1008,5 +1005,23 @@
     "LOGOUT_SUCCESS":"Logout Success",
 
     "TELEGRAM_SYNC_SUCCESS": "Telegram groups synced successfully.",
-    "TELEGRAM_SYNC_FAILED": "There was an error syncing the telegram groups."
+    "TELEGRAM_SYNC_FAILED": "There was an error syncing the telegram groups.",
+
+
+    "RESELLER_GROUPS_FETCHED": "Reseller groups fetched successfully.",
+  "RESELLER_GROUP_ADDED": "Reseller group added successfully.",
+  "RESELLER_GROUP_ADD_FAILED": "Failed to add reseller group.",
+  "RESELLER_GROUP_UPDATED": "Reseller group updated successfully.",
+  "RESELLER_GROUP_UPDATE_FAILED": "Failed to update reseller group.",
+  "RESELLER_GROUP_DELETED": "Reseller group deleted successfully.",
+  "RESELLER_GROUP_DELETE_FAILED": "Failed to delete reseller group.",
+
+  "BALANCE.FORM.RESELLER.BALANCE": "Reseller Balance",
+"BALANCE.FORM.RESELLER.PAYMENT": "Reseller Payment",
+"BALANCE.FORM.RESELLER.LOAN": "Reseller Loan",
+
+"USER.FORM.PLACEHOLDER.CURRENCY": "Select currency",
+  "USER.FORM.PLACEHOLDER.ROLE": "Select role"
+
+
 }

@@ -44,9 +44,10 @@ export const _addBalance = (balanceData: Balance,toast: React.RefObject<Toast>,t
     dispatch({ type: ADD_BALANCE_REQUEST });
 
     try {
+        console.log(balanceData)
         const token = getAuthToken();
         const formData=new FormData()
-        formData.append("reseller_id", balanceData.reseller_id.toString());
+        formData.append("reseller_id", balanceData.reseller?.id?.toString() || '0');
         formData.append("transaction_type", balanceData.transaction_type);
         formData.append("balance_amount", balanceData.amount);
         formData.append("currency_id", balanceData.currency_id?.toString());
@@ -75,6 +76,7 @@ export const _addBalance = (balanceData: Balance,toast: React.RefObject<Toast>,t
             life: 3000,
         });
     } catch (error: any) {
+        console.log(error)
         dispatch({ type: ADD_BALANCE_FAIL, payload: error.message });
         toast.current?.show({
             severity: "error",
@@ -92,7 +94,7 @@ export const _editBalance = (balanceId: number, balanceData: Balance,toast: Reac
     try {
         const token = getAuthToken();
         const formData=new FormData()
-        formData.append("reseller_id", balanceData.reseller_id.toString());
+        formData.append("reseller_id", balanceData.reseller?.id?.toString() || '0');
         formData.append("transaction_type", balanceData.transaction_type);
         formData.append("balance_amount", balanceData.amount);
         formData.append("currency_id", balanceData.currency_id?.toString());

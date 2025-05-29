@@ -314,6 +314,22 @@ const PaymentPage = () => {
         </>
     );
 
+useEffect(() => {
+  const currencyCode = payment?.reseller?.code||"";
+
+  const selectedCurrency = currencies.find(
+    (currency:Currency) => currency.code === currencyCode
+  );
+
+  if (selectedCurrency) {
+    setPayment((prev) => ({
+      ...prev,
+      currency_id: selectedCurrency.id,
+      currency: selectedCurrency,
+    }));
+  }
+}, [payment?.reseller?.code,currencies]);
+
     return (
         <div className="grid crud-demo -m-5">
             <div className="col-12">
@@ -470,6 +486,7 @@ const PaymentPage = () => {
                                         {t('PAYMENT.FORM.INPUT.CURRENCY')}
                                     </label>
                                     <Dropdown
+                                    disabled
                                         id="currency"
                                         value={payment.currency}
                                         options={currencies}

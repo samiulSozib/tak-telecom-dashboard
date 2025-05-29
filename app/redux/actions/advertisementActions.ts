@@ -37,7 +37,7 @@ export const _fetchAdvertisements = (search:string='') => async (dispatch: Dispa
                 Authorization: `Bearer ${token}`,
             },
         });
-
+        //console.log(response)
         dispatch({ type: FETCH_ADVERTISEMENTS_SUCCESS, payload: response.data.data.advertisements });
     } catch (error: any) {
         dispatch({ type: FETCH_ADVERTISEMENTS_FAIL, payload: error.message });

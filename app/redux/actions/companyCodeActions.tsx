@@ -119,7 +119,7 @@ export const _editCompanyCode = (updatedCode: CompanyCode, toast: React.RefObjec
 
   try {
     const token = getAuthToken();
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/companycodes/${updatedCode.id}`, body, {
+    const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/companycodes/${updatedCode.id}`, body, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',

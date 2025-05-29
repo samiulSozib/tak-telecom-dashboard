@@ -33,7 +33,7 @@ const Dashboard = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        //console.log(data);
+        console.log(data);
     }, [dispatch, data]);
 
     const applyLightTheme = () => {
@@ -118,7 +118,7 @@ const Dashboard = () => {
     return (
         <div className="grid -m-5">
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0 bg-gradient-to-r from-indigo-100 to-purple-200" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #dbeafe, #c7d2fe)' }}>
+                <div className="card mb-0 bg-gradient-to-r from-indigo-100 to-purple-200" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #dbeafe, #c7d2fe)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TODAYORDER')}</span>
@@ -131,7 +131,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #f3e8ff, #fbcfe8)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #f3e8ff, #fbcfe8)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALORDER')}</span>
@@ -147,13 +147,17 @@ const Dashboard = () => {
             </div>
 
             <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #d1fae5, #99f6e4)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #d1fae5, #99f6e4)' }}>
                     <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
-                            <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TODAY_PENDING_ORDERS')}</span>
-                            <div className="text-900 font-medium text-lg">{data?.today_pending_orders ?? 0}</div>
+                            <div className="text-900 font-medium text-lg">{data?.pending_orders ?? 0}</div>
+                            <span className="block text-500 text-xm font-medium mb-2">{t('DASHBOARD.PENDINGORDERS')}</span>
+                            <div className="text-900 font-medium text-lg flex items-center">
+                                <span className="text-xs mt-1 mr-1">{t('DASHBOARD.TODAY')} :</span>
+                                <span>{data?.today_pending_orders ?? 0}</span>
+                            </div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2rem', height: '2rem' }}>
                             <i className="pi pi-clock text-cyan-500 text-xl" />
                         </div>
                     </div>
@@ -163,13 +167,17 @@ const Dashboard = () => {
             </div>
 
             <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fed7aa)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fed7aa)' }}>
                     <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
-                            <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TODAY_SUCCESS_ORDERS')}</span>
-                            <div className="text-900 font-medium text-lg">{data?.today_successful_orders ?? 0}</div>
+                            <div className="text-900 font-medium text-lg">{data?.successful_orders ?? 0}</div>
+                            <span className="block text-500 text-xm font-medium mb-2">{t('DASHBOARD.SUCCESSORDERS')}</span>
+                            <div className="text-900 font-medium text-lg flex items-center">
+                                <span className="text-xs mt-1 mr-1">{t('DASHBOARD.TODAY')} :</span>
+                                <span>{data?.today_successful_orders ?? 0}</span>
+                            </div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2rem', height: '2rem' }}>
                             <i className="pi pi-check-circle text-green-500 text-xl" />
                         </div>
                     </div>
@@ -179,13 +187,17 @@ const Dashboard = () => {
             </div>
 
             <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #fae8ff, #e9d5ff)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #fae8ff, #e9d5ff)' }}>
                     <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
-                            <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TODAY_REJECTED_ORDERS')}</span>
-                            <div className="text-900 font-medium text-lg">{data?.today_rejected_orders ?? 0}</div>
+                            <div className="text-900 font-medium text-lg">{data?.rejected_orders ?? 0}</div>
+                            <span className="block text-500 text-xm font-medium mb-2">{t('DASHBOARD.REJECTEDORDERS')}</span>
+                            <div className="text-900 font-medium text-lg flex items-center">
+                                <span className="text-xs mt-1 mr-1">{t('DASHBOARD.TODAY')} :</span>
+                                <span>{data?.today_rejected_orders ?? 0}</span>
+                            </div>{' '}
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <div className="flex align-items-center justify-content-center bg-red-100 border-round" style={{ width: '2rem', height: '2rem' }}>
                             <i className="pi pi-times text-red-500 text-xl" />
                         </div>
                     </div>
@@ -196,7 +208,7 @@ const Dashboard = () => {
 
             {/*  */}
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #cffafe, #bfdbfe)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #cffafe, #bfdbfe)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TODAYSALE')}</span>
@@ -213,7 +225,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #e0e7ff, #e9d5ff)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #e0e7ff, #e9d5ff)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TODAYPROFIT')}</span>
@@ -232,8 +244,8 @@ const Dashboard = () => {
 
             {/*  */}
 
-            <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #d1fae5, #99f6e4)' }}>
+            {/* <div className="col-6 lg:col-6 xl:col-2">
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #d1fae5, #99f6e4)' }}>
                     <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.PENDINGORDERS')}</span>
@@ -247,7 +259,7 @@ const Dashboard = () => {
             </div>
 
             <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fed7aa)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fed7aa)' }}>
                     <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.SUCCESSORDERS')}</span>
@@ -257,12 +269,11 @@ const Dashboard = () => {
                             <i className="pi pi-check-circle text-green-500 text-xl" />
                         </div>
                     </div>
-                    {/* <span className="text-green-500 font-medium">85 </span>
-                    <span className="text-500">responded</span> */}
+
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-2">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #fae8ff, #e9d5ff)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #fae8ff, #e9d5ff)' }}>
                     <div className="flex justify-content-between mb-3" style={{ fontSize: '12px' }}>
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.REJECTEDORDERS')}</span>
@@ -272,15 +283,14 @@ const Dashboard = () => {
                             <i className="pi pi-times text-red-500 text-xl" />
                         </div>
                     </div>
-                    {/* <span className="text-green-500 font-medium">24 new </span>
-                    <span className="text-500">since last visit</span> */}
+
                 </div>
-            </div>
+            </div> */}
 
             {/*  */}
 
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #ffedd5, #fde68a)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #ffedd5, #fde68a)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALSALE')}</span>
@@ -297,7 +307,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #d1fae5, #a7f3d0)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #d1fae5, #a7f3d0)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALPROFIT')}</span>
@@ -314,7 +324,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fef08a)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #fef9c3, #fef08a)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALRESELLER')}</span>
@@ -329,7 +339,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #fee2e2, #fbcfe8)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px',maxHeight:'140px', backgroundImage: 'linear-gradient(to right, #fee2e2, #fbcfe8)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALCOMPANY')}</span>
@@ -344,7 +354,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #cffafe, #99f6e4)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #cffafe, #99f6e4)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALSERVICE')}</span>
@@ -359,7 +369,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="col-6 lg:col-6 xl:col-3">
-                <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #e0f2fe, #bfdbfe)' }}>
+                <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #e0f2fe, #bfdbfe)' }}>
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 text-sm font-medium mb-2">{t('DASHBOARD.TOTALBUNDLE')}</span>
@@ -383,7 +393,7 @@ const Dashboard = () => {
 
             {data?.balances_by_currency?.map((balance: any, index: number) => (
                 <div key={index} className="col-6 lg:col-6 xl:col-4">
-                    <div className="card mb-0" style={{ maxHeight: '140px', backgroundImage: 'linear-gradient(to right, #ecfccb, #bbf7d0)' }}>
+                    <div className="card mb-0" style={{ minHeight: '140px', backgroundImage: 'linear-gradient(to right, #ecfccb, #bbf7d0)' }}>
                         <div className="flex justify-content-between mb-1">
                             <div>
                                 <span className="block text-500 text-sm font-medium mb-2">{balance.currency_code}</span>

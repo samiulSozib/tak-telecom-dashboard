@@ -50,7 +50,7 @@ const BalancePage = () => {
         payment_currency_id: 0,
         payment_status: '',
         payment_notes: '',
-        payment_date: null
+        payment_date: ''
     };
 
     const [balanceDialog, setBalanceDialog] = useState(false);
@@ -86,6 +86,9 @@ const BalancePage = () => {
     const hideDialog = () => {
         setSubmitted(false);
         setBalanceDialog(false);
+        setResellerBalance(null)
+        setResellerPayment(null)
+        setResellerLoan(null)
     };
 
     const hideDeleteBalanceDialog = () => {
@@ -107,6 +110,7 @@ const BalancePage = () => {
             });
             return;
         }
+
         if (balance.id && balance.id !== 0) {
             dispatch(_editBalance(balance.id, balance, toast, t));
         } else {
@@ -301,6 +305,39 @@ const BalancePage = () => {
         </>
     );
 
+    useEffect(() => {
+        const currencyCode = balance?.reseller?.code || '';
+
+        const selectedCurrency = currencies.find((currency: Currency) => currency.code === currencyCode);
+
+        if (selectedCurrency) {
+            setBalance((prev) => ({
+                ...prev,
+                currency_id: selectedCurrency.id,
+                currency: selectedCurrency,
+                payment_currency_id: selectedCurrency.id
+            }));
+        }
+    }, [balance?.reseller?.code, currencies]);
+
+    const [resellerBalance, setResellerBalance] = useState<any>(null);
+    const [resellerPayment, setResellerPayment] = useState<any>(null);
+    const [resellerLoan, setResellerLoan] = useState<any>(null);
+    useEffect(() => {
+        if (balance.reseller) {
+            const formattedCurrency = balance.currency?.code || '';
+
+            const resellerBalanceValue = Number(balance.reseller?.balance ?? 0);
+            const totalSent = Number(balance.reseller?.total_balance_sent ?? 0);
+            const totalReceived = Number(balance.reseller?.total_payments_received ?? 0);
+            const paymentDiff = totalSent - totalReceived;
+
+            setResellerBalance(`${resellerBalanceValue} ${formattedCurrency}`);
+            setResellerPayment(`${paymentDiff > 0 ? paymentDiff : 0} ${formattedCurrency}`);
+            setResellerLoan(`${paymentDiff} ${formattedCurrency}`);
+        }
+    }, [balance.reseller, balance.currency?.code]);
+
     return (
         <div className="grid crud-demo -m-5">
             <div className="col-12">
@@ -346,27 +383,57 @@ const BalancePage = () => {
                     </DataTable>
 
                     <Dialog visible={balanceDialog} style={{ width: '900px', padding: '5px' }} header={t('BALANCE.DETAILS.TITLE')} modal className="p-fluid" footer={balanceDialogFooter} onHide={hideDialog}>
+                        {resellerBalance !== null && resellerPayment !== null && (
+                        <div
+                            className="flex flex-wrap justify-between items-center"
+                            style={{
+                                borderRadius: '10px',
+                                background: '#ffffff',
+                                border: '1px solid #e5e7eb', // Tailwind gray-200
+                                boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            {/* Reseller Balance */}
+                            <div className="flex-1 col-12 lg:col-4 text-center p-4 bg-green-50 rounded-xl shadow-sm">
+                                <p className="text-gray-600 font-medium">{t('BALANCE.FORM.RESELLER.BALANCE')}</p>
+                                <p className="text-xl font-bold text-green-600 mt-2">{resellerBalance}</p>
+                            </div>
+
+                            {/* Reseller Payment */}
+                            <div className="flex-1 col-12 lg:col-4 text-center p-4 bg-red-50 rounded-xl shadow-sm">
+                                <p className="text-gray-600 font-medium">{t('BALANCE.FORM.RESELLER.PAYMENT')}</p>
+                                <p className="text-xl font-bold text-red-600 mt-2">{resellerPayment}</p>
+                            </div>
+
+                            {/* Reseller Loan */}
+                            <div className="flex-1 col-12 lg:col-4 text-center p-4 bg-purple-50 rounded-xl shadow-sm">
+                                <p className="text-gray-600 font-medium">{t('BALANCE.FORM.RESELLER.LOAN')}</p>
+                                <p className="text-xl font-bold text-purple-600 mt-2">{resellerLoan}</p>
+                            </div>
+                        </div>
+                        )}
+                        {/* Balance Details */}
+
                         <div className="card flex flex-wrap p-fluid mt-3 gap-4">
-                            {/* Balance Details */}
                             <div className="flex-1 col-12 lg:col-6">
-                                <div className="card">
+                                <div className="">
                                     <h5 className="mb-4">{t('BALANCE.DETAILS.TITLE')}</h5>
 
                                     {/* Reseller */}
                                     <div className="field">
-                                        <label htmlFor="reseller_id">{t('BALANCE.FORM.INPUT.RESELLER')} *</label>
+                                        <label htmlFor="reseller">{t('BALANCE.FORM.INPUT.RESELLER')} *</label>
                                         <Dropdown
-                                            id="reseller_id"
-                                            value={balance.reseller_id}
+                                            id="reseller"
+                                            value={balance.reseller}
                                             options={resellers}
                                             onChange={(e) =>
                                                 setBalance((prev) => ({
                                                     ...prev,
-                                                    reseller_id: e.value
+                                                    reseller: e.value
                                                 }))
                                             }
                                             optionLabel="reseller_name"
-                                            optionValue="id"
+                                            //optionValue="id"
                                             placeholder={t('BALANCE.FORM.RESELLER.PLACEHOLDER')}
                                             className="w-full"
                                         />
@@ -429,6 +496,7 @@ const BalancePage = () => {
                                     <div className="field">
                                         <label htmlFor="currency_id">{t('BALANCE.FORM.INPUT.CURRENCY')} *</label>
                                         <Dropdown
+                                            disabled
                                             id="currency_id"
                                             value={balance.currency_id}
                                             options={currencies}
@@ -476,7 +544,7 @@ const BalancePage = () => {
 
                             {/* Payment Details */}
                             <div className="flex-1 col-12 lg:col-6">
-                                <div className="card">
+                                <div className="">
                                     <h5 className="mb-4">{t('PAYMENT.DETAILS.TITLE')}</h5>
 
                                     {/* Payment Method */}
@@ -521,6 +589,7 @@ const BalancePage = () => {
                                     <div className="field">
                                         <label htmlFor="payment_currency_id">{t('BALANCE.FORM.INPUT.PAYMENTCURRENCY')}</label>
                                         <Dropdown
+                                            disabled
                                             id="payment_currency_id"
                                             value={balance.payment_currency_id}
                                             options={currencies}
@@ -557,17 +626,22 @@ const BalancePage = () => {
                                     {/* Payment Date */}
                                     <div className="field">
                                         <label htmlFor="payment_date">{t('BALANCE.FORM.INPUT.PAYMENTDATE')}</label>
-                                        <Calendar
+                                        <InputText
                                             id="payment_date"
-                                            value={balance.payment_date ? new Date(balance.payment_date) : null}
+                                            value={balance.payment_date}
                                             onChange={(e) =>
-                                                setBalance((prev: Balance) => ({
+                                                setBalance((prev) => ({
                                                     ...prev,
-                                                    payment_date: e.value
+                                                    payment_date: e.target.value
                                                 }))
                                             }
-                                            placeholder={t('PAYMENT.FORM.DATE.LABEL')}
-                                            className="w-full"
+                                            type="date"
+                                            required
+                                            autoFocus
+                                            placeholder={t('PAYMENT.FORM.INPUT.PAYMENTDATE')}
+                                            className={classNames({
+                                                'p-invalid': submitted && !balance.payment_date
+                                            })}
                                         />
                                     </div>
                                 </div>

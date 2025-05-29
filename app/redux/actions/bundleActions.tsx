@@ -45,7 +45,7 @@ export const _fetchBundleList = (page: number = 1,search:string='',filters={}) =
         Authorization: `Bearer ${token}`,
       },
     });
-    //console.log(response)
+    console.log(response)
     dispatch({
       type: FETCH_BUNDLE_LIST_SUCCESS,
       payload: {
@@ -75,6 +75,7 @@ export const _addBundle = (newBundleData: Bundle, toast: React.RefObject<Toast>,
         buying_price: newBundleData.buying_price,
         selling_price: newBundleData.selling_price,
         currency_id: newBundleData.currency?.id,
+        amount:newBundleData.amount
     };
     const token = getAuthToken();
     const response = await axios.post(
@@ -127,9 +128,10 @@ export const _editBundle = (bundleId: number, updatedBundleData: Bundle, toast: 
         buying_price: updatedBundleData.buying_price,
         selling_price: updatedBundleData.selling_price,
         currency_id: updatedBundleData.currency?.id,
+        amount:updatedBundleData.amount
     };
     const token = getAuthToken();
-    const response = await axios.post(
+    const response = await axios.put(
       `${process.env.NEXT_PUBLIC_BASE_URL}/bundles/${bundleId}`,
       body,
       {

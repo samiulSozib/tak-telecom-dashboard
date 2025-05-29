@@ -83,6 +83,7 @@ const Services = () => {
 
     const saveService = () => {
         setSubmitted(true);
+
         if (!service.service_name || !service.company || !service.service_category) {
             toast.current?.show({
                 severity: 'error',
@@ -104,6 +105,7 @@ const Services = () => {
     };
 
     const editService = (service: Service) => {
+        //console.log(service)
         setService({ ...service });
 
         setServiceDialog(true);

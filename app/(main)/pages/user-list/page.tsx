@@ -30,7 +30,7 @@ import { isRTL } from '../../utilities/rtlUtil';
 
 const UserListGroupPage = () => {
 
-    let emptyUser:any={
+    let emptyUser:User={
         id: 0,
         uuid: '',
         name: '',
@@ -99,6 +99,7 @@ const UserListGroupPage = () => {
 
     const saveUserList = () => {
         setSubmitted(true);
+        console.log(user)
         if (!user.name || ! user.password || !user.confirm_password || !user.phone || !user.email || !user.roles || !user.currency_preference_id) {
 
             toast.current?.show({
@@ -122,6 +123,7 @@ const UserListGroupPage = () => {
     };
 
     const editUserList = (user: User) => {
+        console.log(user)
         setUser({ ...user});
 
         setUserListDialog(true);
@@ -379,12 +381,12 @@ const UserListGroupPage = () => {
                                     <label htmlFor="discount_type" style={{fontWeight:'bold'}}>{t('USER.FORM.LABEL.ROLE')}</label>
                                     <Dropdown
                                         id="discount_type"
-                                        value={user.role}
+                                        value={user.roles}
                                         options={roles}
                                         onChange={(e) =>
                                             setUser((prev:any) => ({
                                                 ...prev,
-                                                role: e.value,
+                                                roles: e.value,
                                             }))
                                         }
                                         optionLabel="name"

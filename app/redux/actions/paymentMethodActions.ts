@@ -305,7 +305,6 @@ export const _editPaymentMethod = (
   if (updatedMethod.account_image && typeof updatedMethod.account_image !== 'string') {
     formData.append('account_image', updatedMethod.account_image);
   }
-  formData.append('_method', 'PUT'); // For Laravel to recognize as PUT request
 
   try {
     const token = getAuthToken();

@@ -58,7 +58,7 @@ import {
         return {
           ...state,
           loading: false,
-          bundles: state.bundles.filter(bundle => bundle.id !== action.payload.id),
+          bundles: state.bundles.filter(bundle => bundle.id !== action.payload),
           error: null,
         };
       case DELETE_BUNDLE_FAIL:

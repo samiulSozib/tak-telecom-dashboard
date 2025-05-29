@@ -203,7 +203,7 @@ export interface Reseller {
     updated_at: string;
     deleted_at: string | null;
     user: User|null;
-    code:string|number,
+    code:Currency|string|null,
     country:string | null;
     province:string | null;
     district:string | null;
@@ -228,7 +228,9 @@ export interface User {
     created_at: string;
     updated_at: string;
     currency: Currency|null;
-    roles?:Roles[]|null
+    roles?:Roles[]|null,
+    password?:string,
+    confirm_password?:string
 }
 
 export interface PaymentMethod {
@@ -378,7 +380,7 @@ export interface Balance{
     payment_currency_id?:number,
     payment_status?:string,
     payment_notes?:string,
-    payment_date?:Date|null
+    payment_date?:string
 }
 
 export interface Payment{

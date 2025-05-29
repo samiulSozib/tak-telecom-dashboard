@@ -181,12 +181,12 @@ const AdvertisementPage = () => {
 
     const statusBodyTemplate = (rowData: Advertisement) => {
             // Define the text and background color based on the status value
-            const getStatusText = (status: number) => {
-                return status === 1 ? 'Active' : 'Deactivated';
+            const getStatusText = (status: string) => {
+                return status == '1' ? 'Active' : 'Deactivated';
             };
 
             const getStatusClasses = (status: number) => {
-                return status === 1
+                return status == 1
                     ? 'bg-green-500 text-white'
                     : 'bg-red-500 text-white';
             };
@@ -199,7 +199,7 @@ const AdvertisementPage = () => {
                             rowData.status
                         )}`}
                     >
-                        {getStatusText(rowData.status)}
+                        {getStatusText(rowData.status.toString())}
                     </span>
                 </>
             );

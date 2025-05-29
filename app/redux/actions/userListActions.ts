@@ -240,7 +240,7 @@ export const _addUser = (
     formData.append("name", newUserData.name);
     formData.append("email", newUserData.email);
     formData.append("phone", newUserData.phone);
-    formData.append("role", newUserData.role);
+    formData.append("roles", newUserData.roles);
     formData.append("password", newUserData.password);
     formData.append("confirm_password", newUserData.confirm_password);
     formData.append("currency_preference_id", newUserData.currency_preference_id);
@@ -302,20 +302,20 @@ export const _editUser = (
 ) => async (dispatch: Dispatch) => {
   dispatch({ type: EDIT_USER_REQUEST });
   try {
+
     const formData = new FormData();
     formData.append("name", updatedUserData.name);
     formData.append("email", updatedUserData.email);
     formData.append("phone", updatedUserData.phone);
-    formData.append("role", updatedUserData.role);
+    formData.append("roles", updatedUserData.roles);
     if (updatedUserData.password) {
       formData.append("password", updatedUserData.password);
       formData.append("confirm_password", updatedUserData.confirm_password);
     }
     formData.append("currency_preference_id", updatedUserData.currency_preference_id);
-    formData.append("_method", "PUT"); // For Laravel to recognize as PUT request
 
     const token = getAuthToken();
-    const response = await axios.post(
+    const response = await axios.put(
       `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}`,
       formData,
       {

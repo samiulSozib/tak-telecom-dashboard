@@ -3,7 +3,7 @@ const path = require('path');
 const nextConfig = {
     i18n: {
         locales: ['fa','en' , 'bn' , 'ar' , 'tr' , 'ps' , 'ge' , 'hi' ],
-        defaultLocale: 'fa', // Set the default locale
+        defaultLocale: 'en', // Set the default locale
         localeDetection: false,
     },
     reactStrictMode: false,

@@ -401,7 +401,7 @@ export const _fetchResellers = (
                 },
             }
         );
-
+        //console.log(response.data)
         dispatch({
             type: FETCH_RESELLERS_SUCCESS,
             payload: {
@@ -441,7 +441,11 @@ export const _addReseller = (
         formData.append('country_id', String(resellerData.country_id));
         formData.append('province_id', String(resellerData.province_id));
         formData.append('districts_id', String(resellerData.districts_id));
-        formData.append('currency_preference_id', resellerData.code.toString());
+        const currencyPreferenceId =
+            typeof resellerData.code === "object" && resellerData.code !== null
+                ? resellerData.code.id.toString()
+                : "0";
+        formData.append("currency_preference_id", currencyPreferenceId);
         formData.append('balance', resellerData.balance.toString());
         formData.append('reseller_group_id', String(resellerData.reseller_group_id));
         formData.append('can_create_sub_resellers', resellerData.can_create_sub_resellers.toString());
@@ -451,6 +455,7 @@ export const _addReseller = (
         if (resellerData.profile_image_url && typeof resellerData.profile_image_url !== 'string') {
             formData.append('profile_image_url', resellerData.profile_image_url);
         }
+        //return
 
         const response = await axios.post(
             `${process.env.NEXT_PUBLIC_BASE_URL}/resellers`,
@@ -465,8 +470,11 @@ export const _addReseller = (
 
         const newData = {
             ...resellerData,
+            profile_image_url:response.data.data.reseller.profile_image_url,
             id: response.data.data.reseller.id
         };
+
+        //console.log(newData)
 
         dispatch({
             type: ADD_RESELLER_SUCCESS,
@@ -525,8 +533,11 @@ export const _editReseller = (
         formData.append('country_id', String(resellerData.country_id));
         formData.append('province_id', String(resellerData.province_id));
         formData.append('districts_id', String(resellerData.districts_id));
-        formData.append('currency_preference_id', resellerData.code.toString());
-        formData.append('balance', resellerData.balance.toString());
+        const currencyPreferenceId =
+            typeof resellerData.code === "object" && resellerData.code !== null
+                ? resellerData.code.id.toString()
+                : "0";
+        formData.append("currency_preference_id", currencyPreferenceId); formData.append('balance', resellerData.balance.toString());
         formData.append('reseller_group_id', String(resellerData.reseller_group_id));
         formData.append('can_create_sub_resellers', resellerData.can_create_sub_resellers.toString());
         formData.append('sub_reseller_limit', resellerData.sub_reseller_limit.toString());
@@ -536,7 +547,6 @@ export const _editReseller = (
         formData.append('loan_balance', resellerData.loan_balance);
         formData.append('total_payments_received', resellerData.total_payments_received);
         formData.append('total_balance_sent', resellerData.total_balance_sent);
-        formData.append('_method', 'PUT'); // For Laravel to recognize as PUT request
 
         if (resellerData.profile_image_url && typeof resellerData.profile_image_url !== 'string') {
             formData.append('profile_image_url', resellerData.profile_image_url);
@@ -553,10 +563,13 @@ export const _editReseller = (
             }
         );
 
+
+
         const newData = {
             ...resellerData,
             id: response.data.data.reseller.id
         };
+        //console.log(newData)
 
         dispatch({
             type: EDIT_RESELLER_SUCCESS,

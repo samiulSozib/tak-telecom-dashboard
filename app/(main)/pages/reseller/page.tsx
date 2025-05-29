@@ -11,11 +11,11 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { _fetchCountries } from '@/app/redux/actions/countriesActions';
 import { _fetchTelegramList } from '@/app/redux/actions/telegramActions';
 import { AppDispatch } from '@/app/redux/store';
-import { Country, Currency, Reseller } from '@/types/interface';
+import { Country, Currency, District, Province, Reseller } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
 import { _addReseller, _changeResellerStatus, _deleteReseller, _editReseller, _fetchResellers, _getResellerById } from '@/app/redux/actions/resellerActions';
 import { FileUpload } from 'primereact/fileupload';
@@ -67,7 +67,7 @@ const ResellerPage = () => {
         updated_at: '',
         deleted_at: null,
         user: null,
-        code: '',
+        code: null,
         country: '',
         province: '',
         district: '',
@@ -342,10 +342,12 @@ const ResellerPage = () => {
     };
 
     const preferredCurrencyBodyTemplate = (rowData: Reseller) => {
+        const currency = typeof rowData.code === 'object' && rowData.code !== null ? rowData.code.code : rowData.code;
+
         return (
             <>
                 <span className="p-column-title">Preferred Currency</span>
-                {rowData.code}
+                {currency || '-'}
             </>
         );
     };
@@ -361,19 +363,19 @@ const ResellerPage = () => {
 
     const statusBodyTemplate = (rowData: Reseller) => {
         // Define the text and background color based on the status value
-        const getStatusText = (status: number) => {
-            return status === 1 ? 'Active' : 'Deactivated';
+        const getStatusText = (status: string) => {
+            return status == '1' ? 'Active' : 'Deactivated';
         };
 
         const getStatusClasses = (status: number) => {
-            return status === 1 ? 'bg-green-500 text-white' : 'bg-red-500 text-white';
+            return status == 1 ? 'bg-green-500 text-white' : 'bg-red-500 text-white';
         };
 
         return (
             <>
                 <span className="p-column-title">Status</span>
                 <span style={{ borderRadius: '5px' }} className={`inline-block px-2 py-1 rounded text-sm font-semibold ${getStatusClasses(rowData.status)}`}>
-                    {getStatusText(rowData.status)}
+                    {getStatusText(rowData.status.toString())}
                 </span>
             </>
         );
@@ -385,7 +387,7 @@ const ResellerPage = () => {
             {
                 label: t('TABLE.GENERAL.EDIT'),
                 icon: 'pi pi-pencil',
-                command: () => editReseller(rowData),
+                command: () => editReseller(rowData)
                 //disabled: menuType === 'guest', // Example condition
             },
             {
@@ -398,13 +400,13 @@ const ResellerPage = () => {
                 label: t('ACTIVATE'),
                 icon: 'pi pi-check',
                 command: () => confirmChangeStatus(rowData),
-                visible: rowData.status === 0 // Disable if already active
+                visible: rowData.status == 0 // Disable if already active
             },
             {
                 label: t('DEACTIVATE'),
                 icon: 'pi pi-times',
                 command: () => confirmChangeStatus(rowData),
-                visible: rowData.status === 1 // Disable if already inactive
+                visible: rowData.status == 1 // Disable if already inactive
             },
             {
                 label: t('VIEW_DETAILS'),
@@ -421,7 +423,7 @@ const ResellerPage = () => {
                 model={items}
                 className="p-button-rounded"
                 severity="info" // Optional: change severity or style
-                dir='ltr'
+                dir="ltr"
             />
         );
     };
@@ -468,17 +470,39 @@ const ResellerPage = () => {
     };
 
     useEffect(() => {
-        if (reseller.code) {
-            const selectedCode = currencies.find((currency: Currency) => currency.code === reseller.code);
+        if (resellerDialog) {
+            const selectedCode = currencies.find((currency: Currency) => currency.code == reseller?.code);
 
             if (selectedCode) {
                 setReseller((prev) => ({
                     ...prev,
-                    code: selectedCode.id // Update with the selected company object
+                    code: selectedCode // Update with the selected company object
                 }));
             }
         }
-    }, [reseller.code, currencies]);
+    }, [reseller.code, currencies, resellerDialog]);
+
+    const [filteredProvinces, setFilteredProvinces] = useState<Province[]>([]);
+
+    useEffect(() => {
+        if (reseller?.country_id && provinces.length > 0) {
+            const filtered = provinces.filter((province: Province) => province.country_id == reseller.country_id);
+            setFilteredProvinces(filtered);
+        } else {
+            setFilteredProvinces([]); // Optional: Clear when no country selected
+        }
+    }, [reseller?.country_id, provinces]);
+
+    const [filteredDistricts, setFilteredDistricts] = useState<District[]>([]);
+
+    useEffect(() => {
+        if (reseller?.province_id && districts.length > 0) {
+            const filtered = districts.filter((district: District) => district.province_id == reseller.province_id);
+            setFilteredDistricts(filtered);
+        } else {
+            setFilteredDistricts([]); // Optional: Clear when no country selected
+        }
+    }, [reseller?.province_id, districts]);
 
     return (
         <div className="grid crud-demo -m-5">
@@ -735,17 +759,21 @@ const ResellerPage = () => {
                                         id="country_id"
                                         value={reseller.country_id}
                                         options={countries}
-                                        onChange={(e) =>
+                                        onChange={(e: DropdownChangeEvent) => {
+                                            const selectedCountry = countries.find((country: Country) => country.id === e.value);
+
                                             setReseller((prev: Reseller) => ({
                                                 ...prev,
-                                                country_id: e.value
-                                            }))
-                                        }
+                                                country_id: e.value,
+                                                country: selectedCountry?.country_name || ''
+                                            }));
+                                        }}
                                         optionLabel="country_name"
                                         optionValue="id"
                                         placeholder="Choose a country"
                                         className="w-full"
                                     />
+
                                     {submitted && !reseller.country_id && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
                                             {t('THIS_FIELD_IS_REQUIRED')}
@@ -759,7 +787,7 @@ const ResellerPage = () => {
                                     <Dropdown
                                         id="province_id"
                                         value={reseller.province_id}
-                                        options={provinces}
+                                        options={filteredProvinces}
                                         onChange={(e) =>
                                             setReseller((prev: Reseller) => ({
                                                 ...prev,
@@ -787,7 +815,7 @@ const ResellerPage = () => {
                                     <Dropdown
                                         id="districts_id"
                                         value={reseller.districts_id}
-                                        options={districts}
+                                        options={filteredDistricts}
                                         onChange={(e) =>
                                             setReseller((prev: Reseller) => ({
                                                 ...prev,
@@ -820,13 +848,13 @@ const ResellerPage = () => {
                                             }))
                                         }
                                         optionLabel="code"
-                                        optionValue="id"
                                         placeholder={t('RESELLER.FORM.PLACEHOLDER.CURRENCY')}
                                         className="w-full"
+                                        disabled={!!reseller.id && reseller.id !== 0}
                                     />
                                     {submitted && !reseller.code && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
-                                           {t('THIS_FIELD_IS_REQUIRED')}
+                                            {t('THIS_FIELD_IS_REQUIRED')}
                                         </small>
                                     )}
                                 </div>
