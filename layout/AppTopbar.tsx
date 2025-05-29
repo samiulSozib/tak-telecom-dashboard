@@ -70,7 +70,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                 //router.refresh()
                 setProfileMenuVisible(false)
                 setLanguageDropdownVisible(false)
-                //window.location.reload()
+                window.location.reload()
 
             })
             .catch((err) => {
