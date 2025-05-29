@@ -67,10 +67,10 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
             .then(() => {
                 setCurrentLanguage(language.language_code); // Update state
                 //console.log(`Language changed to: ${language.language_code}`);
-                //router.refresh()
+                router.refresh()
                 setProfileMenuVisible(false)
                 setLanguageDropdownVisible(false)
-                window.location.reload()
+                //window.location.reload()
 
             })
             .catch((err) => {
