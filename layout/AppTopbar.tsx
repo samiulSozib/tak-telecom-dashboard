@@ -62,40 +62,22 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         router.push('/auth/login');
     };
 
-    // const handleLanguageClick = (language: MyLanguage) => {
-    //     i18n.changeLanguage(language.language_code) // Change language dynamically
-    //         .then(() => {
-    //             setCurrentLanguage(language.language_code); // Update state
-    //             //console.log(`Language changed to: ${language.language_code}`);
-    //             router.refresh()
-    //             setProfileMenuVisible(false)
-    //             setLanguageDropdownVisible(false)
-    //             //window.location.reload()
+    const handleLanguageClick = (language: MyLanguage) => {
+        i18n.changeLanguage(language.language_code) // Change language dynamically
+            .then(() => {
+                setCurrentLanguage(language.language_code); // Update state
+                //console.log(`Language changed to: ${language.language_code}`);
+                //router.refresh()
+                setProfileMenuVisible(false)
+                setLanguageDropdownVisible(false)
+                //window.location.reload()
 
-    //         })
-    //         .catch((err) => {
-    //             console.error('Error changing language:', err);
-    //         });
-    // };
+            })
+            .catch((err) => {
+                console.error('Error changing language:', err);
+            });
+    };
 
-    const handleLanguageClick = async (language: MyLanguage) => {
-  try {
-    await i18n.changeLanguage(language.language_code);
-    setCurrentLanguage(language.language_code);
-
-    // For Next.js apps, you might need to handle routing
-    const currentPath = window.location.pathname;
-    const newPath = currentPath.replace(/^\/(en|ps|bn|ar|tr|fa)/, `/${language.language_code}`);
-
-    if (newPath !== currentPath) {
-      router.push(newPath);
-    } else {
-      router.refresh();
-    }
-  } catch (err) {
-    console.error('Error changing language:', err);
-  }
-};
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
