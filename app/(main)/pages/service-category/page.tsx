@@ -20,9 +20,10 @@ import { ServiceCategory } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
 import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
-import { customCellStyle } from '../../utilities/customRow';
+import { customCellStyle, customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
 import { isRTL } from '../../utilities/rtlUtil';
+import { FileUpload } from 'primereact/fileupload';
 
 const Category = () => {
     let emptyServiceCategory: ServiceCategory = {
@@ -177,6 +178,23 @@ const Category = () => {
         );
     };
 
+        const imageBodyTemplate = (rowData: ServiceCategory) => {
+            return (
+                <>
+                    <span className="p-column-title">Image</span>
+                    <img src={`${rowData?.category_image_url}`} alt="" className="shadow-2"
+                    style={{
+                        padding:'2px',
+                        width: '45px',
+                        height: '45px',
+                        borderRadius: '50%', // Makes the image circular
+                        objectFit: 'cover', // Ensures the image is cropped correctly within the circle
+                    }}/>
+                </>
+            );
+        };
+
+
     const actionBodyTemplate = (rowData: ServiceCategory) => {
         return (
             <>
@@ -249,15 +267,17 @@ const Category = () => {
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        <Column style={{...customCellStyleImage,textAlign: ["ar", "fa", "ps","bn"].includes(i18n.language) ? "right" : "left" }} header={t('SERVICECATEGORY.TABLE.COLUMN.IMAGE')} body={imageBodyTemplate}></Column>
+
                         <Column
-                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="category_name"
                             header={t('SERVICECATEGORY.TABLE.COLUMN.SERVICECATEGORYNAME')}
                             sortable
                             body={serviceCategoryNameBodyTemplate}
                         ></Column>
                         <Column
-                            style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="type"
                             header={t('SERVICECATEGORY.TABLE.COLUMN.SERVICECATEGORYTYPE')}
                             body={serviceCategoryTypeBodyTemplate}
@@ -268,6 +288,31 @@ const Category = () => {
 
                     <Dialog visible={serviceCategoryDialog} style={{ width: '700px', padding: '5px' }} header={t('SERVICE.CATEGORY.DETAILS')} modal className="p-fluid" footer={serviceCategoryDialogFooter} onHide={hideDialog}>
                         <div className="card" style={{ padding: '40px' }}>
+                            {serviceCategory.category_image_url && (
+                                <img
+                                    src={
+                                        serviceCategory.category_image_url instanceof File
+                                            ? URL.createObjectURL(serviceCategory.category_image_url) // Temporary preview for file
+                                            : serviceCategory.category_image_url // Direct URL for existing logo
+                                    }
+                                    alt="Uploaded Preview"
+                                    width="150"
+                                    className="mt-0 mx-auto mb-5 block shadow-2"
+                                />
+                            )}
+
+                            <FileUpload
+                                mode="basic"
+                                accept="image/*"
+                                onSelect={(e) =>
+                                    setServiceCategory((prev) => ({
+                                        ...prev,
+                                        category_image_url: e.files[0]
+                                    }))
+                                }
+                                style={{ textAlign: 'center', marginBottom: '10px' }}
+                            />
+
                             <div className="field">
                                 <label htmlFor="name" style={{ fontWeight: 'bold' }}>
                                     {t('SERVICECATEGORY.FORM.INPUT.SERVICECATEGORYNAME')}

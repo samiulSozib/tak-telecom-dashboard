@@ -198,26 +198,30 @@ export const _fetchServiceCategories = (
 
 // Add Service Category
 export const _addServiceCategory = (
-  newCategory: Partial<ServiceCategory>,
+  newCategory: ServiceCategory,
   toast: React.RefObject<Toast>,
   t: (key: string) => string
 ) => async (dispatch: Dispatch) => {
   dispatch({ type: ADD_SERVICE_CATEGORY_REQUEST });
 
   try {
-    const body = {
-      category_name: newCategory.category_name,
-      type: newCategory.type
-    };
+    const formData=new FormData()
+    formData.append('category_name',newCategory.category_name)
+    formData.append('type',newCategory.type)
+
+    if (newCategory.category_image_url && typeof newCategory.category_image_url !== 'string') {
+        formData.append('category_image_url', newCategory.category_image_url);
+    }
+
 
     const token = getAuthToken();
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/service_categories`,
-      body,
+      formData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -267,19 +271,22 @@ export const _editServiceCategory = (
   dispatch({ type: EDIT_SERVICE_CATEGORY_REQUEST });
 
   try {
-    const body = {
-      category_name: updatedCategory.category_name,
-      type: updatedCategory.type
-    };
+   const formData=new FormData()
+    formData.append('category_name',updatedCategory.category_name)
+    formData.append('type',updatedCategory.type)
+
+    if (updatedCategory.category_image_url && typeof updatedCategory.category_image_url !== 'string') {
+        formData.append('category_image_url', updatedCategory.category_image_url);
+    }
 
     const token = getAuthToken();
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_BASE_URL}/service_categories/${updatedCategory.id}`,
-      body,
+      formData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );

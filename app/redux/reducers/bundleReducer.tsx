@@ -95,7 +95,7 @@ import {
           ...state,
           loading: false,
           bundles: state.bundles.map(bundle =>
-            bundle.id === action.payload ? { ...bundle, ...action.payload } : bundle
+            bundle.id === action.payload.id ? { ...bundle, ...action.payload } : bundle
           ),
           error: null,
         };

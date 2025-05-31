@@ -1020,6 +1020,8 @@
 "BALANCE.FORM.RESELLER.LOAN": "وام نماینده فروش",
 
 "USER.FORM.PLACEHOLDER.CURRENCY": "انتخاب ارز",
-  "USER.FORM.PLACEHOLDER.ROLE": "انتخاب نقش"
+  "USER.FORM.PLACEHOLDER.ROLE": "انتخاب نقش",
+  "SERVICECATEGORY.TABLE.COLUMN.IMAGE": "آیکون دسته‌بندی"
+
 
 }

@@ -45,7 +45,7 @@ export const _fetchBundleList = (page: number = 1,search:string='',filters={}) =
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response)
+    //console.log(response)
     dispatch({
       type: FETCH_BUNDLE_LIST_SUCCESS,
       payload: {

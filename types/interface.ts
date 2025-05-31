@@ -273,7 +273,7 @@ export interface ServiceCategory {
     category_name: string;
     type: string;
     service_category_sub_type_id: number | null;
-    category_image_url: string | null;
+    category_image_url: string | File;
     deleted_at: string | null;
     created_at: string;
     updated_at: string;
