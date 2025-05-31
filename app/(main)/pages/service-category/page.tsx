@@ -37,6 +37,7 @@ const Category = () => {
         updated_at: ''
     };
 
+
     const [serviceCategoryDialog, setServiceCategoryDialog] = useState(false);
     const [deleteServiceCategoryDialog, setDeleteServiceCategoryDialog] = useState(false);
     const [deleteServiceCategoriesDialog, setDeleteServiceCategoriesDialog] = useState(false);
