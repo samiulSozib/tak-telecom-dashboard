@@ -186,7 +186,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                             </div>
                             <div>
                                 <div style={{ fontWeight: 'bold', fontSize: '16px' }}>Admin User</div>
-                                <div style={{ fontSize: '14px', color: '#666' }}>admin@bakhtertelecom.com</div>
+                                {/* <div style={{ fontSize: '14px', color: '#666' }}>admin@bakhtertelecom.com</div> */}
                             </div>
                         </div>
 
