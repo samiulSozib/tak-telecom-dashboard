@@ -315,7 +315,7 @@ export const _editUser = (
     formData.append("currency_preference_id", updatedUserData.currency_preference_id);
 
     const token = getAuthToken();
-    const response = await axios.put(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}`,
       formData,
       {

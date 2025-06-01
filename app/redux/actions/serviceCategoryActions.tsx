@@ -280,7 +280,7 @@ export const _editServiceCategory = (
     }
 
     const token = getAuthToken();
-    const response = await axios.put(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/service_categories/${updatedCategory.id}`,
       formData,
       {
@@ -290,10 +290,11 @@ export const _editServiceCategory = (
         },
       }
     );
-
+    console.log(response)
+    const data=response.data.data.servicecategory
     dispatch({
       type: EDIT_SERVICE_CATEGORY_SUCCESS,
-      payload: response.data.data.servicecategory,
+      payload: data,
     });
 
     toast.current?.show({
@@ -303,6 +304,7 @@ export const _editServiceCategory = (
       life: 3000,
     });
   } catch (error: any) {
+    console.log(error)
     dispatch({
       type: EDIT_SERVICE_CATEGORY_FAIL,
       payload: error.message,
