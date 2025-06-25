@@ -29,6 +29,8 @@ import { groupDiscountReducer } from './groupDiscountReducer';
 import {hawalaBranchReducer} from './hawalaBranchReducer'
 import {hawalaReducer} from './hawalaReducer'
 import {groupPricingReducer} from './groupPricingReducer'
+import { hawalaCurrenciesReducer } from './hawalaCurrenciesReducer';
+import { customerPricingReducer } from './customerPricingReducer';
 
 const rootReducer=combineReducers({
     currenciesReducer:currenciesReducer,
@@ -60,7 +62,9 @@ const rootReducer=combineReducers({
     groupDiscountReducer:groupDiscountReducer,
     hawalaBranchReducer:hawalaBranchReducer,
     hawalaReducer:hawalaReducer,
-    groupPricingReducer:groupPricingReducer
+    groupPricingReducer:groupPricingReducer,
+    hawalaCurrenciesReducer:hawalaCurrenciesReducer,
+    customerPricingReducer:customerPricingReducer
 })
 
 

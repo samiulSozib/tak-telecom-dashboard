@@ -991,7 +991,6 @@
         "unexpected_error": "خطای غیرمنتظره‌ای رخ داد. لطفاً دوباره تلاش کنید."
     },
     "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "آیا مطمئن هستید که می‌خواهید وضعیت را تغییر دهید؟",
-
     "HAWALA_DELETED": "حواله با موفقیت حذف شد",
     "HAWALA_DELETE_FAILED": "حذف حواله با شکست مواجه شد",
     "HAWALA_STATUS_CHANGED": "وضعیت حواله با موفقیت تغییر کرد",
@@ -1002,26 +1001,41 @@
     "ORDER_STATUS_CHANGED_FAILED": "تغییر وضعیت سفارش با شکست مواجه شد",
     "ADMIN_USER": "کاربر مدیر",
     "LOGOUT_SUCCESS": "خروج با موفقیت انجام شد",
-
-
-  "TELEGRAM_SYNC_SUCCESS": "گروه‌های تلگرام با موفقیت همگام‌سازی شدند.",
-  "TELEGRAM_SYNC_FAILED": "هنگام همگام‌سازی گروه‌های تلگرام خطایی رخ داد.",
-
-  "RESELLER_GROUPS_FETCHED": "گروه‌های نمایندگی با موفقیت دریافت شدند.",
-  "RESELLER_GROUP_ADDED": "گروه نمایندگی با موفقیت اضافه شد.",
-  "RESELLER_GROUP_ADD_FAILED": "افزودن گروه نمایندگی ناموفق بود.",
-  "RESELLER_GROUP_UPDATED": "گروه نمایندگی با موفقیت بروزرسانی شد.",
-  "RESELLER_GROUP_UPDATE_FAILED": "بروزرسانی گروه نمایندگی ناموفق بود.",
-  "RESELLER_GROUP_DELETED": "گروه نمایندگی با موفقیت حذف شد.",
-  "RESELLER_GROUP_DELETE_FAILED": "حذف گروه نمایندگی ناموفق بود.",
-
-  "BALANCE.FORM.RESELLER.BALANCE": "موجودی نماینده فروش",
-"BALANCE.FORM.RESELLER.PAYMENT": "پرداخت نماینده فروش",
-"BALANCE.FORM.RESELLER.LOAN": "وام نماینده فروش",
-
-"USER.FORM.PLACEHOLDER.CURRENCY": "انتخاب ارز",
-  "USER.FORM.PLACEHOLDER.ROLE": "انتخاب نقش",
-  "SERVICECATEGORY.TABLE.COLUMN.IMAGE": "آیکون دسته‌بندی"
-
-
+    "TELEGRAM_SYNC_SUCCESS": "گروه‌های تلگرام با موفقیت همگام‌سازی شدند.",
+    "TELEGRAM_SYNC_FAILED": "هنگام همگام‌سازی گروه‌های تلگرام خطایی رخ داد.",
+    "RESELLER_GROUPS_FETCHED": "گروه‌های نمایندگی با موفقیت دریافت شدند.",
+    "RESELLER_GROUP_ADDED": "گروه نمایندگی با موفقیت اضافه شد.",
+    "RESELLER_GROUP_ADD_FAILED": "افزودن گروه نمایندگی ناموفق بود.",
+    "RESELLER_GROUP_UPDATED": "گروه نمایندگی با موفقیت بروزرسانی شد.",
+    "RESELLER_GROUP_UPDATE_FAILED": "بروزرسانی گروه نمایندگی ناموفق بود.",
+    "RESELLER_GROUP_DELETED": "گروه نمایندگی با موفقیت حذف شد.",
+    "RESELLER_GROUP_DELETE_FAILED": "حذف گروه نمایندگی ناموفق بود.",
+    "BALANCE.FORM.RESELLER.BALANCE": "موجودی نماینده فروش",
+    "BALANCE.FORM.RESELLER.PAYMENT": "پرداخت نماینده فروش",
+    "BALANCE.FORM.RESELLER.LOAN": "وام نماینده فروش",
+    "USER.FORM.PLACEHOLDER.CURRENCY": "انتخاب ارز",
+    "USER.FORM.PLACEHOLDER.ROLE": "انتخاب نقش",
+    "SERVICECATEGORY.TABLE.COLUMN.IMAGE": "آیکون دسته‌بندی",
+    "MENU.HAWALA.CURRENCY": "حواله ارز",
+    "HAWALA_CURRENCIES_FETCHED": "حواله‌های ارز با موفقیت دریافت شد",
+    "HAWALA_CURRENCY_ADDED": "حواله ارز با موفقیت اضافه شد",
+    "HAWALA_CURRENCY_ADD_FAILED": "افزودن حواله ارز ناموفق بود",
+    "HAWALA_CURRENCY_UPDATED": "حواله ارز با موفقیت به‌روزرسانی شد",
+    "HAWALA_CURRENCY_UPDATE_FAILED": "به‌روزرسانی حواله ارز ناموفق بود",
+    "HAWALA_CURRENCY_DELETED": "حواله ارز با موفقیت حذف شد",
+    "HAWALA_CURRENCY_DELETE_FAILED": "حذف حواله ارز ناموفق بود",
+    "HAWALA.CURRENCY.TABLE.COLUMN.FROM_CURRENCY": "ارز مبدأ",
+    "HAWALA.CURRENCY.TABLE.COLUMN.TO_CURRENCY": "ارز مقصد",
+    "HAWALA.CURRENCY.TABLE.COLUMN.AMOUNT": "مقدار",
+    "HAWALA.CURRENCY.TABLE.COLUMN.SELL_RATE": "نرخ فروش",
+    "HAWALA.CURRENCY.TABLE.COLUMN.BUY_RATE": "نرخ خرید",
+    "HAWALA.CURRENCY.SELECT.FROM_CURRENCY": "انتخاب ارز مبدأ",
+    "HAWALA.CURRENCY.SELECT.TO_CURRENCY": "انتخاب ارز مقصد",
+    "HAWALA.CURRENCY.ERROR.SAME_CURRENCY": "ارز مبدأ و ارز مقصد نمی‌توانند یکسان باشند",
+    "HAWALA.CURRENCY.ERROR.INVALID_NUMBER": "لطفاً اعداد معتبر برای مقدار و نرخ وارد کنید",
+    "MENU.CUSTOMER_PRICING": "قیمت‌گذاری مشتری",
+    "CUSTOMER.PRICING.TABLE.COLUMN.RESELLER": "فروشنده",
+    "CUSTOMER.PRICING.TABLE.COLUMN.SREVICE": "خدمت",
+    "CUSTOMER.PRICING.TABLE.COLUMN.AMOUNT": "مقدار",
+    "CUSTOMER.PRICING.TABLE.COLUMN.COMMISSION_TYPE": "نوع کمیسیون"
 }

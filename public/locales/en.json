@@ -991,7 +991,6 @@
         "unexpected_error": "An unexpected error occurred. Please try again."
     },
     "ARE_YOU_SURE_YOU_WANT_TO_CHANGE_STATUS": "Are you sure you want to change the status of",
-
     "HAWALA_DELETED": "Hawala deleted successfully",
     "HAWALA_DELETE_FAILED": "Failed to delete hawala",
     "HAWALA_STATUS_CHANGED": "Hawala Status Changed successfully",
@@ -1001,28 +1000,42 @@
     "ORDER_STATUS_CHANGED": "Order Status Changed successfully",
     "ORDER_STATUS_CHANGED_FAILED": "Failed to Change Order Status",
     "ADMIN_USER": "Admin User",
-
-    "LOGOUT_SUCCESS":"Logout Success",
-
+    "LOGOUT_SUCCESS": "Logout Success",
     "TELEGRAM_SYNC_SUCCESS": "Telegram groups synced successfully.",
     "TELEGRAM_SYNC_FAILED": "There was an error syncing the telegram groups.",
-
-
     "RESELLER_GROUPS_FETCHED": "Reseller groups fetched successfully.",
-  "RESELLER_GROUP_ADDED": "Reseller group added successfully.",
-  "RESELLER_GROUP_ADD_FAILED": "Failed to add reseller group.",
-  "RESELLER_GROUP_UPDATED": "Reseller group updated successfully.",
-  "RESELLER_GROUP_UPDATE_FAILED": "Failed to update reseller group.",
-  "RESELLER_GROUP_DELETED": "Reseller group deleted successfully.",
-  "RESELLER_GROUP_DELETE_FAILED": "Failed to delete reseller group.",
-
-  "BALANCE.FORM.RESELLER.BALANCE": "Reseller Balance",
-"BALANCE.FORM.RESELLER.PAYMENT": "Reseller Payment",
-"BALANCE.FORM.RESELLER.LOAN": "Reseller Loan",
-
-"USER.FORM.PLACEHOLDER.CURRENCY": "Select currency",
-  "USER.FORM.PLACEHOLDER.ROLE": "Select role",
-"SERVICECATEGORY.TABLE.COLUMN.IMAGE": "Category Icon"
-
-
+    "RESELLER_GROUP_ADDED": "Reseller group added successfully.",
+    "RESELLER_GROUP_ADD_FAILED": "Failed to add reseller group.",
+    "RESELLER_GROUP_UPDATED": "Reseller group updated successfully.",
+    "RESELLER_GROUP_UPDATE_FAILED": "Failed to update reseller group.",
+    "RESELLER_GROUP_DELETED": "Reseller group deleted successfully.",
+    "RESELLER_GROUP_DELETE_FAILED": "Failed to delete reseller group.",
+    "BALANCE.FORM.RESELLER.BALANCE": "Reseller Balance",
+    "BALANCE.FORM.RESELLER.PAYMENT": "Reseller Payment",
+    "BALANCE.FORM.RESELLER.LOAN": "Reseller Loan",
+    "USER.FORM.PLACEHOLDER.CURRENCY": "Select currency",
+    "USER.FORM.PLACEHOLDER.ROLE": "Select role",
+    "SERVICECATEGORY.TABLE.COLUMN.IMAGE": "Category Icon",
+    "MENU.HAWALA.CURRENCY": "Hawala Currency",
+    "HAWALA_CURRENCIES_FETCHED": "Hawala currencies fetched successfully",
+    "HAWALA_CURRENCY_ADDED": "Hawala currency added successfully",
+    "HAWALA_CURRENCY_ADD_FAILED": "Failed to add Hawala currency",
+    "HAWALA_CURRENCY_UPDATED": "Hawala currency updated successfully",
+    "HAWALA_CURRENCY_UPDATE_FAILED": "Failed to update Hawala currency",
+    "HAWALA_CURRENCY_DELETED": "Hawala currency deleted successfully",
+    "HAWALA_CURRENCY_DELETE_FAILED": "Failed to delete Hawala currency",
+    "HAWALA.CURRENCY.TABLE.COLUMN.FROM_CURRENCY": "From Currency",
+    "HAWALA.CURRENCY.TABLE.COLUMN.TO_CURRENCY": "To Currency",
+    "HAWALA.CURRENCY.TABLE.COLUMN.AMOUNT": "Amount",
+    "HAWALA.CURRENCY.TABLE.COLUMN.SELL_RATE": "Sell Rate",
+    "HAWALA.CURRENCY.TABLE.COLUMN.BUY_RATE": "Buy Rate",
+    "HAWALA.CURRENCY.SELECT.FROM_CURRENCY": "From Currency",
+    "HAWALA.CURRENCY.SELECT.TO_CURRENCY": "To Currency",
+    "HAWALA.CURRENCY.ERROR.SAME_CURRENCY": "From currency and To currency cannot be the same",
+    "HAWALA.CURRENCY.ERROR.INVALID_NUMBER": "Please enter valid numbers for amount and rates",
+    "MENU.CUSTOMER_PRICING": "Customer Pricing",
+    "CUSTOMER.PRICING.TABLE.COLUMN.RESELLER": "Reseller",
+    "CUSTOMER.PRICING.TABLE.COLUMN.SREVICE": "Service",
+    "CUSTOMER.PRICING.TABLE.COLUMN.AMOUNT": "Amount",
+    "CUSTOMER.PRICING.TABLE.COLUMN.COMMISSION_TYPE": "Commission Type"
 }

@@ -522,6 +522,34 @@ export interface GroupPricing{
 
 }
 
+
+export interface HawalaCurrency {
+    id: number;
+    from_currency_id: number;
+    from_currency:Currency|null,
+    to_currency_id: number;
+    to_currency:Currency|null,
+    amount:number,
+    buy_rate: string|null;
+    sell_rate:string|null
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CustomerPricing{
+    id:number,
+    amount:string|null|number,
+    commission_type:string|null,
+    reseller:Reseller|null,
+    reseller_id:number|null|string,
+    service:Service|null,
+    service_id:number|string|null,
+    deleted_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
 // export interface UserList {
 //     id: number;
 //     uuid: string;
