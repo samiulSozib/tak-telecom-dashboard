@@ -401,7 +401,7 @@ export const _fetchResellers = (
                 },
             }
         );
-        //console.log(response.data)
+        console.log(response.data)
         dispatch({
             type: FETCH_RESELLERS_SUCCESS,
             payload: {

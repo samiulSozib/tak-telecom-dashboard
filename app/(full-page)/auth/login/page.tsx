@@ -85,6 +85,8 @@ const LoginPage = () => {
             setLoading(false);
         }
     };
+    const projectName = process.env.NEXT_PUBLIC_PROJECT_NAME;
+
 
     return (
         <div className={containerClassName}>
@@ -103,8 +105,12 @@ const LoginPage = () => {
                 >
                     <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
                         <div className="text-center mb-5">
-                            <img src="/layout/images/tak_telecom.jpeg" alt="Image" height="50" className="mb-3" />
+                            {/* <img src="/layout/images/tak_telecom.jpeg" alt="Image" height="50" className="mb-3" /> */}
+                            <img src={process.env.NEXT_PUBLIC_PROJECT_LOGO} alt="Image" height="50" className="mb-3" />
                             <div className="text-900 text-3xl font-medium mb-3">{t('login.welcome')}</div>
+                            {/* <div className="text-900 text-3xl font-medium mb-3">
+                                {t('login.welcome', { projectName: process.env.NEXT_PUBLIC_PROJECT_NAME })}
+                            </div> */}
                             <span className="text-600 font-medium">{t('login.signin_continue')}</span>
                         </div>
 
