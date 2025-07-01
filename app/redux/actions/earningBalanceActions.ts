@@ -26,7 +26,7 @@ export const _fetchEarningBalanceRequestList = (page: number = 1, search: string
         });
         //console.log(response)
     } catch (error: any) {
-        console.log(error)
+        //console.log(error)
         dispatch({
             type: FETCH_EARNING_BALANCE_LIST_FAIL,
             payload: error.message,
@@ -52,7 +52,7 @@ export const _addEarningBalanceRequest = (newData: any, toast: React.RefObject<T
                 'Content-Type': 'multipart/form-data',
             },
         });
-        console.log(response)
+        //console.log(response)
         //const newData = { ...newUserData, id: response.data.data.user.id };
         dispatch({
             type: ADD_EARNING_BALANCE_SUCCESS,
@@ -65,7 +65,7 @@ export const _addEarningBalanceRequest = (newData: any, toast: React.RefObject<T
             life: 3000,
         });
     } catch (error: any) {
-        console.log(error)
+        //console.log(error)
         dispatch({
             type: ADD_EARNING_BALANCE_FAIL,
             payload: error.message,
@@ -112,7 +112,7 @@ export const _changeEarningBalanceStatus = (
         try {
 
             const token = getAuthToken();
-            console.log(token)
+            //console.log(token)
             const baseURL = `${process.env.NEXT_PUBLIC_BASE_URL}/earning-transfers/${request_id}/update-status`;
             const formData = new FormData()
             formData.append("status", status)
@@ -125,7 +125,7 @@ export const _changeEarningBalanceStatus = (
                 },
             });
 
-            console.log(response)
+            //console.log(response)
             if (response.data.success === true) {
                 toast.current?.show({
                     severity: 'success',
@@ -143,7 +143,7 @@ export const _changeEarningBalanceStatus = (
                 throw new Error(response.data.message );
             }
         } catch (error: any) {
-            console.log(error)
+            //console.log(error)
             toast.current?.show({
                 severity: 'error',
                 summary: t('ERROR'),

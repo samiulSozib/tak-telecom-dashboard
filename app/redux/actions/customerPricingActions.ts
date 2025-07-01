@@ -22,7 +22,7 @@ export const _fetchCustomerPricing = () => async (dispatch: Dispatch) => {
         });
 
 
-        console.log(response)
+        //console.log(response)
         dispatch({ type: FETCH_CUSTOMER_PRICING_LIST_SUCCESS, payload: response.data.data.customer_pricings });
         //console.log(response.data.data.rates)
     } catch (error: any) {

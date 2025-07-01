@@ -42,7 +42,7 @@ const Dashboard = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        console.log(data);
+        //console.log(data);
     }, [dispatch, data]);
 
     const applyLightTheme = () => {

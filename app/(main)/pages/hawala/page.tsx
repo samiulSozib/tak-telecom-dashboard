@@ -49,7 +49,7 @@ const OrderPage = () => {
     }, [dispatch, searchTag]);
 
     useEffect(() => {
-        console.log(hawalas);
+        //console.log(hawalas);
     }, [dispatch, hawalas]);
 
     const hideDialog = () => {

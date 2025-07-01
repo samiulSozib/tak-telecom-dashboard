@@ -99,7 +99,7 @@ const UserListGroupPage = () => {
 
     const saveUserList = () => {
         setSubmitted(true);
-        console.log(user)
+        //console.log(user)
         if (!user.name || ! user.password || !user.confirm_password || !user.phone || !user.email || !user.roles || !user.currency_preference_id) {
 
             toast.current?.show({
@@ -123,7 +123,7 @@ const UserListGroupPage = () => {
     };
 
     const editUserList = (user: User) => {
-        console.log(user)
+        //console.log(user)
         setUser({ ...user});
 
         setUserListDialog(true);
