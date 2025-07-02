@@ -29,6 +29,7 @@ const AddEarningBalanceRequestPage = () => {
         reseller_id: '',
         amount: 0
     });
+    const [totalEarningBalance, setTotalEarningBalance] = useState<number>(0);
     const [submitted, setSubmitted] = useState(false);
 
     // Fetch resellers on component mount
@@ -44,7 +45,8 @@ const AddEarningBalanceRequestPage = () => {
 
         dispatch(_addEarningBalanceRequest(formData, toast, t));
         router.push('/pages/earning-balance-form');
-        setFormData({...formData,reseller_id:'',amount:0})
+        setFormData({ ...formData, reseller_id: '', amount: 0 });
+
     };
 
     // Templates for DataTable
@@ -57,6 +59,10 @@ const AddEarningBalanceRequestPage = () => {
             </React.Fragment>
         );
     };
+
+    useEffect(() => {
+        console.log(formData.amount);
+    }, [formData]);
 
     return (
         <div className="grid crud-demo -m-5">
@@ -74,11 +80,19 @@ const AddEarningBalanceRequestPage = () => {
                             <Dropdown
                                 id="reseller"
                                 value={formData.reseller_id}
-                                options={resellers.map((reseller: Reseller) => ({
-                                    label: reseller.reseller_name,
-                                    value: reseller.id
-                                }))}
-                                onChange={(e) => setFormData({ ...formData, reseller_id: e.value })}
+                                options={
+                                    resellers?.map((reseller: Reseller) => ({
+                                        label: reseller.reseller_name,
+                                        value: reseller.id
+                                    })) || []
+                                }
+                                onChange={(e: { value: string }) => {
+                                    const selectedReseller = resellers.find((r: any) => r.id === e.value);
+                                    setFormData({ ...formData, reseller_id: e.value });
+                                    if (selectedReseller) {
+                                        setTotalEarningBalance(selectedReseller?.total_earning_balance);
+                                    }
+                                }}
                                 placeholder={t('FORM.GENERAL.SELECT')}
                                 required
                                 className={classNames('w-full', {
@@ -91,8 +105,10 @@ const AddEarningBalanceRequestPage = () => {
                         <div className="field mb-4">
                             <label htmlFor="amount" className="block mb-2">
                                 {t('EARNING_BALANCE_REQUEST.ADD_DIALOG.AMOUNT')}
-                                <span className="text-red-500">*</span>
                             </label>
+                            <div className="text-sm mb-2 font-bold">
+                                {t('EARNING_BALANCE_REQUEST.ADD_DIALOG.AVAILABLE_BALANCE')}: {totalEarningBalance}
+                            </div>
                             <InputNumber
                                 id="amount"
                                 value={formData.amount}

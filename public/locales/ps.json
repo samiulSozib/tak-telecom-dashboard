@@ -1077,5 +1077,6 @@
     "MENU.MAKE_EARNING_BALANCE": "د عاید توازن جوړول",
     "LOGOUT": "وتل",
     "ACCOUNT_SETTING": "د حساب تنظیمات",
-    "LANGUAGE": "ژبه"
+    "LANGUAGE": "ژبه",
+    "EARNING_BALANCE_REQUEST.ADD_DIALOG.AVAILABLE_BALANCE": "د لاسته راګړې شوې عاید موجودي"
 }
