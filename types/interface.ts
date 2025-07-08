@@ -204,14 +204,14 @@ export interface Reseller {
     deleted_at: string | null;
     user: User|null;
     code:Currency|string|null,
-    country:string | null;
+    country?:   Country|null|string;
     province:string | null;
     district:string | null;
     reseller_group_id:number,
     can_create_sub_resellers:number,
     sub_reseller_limit:number|string,
     sub_resellers_can_create_sub_resellers:number,
-    total_earning_balance?:number|string
+    total_earning_balance?:number|string,
 }
 
 export interface User {
@@ -577,6 +577,9 @@ export interface HelpArticle{
     created_at: string;
     updated_at: string;
 }
+
+
+
 
 // export interface UserList {
 //     id: number;

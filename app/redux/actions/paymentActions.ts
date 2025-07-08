@@ -173,18 +173,31 @@ const getAuthToken = () => {
 };
 
 // Fetch payment list
-export const _fetchPayments = () => async (dispatch: Dispatch) => {
+export const _fetchPayments = (page: number = 1, search: string = '', filters: any = {}) => async (dispatch: Dispatch) => {
     dispatch({ type: FETCH_PAYMENT_LIST_REQUEST });
 
     try {
         const token = getAuthToken();
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/payments`, {
+        const queryParams = new URLSearchParams();
+
+        queryParams.append('page', String(page));
+        queryParams.append('search', search);
+
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                queryParams.append(key, String(value));
+            }
+        });
+
+
+        const queryString = queryParams.toString();
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/payments?${queryString}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
 
-        dispatch({ type: FETCH_PAYMENT_LIST_SUCCESS, payload: response.data.data.payments });
+        dispatch({ type: FETCH_PAYMENT_LIST_SUCCESS, payload: { data: response.data.data.payments, pagination: response.data.payload.pagination } });
 
     } catch (error: any) {
         dispatch({ type: FETCH_PAYMENT_LIST_FAIL, payload: error.message });

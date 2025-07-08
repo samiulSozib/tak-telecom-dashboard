@@ -18,19 +18,24 @@ import { _fetchServiceCategories } from '@/app/redux/actions/serviceCategoryActi
 import { _addBundle, _deleteBundle, _editBundle, _fetchBundleList } from '@/app/redux/actions/bundleActions';
 import { Paginator } from 'primereact/paginator';
 import { _fetchCurrencies } from '@/app/redux/actions/currenciesActions';
-import { currenciesReducer } from '../../../redux/reducers/currenciesReducer';
 import { AppDispatch } from '@/app/redux/store';
 import { Bundle, MoneyTransaction } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
 import { _fetchMoneyTransactionsList } from '@/app/redux/actions/moneyTransactionsActions';
-import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
-import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { isRTL } from '../../utilities/rtlUtil';
-import { generateTransactionExcelFile } from '../../utilities/generateExcel';
+import { isRTL } from '../utilities/rtlUtil';
+import { customCellStyle } from '../utilities/customRow';
+import { resellerInformationReducer } from '../../redux/reducers/resellerInformationReducer';
+import { fetchResellerTransactions } from '@/app/redux/actions/resellerInformationActions';
+import { generateTransactionExcelFile } from '../utilities/generateExcel';
 
-const TransactionPage = () => {
+
+interface ResellerBalancesProps {
+    resellerId: number;
+}
+
+const ResellerTransactions = ({ resellerId }: ResellerBalancesProps) => {
     let emptyBundle: Bundle = {
         id: 0,
         bundle_code: '',
@@ -63,7 +68,7 @@ const TransactionPage = () => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { transactions, loading, pagination } = useSelector((state: any) => state.moneyTransactionReducer);
+    const { transactions, loading, transactions_pagination } = useSelector((state: any) => state.resellerInformationReducer);
     const { t } = useTranslation();
     const [searchTag, setSearchTag] = useState('');
 
@@ -80,13 +85,13 @@ const TransactionPage = () => {
     const filterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        dispatch(_fetchMoneyTransactionsList(1, searchTag,activeFilters));
+        dispatch(fetchResellerTransactions(resellerId,1, searchTag,activeFilters));
         dispatch(_fetchBundleList());
         dispatch(_fetchCurrencies());
         dispatch(_fetchServiceList());
         dispatch(_fetchCompanies());
         dispatch(_fetchServiceCategories());
-    }, [dispatch, searchTag,activeFilters]);
+    }, [dispatch, searchTag,activeFilters,resellerId]);
 
     // Add this useEffect for click outside detection
     useEffect(() => {
@@ -308,7 +313,7 @@ const TransactionPage = () => {
                     onClick={confirmDeleteSelected}
                     disabled={!selectedCompanies || !(selectedCompanies as any).length}
                 /> */}
-                <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
+            <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
 
             </div>
         </React.Fragment>
@@ -465,7 +470,7 @@ const TransactionPage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchMoneyTransactionsList(page, searchTag));
+        dispatch(fetchResellerTransactions(resellerId,page, searchTag));
     };
 
     const handleSubmitFilter = (filters: any) => {
@@ -475,9 +480,11 @@ const TransactionPage = () => {
     setActiveFilters(cleanedFilters);
 };
 
+
     const exportToExcel = async () => {
         await generateTransactionExcelFile({
             transactions,
+            resellerId,
             t,
             toast,
             all: true
@@ -504,8 +511,8 @@ const TransactionPage = () => {
                         // header={header}
                         responsiveLayout="scroll"
                         paginator={false} // Disable PrimeReact's built-in paginator
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        rows={transactions_pagination?.items_per_page}
+                        totalRecords={transactions_pagination?.total}
                         currentPageReportTemplate={
                             isRTL()
                                 ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
@@ -553,9 +560,9 @@ const TransactionPage = () => {
                         {/* <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column> */}
                     </DataTable>
                     <Paginator
-                        first={(pagination?.page - 1) * pagination?.items_per_page}
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        first={(transactions_pagination?.page - 1) * transactions_pagination?.items_per_page}
+                        rows={transactions_pagination?.items_per_page}
+                        totalRecords={transactions_pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
                         template={
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
@@ -567,4 +574,4 @@ const TransactionPage = () => {
     );
 };
 
-export default withAuth(TransactionPage);
+export default ResellerTransactions;

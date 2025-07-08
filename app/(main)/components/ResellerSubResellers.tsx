@@ -23,7 +23,6 @@ import { Password } from 'primereact/password';
 import { _fetchDistricts } from '@/app/redux/actions/districtActions';
 import { _fetchProvinces } from '@/app/redux/actions/provinceActions';
 import { _fetchCurrencies } from '@/app/redux/actions/currenciesActions';
-import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { resellerGroupReducer } from '@/app/redux/reducers/resellerGroupReducer';
 import { _fetchResellerGroups } from '@/app/redux/actions/resellerGroupActions';
@@ -31,12 +30,18 @@ import { InputSwitch } from 'primereact/inputswitch';
 import { SplitButton } from 'primereact/splitbutton';
 import { useRouter } from 'next/navigation';
 import { Paginator } from 'primereact/paginator';
-import { customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { isRTL } from '../../utilities/rtlUtil';
-import { generateSubResellerExcelFile } from '../../utilities/generateExcel';
+import { isRTL } from '../utilities/rtlUtil';
+import { customCellStyleImage } from '../utilities/customRow';
+import { resellerInformationReducer } from '../../redux/reducers/resellerInformationReducer';
+import { fetchResellerSubResellers } from '@/app/redux/actions/resellerInformationActions';
+import { generateSubResellerExcelFile } from '../utilities/generateExcel';
 
-const ResellerPage = () => {
+interface ResellerBalancesProps {
+    resellerId: number;
+}
+
+const ResellerSubResellers = ({ resellerId }: ResellerBalancesProps) => {
     const emptyReseller: Reseller = {
         id: 0,
         user_id: 0,
@@ -89,7 +94,7 @@ const ResellerPage = () => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { resellers, loading, pagination, singleReseller } = useSelector((state: any) => state.resellerReducer);
+    const { sub_resellers, loading, pagination, singleReseller } = useSelector((state: any) => state.resellerInformationReducer);
     const { countries } = useSelector((state: any) => state.countriesReducer);
     const { districts } = useSelector((state: any) => state.districtReducer);
     const { provinces } = useSelector((state: any) => state.provinceReducer);
@@ -109,13 +114,13 @@ const ResellerPage = () => {
     const filterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        dispatch(_fetchResellers(1, searchTag,activeFilters));
+        dispatch(fetchResellerSubResellers(resellerId,1, searchTag,activeFilters));
         dispatch(_fetchCountries());
         dispatch(_fetchDistricts());
         dispatch(_fetchProvinces());
         dispatch(_fetchCurrencies());
         dispatch(_fetchResellerGroups());
-    }, [dispatch, searchTag,activeFilters]);
+    }, [dispatch, searchTag,activeFilters,resellerId]);
 
     // Add this useEffect for click outside detection
     useEffect(() => {
@@ -133,7 +138,7 @@ const ResellerPage = () => {
 
     useEffect(() => {
         //console.log(resellers)
-    }, [dispatch, resellers]);
+    }, [dispatch, sub_resellers]);
 
     const openNew = () => {
         setReseller(emptyReseller);
@@ -326,15 +331,23 @@ const ResellerPage = () => {
                             </div>
                         )}
                     </div>
-                    <Button
+                    {/* <Button
                         style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
                         label={t('RESELLER.TABLE.CREATERESELLER')}
                         icon="pi pi-plus"
                         severity="success"
                         className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '' : ''}
                         onClick={openNew}
-                    />
-                                    <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
+                    /> */}
+                    {/* <Button
+                        style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                        label={t('APP.GENERAL.DELETE')}
+                        icon="pi pi-trash"
+                        severity="danger"
+                        onClick={confirmDeleteSelected}
+                        disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    /> */}
+                <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
 
                 </div>
             </React.Fragment>
@@ -454,7 +467,7 @@ const ResellerPage = () => {
         return (
             <>
                 <span className="p-column-title">Preferred Currency</span>
-                {currency || '-'}
+                {rowData.user?.currency_preference_code || '-'}
             </>
         );
     };
@@ -463,7 +476,8 @@ const ResellerPage = () => {
         return (
             <>
                 <span className="p-column-title">Country</span>
-                {rowData.country}
+                {(rowData.country as Country)?.country_name || '-'}
+
             </>
         );
     };
@@ -573,7 +587,7 @@ const ResellerPage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchResellers(page, searchTag,activeFilters));
+        dispatch(fetchResellerSubResellers(resellerId,page, searchTag,activeFilters));
     };
 
     useEffect(() => {
@@ -616,13 +630,16 @@ const ResellerPage = () => {
         setActiveFilters(cleanedFilters);
     };
 
-        const exportToExcel = async () => {
-        await generateSubResellerExcelFile({
-            t,
-            toast,
-            all: true
-        });
-    };
+
+            const exportToExcel = async () => {
+                await generateSubResellerExcelFile({
+                    sub_resellers,
+                    resellerId,
+                    t,
+                    toast,
+                    all: true
+                });
+            };
 
     return (
         <div className="grid crud-demo -m-5">
@@ -634,7 +651,7 @@ const ResellerPage = () => {
 
                     <DataTable
                         ref={dt}
-                        value={resellers}
+                        value={sub_resellers}
                         selection={selectedCompanies}
                         onRowClick={(e) => viewResellerDetails(e.data.id)}
                         dataKey="id"
@@ -1110,4 +1127,4 @@ const ResellerPage = () => {
     );
 };
 
-export default withAuth(ResellerPage);
+export default ResellerSubResellers;

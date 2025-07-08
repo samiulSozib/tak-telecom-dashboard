@@ -13,18 +13,20 @@ import {
     DELETE_PAYMENT_SUCCESS,
     DELETE_PAYMENT_FAIL,
 } from "../constants/paymentConstants";
-import { Payment } from "@/types/interface";
+import { Pagination, Payment } from "@/types/interface";
 
 export interface PaymentState {
     loading: boolean;
     payments: Payment[];
     error: string | null;
+    pagination:Pagination|null
   }
 
 const initialState: PaymentState = {
     loading: false,
     payments: [],
     error: null,
+    pagination:null
 };
 
 export const paymentReducer = (state = initialState, action: AnyAction): PaymentState => {
@@ -43,7 +45,8 @@ export const paymentReducer = (state = initialState, action: AnyAction): Payment
             return {
                 ...state,
                 loading: false,
-                payments: action.payload,
+                payments: action.payload.data,
+                pagination:action.payload.pagination,
                 error: null,
             };
 

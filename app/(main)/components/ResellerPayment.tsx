@@ -18,25 +18,25 @@ import { AppDispatch } from '@/app/redux/store';
 import { Payment, Currency } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
 import { _addPayment, _deletePayment, _editPayment, _fetchPayments } from '@/app/redux/actions/paymentActions';
-import { paymentReducer } from '../../../redux/reducers/paymentReducer';
-import { resellerReducer } from '../../../redux/reducers/resellerReducer';
 import { _fetchResellers } from '@/app/redux/actions/resellerActions';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { paymentMethodsReducer } from '../../../redux/reducers/paymentMethodReducer';
-import { currenciesReducer } from '../../../redux/reducers/currenciesReducer';
 import { _fetchPaymentMethods } from '@/app/redux/actions/paymentMethodActions';
 import { _fetchCurrencies } from '@/app/redux/actions/currenciesActions';
 import { Calendar } from 'primereact/calendar';
-import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
-import { Reseller } from '../../../../types/interface';
-import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { isRTL } from '../../utilities/rtlUtil';
 import { Paginator } from 'primereact/paginator';
-import { generatePaymentExcelFile } from '../../utilities/generateExcel';
+import { isRTL } from '../utilities/rtlUtil';
+import { customCellStyle } from '../utilities/customRow';
+import { fetchResellerPayments } from '@/app/redux/actions/resellerInformationActions';
+import { resellerInformationReducer } from '../../redux/reducers/resellerInformationReducer';
+import { generateBalanceExcelFile, generatePaymentExcelFile } from '../utilities/generateExcel';
 
-const PaymentPage = () => {
+interface ResellerBalancesProps {
+    resellerId: number;
+}
+
+const ResellerPayments = ({ resellerId }: ResellerBalancesProps) => {
     let emptyPayment: Payment = {
         id: 0,
         reseller_id: 0,
@@ -65,7 +65,7 @@ const PaymentPage = () => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { payments, loading, pagination } = useSelector((state: any) => state.paymentReducer);
+    const { payments, loading, payments_pagination } = useSelector((state: any) => state.resellerInformationReducer);
     const { resellers } = useSelector((state: any) => state.resellerReducer);
     const { paymentMethods } = useSelector((state: any) => state.paymentMethodsReducer);
     const { currencies } = useSelector((state: any) => state.currenciesReducer);
@@ -83,11 +83,11 @@ const PaymentPage = () => {
     const filterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        dispatch(_fetchPayments(1, searchTag, activeFilters));
+        dispatch(fetchResellerPayments(resellerId, 1, searchTag, activeFilters));
         dispatch(_fetchResellers());
         dispatch(_fetchPaymentMethods());
         dispatch(_fetchCurrencies());
-    }, [dispatch, searchTag, activeFilters]);
+    }, [dispatch, searchTag, activeFilters, resellerId]);
 
     // Add this useEffect for click outside detection
     useEffect(() => {
@@ -273,7 +273,7 @@ const PaymentPage = () => {
                             </div>
                         )}
                     </div>
-                    <Button label="Add Payment" icon="pi pi-plus" severity="success" onClick={openNew} />
+                    {/* <Button label="Add Payment" icon="pi pi-plus" severity="success" onClick={openNew} /> */}
                 <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
                 </div>
             </React.Fragment>
@@ -439,7 +439,7 @@ const PaymentPage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchPayments(page, searchTag));
+        dispatch(fetchResellerPayments(resellerId, page, searchTag));
     };
 
     // Add these helper functions
@@ -451,12 +451,14 @@ const PaymentPage = () => {
     const handleRefresh = async () => {
         setRefreshing(true);
         await new Promise((res) => setTimeout(res, 1000));
-        dispatch(_fetchPayments(1, searchTag, activeFilters));
+        dispatch(fetchResellerPayments(resellerId, 1, searchTag, activeFilters));
         setRefreshing(false);
     };
 
         const exportToExcel = async () => {
             await generatePaymentExcelFile({
+                payments,
+                resellerId,
                 t,
                 toast,
                 all: true
@@ -477,8 +479,8 @@ const PaymentPage = () => {
                         selection={selectedCompanies}
                         onSelectionChange={(e) => setSelectedPayment(e.value as any)}
                         dataKey="id"
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        rows={payments_pagination?.items_per_page}
+                        totalRecords={payments_pagination?.total}
                         className="datatable-responsive"
                         paginatorTemplate={
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
@@ -508,9 +510,9 @@ const PaymentPage = () => {
                     </DataTable>
 
                     <Paginator
-                        first={(pagination?.page - 1) * pagination?.items_per_page}
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        first={(payments_pagination?.page - 1) * payments_pagination?.items_per_page}
+                        rows={payments_pagination?.items_per_page}
+                        totalRecords={payments_pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
                         template={
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
@@ -704,4 +706,4 @@ const PaymentPage = () => {
     );
 };
 
-export default withAuth(PaymentPage);
+export default ResellerPayments;

@@ -18,19 +18,24 @@ import { AppDispatch } from '@/app/redux/store';
 import { Order } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
 import { _changeOrderStatus, _deleteOrder, _fetchOrders } from '@/app/redux/actions/orderActions';
-import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { SplitButton } from 'primereact/splitbutton';
-import { customCellStyle } from '../../utilities/customRow';
 import i18n from '@/i18n';
-import { isRTL } from '../../utilities/rtlUtil';
-import { Calendar } from 'primereact/calendar';
-import { companyReducer } from '../../../redux/reducers/companyReducer';
-import serviceReducer from '../../../redux/reducers/serviceReducer';
 import { _fetchServiceList } from '@/app/redux/actions/serviceActions';
-import { generateOrderExcelFile } from '../../utilities/generateExcel';
+import { companyReducer } from '../../../../birlik_store_dashboard/app/redux/reducers/companyReducer';
+import serviceReducer from '../../../../birlik_store_dashboard/app/redux/reducers/serviceReducer';
+import { resellerInformationReducer } from '../../redux/reducers/resellerInformationReducer';
+import { fetchResellerOrders } from '@/app/redux/actions/resellerInformationActions';
+import { isRTL } from '../utilities/rtlUtil';
+import { customCellStyle } from '../utilities/customRow';
+import * as XLSX from 'xlsx';
+import { generateOrderExcelFile } from '../utilities/generateExcel';
 
-const OrderPage = () => {
+interface ResellerOrdersProps {
+    resellerId: number;
+}
+
+const ResellerOrders = ({ resellerId }: ResellerOrdersProps) => {
     const [orderDialog, setOrderDialog] = useState(false);
     const [deleteOrderDialog, setDeleteOrderDialog] = useState(false);
     const [deleteOrdersDialog, setDeleteOrdersDialog] = useState(false);
@@ -40,7 +45,7 @@ const OrderPage = () => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { orders, pagination, loading } = useSelector((state: any) => state.orderReducer);
+    const { orders, orders_pagination, loading } = useSelector((state: any) => state.resellerInformationReducer);
     const { companies } = useSelector((state: any) => state.companyReducer);
     const { services } = useSelector((state: any) => state.serviceReducer);
     const [order, setOrder] = useState<Order>();
@@ -64,14 +69,14 @@ const OrderPage = () => {
     const [activeFilters, setActiveFilters] = useState({});
 
     useEffect(() => {
-        dispatch(_fetchOrders(1, searchTag)); // No filters initially
-    }, [dispatch, searchTag]);
+        dispatch(fetchResellerOrders(resellerId, 1, searchTag)); // No filters initially
+    }, [dispatch, searchTag, resellerId]);
 
     useEffect(() => {
         if (Object.keys(activeFilters).length > 0) {
-            dispatch(_fetchOrders(1, searchTag, activeFilters));
+            dispatch(fetchResellerOrders(resellerId, 1, searchTag, activeFilters));
         }
-    }, [dispatch, activeFilters, searchTag]);
+    }, [dispatch, activeFilters, searchTag, resellerId]);
 
     useEffect(() => {
         dispatch(_fetchCompanies());
@@ -140,7 +145,7 @@ const OrderPage = () => {
     const handleRefresh = async () => {
         setRefreshing(true);
         await new Promise((res) => setTimeout(res, 1000));
-        dispatch(_fetchOrders(1, searchTag));
+        dispatch(fetchResellerOrders(resellerId, 1, searchTag));
         setRefreshing(false);
     };
 
@@ -283,7 +288,7 @@ const OrderPage = () => {
                                                 onClick={() => {
                                                     // Apply filters here
                                                     // You might want to dispatch an action to fetch filtered orders
-                                                    //dispatch(_fetchOrders(1, searchTag, filters));
+                                                    //dispatch(fetchResellerOrders(resellerId,1, searchTag, filters));
                                                     //console.log(filters)
                                                     handleSubmitFilter(filters);
                                                     setFilterDialogVisible(false);
@@ -446,58 +451,6 @@ const OrderPage = () => {
         );
     };
 
-    const copyButtonBodyTemplate = (rowData: Order) => {
-        const copyOrderDetails = () => {
-            const formatDate = (dateString: string) => {
-                const date = new Date(dateString);
-                return date.toLocaleString();
-            };
-
-            const statusText = rowData.status == 0 ? t('ORDER.STATUS.PENDING') : rowData.status == 1 ? t('ORDER.STATUS.CONFIRMED') : rowData.status == 2 ? t('ORDER.STATUS.REJECTED') : t('ORDER.STATUS.UNKNOWN');
-
-            const dataToCopy = `
-📋 Order Details
-----------------
-🔹 ${t('ORDER.TABLE.COLUMN.RESELLERNAME')}: ${rowData.reseller?.reseller_name || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.RECHARGEABLEACCOUNT')}: ${rowData.rechargeble_account || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.BUNDLEID')}: ${rowData.bundle?.id || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.PAYABLEAMOUNT')}: ${rowData.bundle?.buying_price || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.BUNDLETITLE')}: ${rowData.bundle?.bundle_title || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.COMPANYNAME')}: ${rowData.bundle?.service?.company?.company_name || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.CATEGORYNAME')}: ${rowData.bundle?.service?.service_category?.category_name || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.STATUS')}: ${statusText}
-🔹 ${t('ORDER.TABLE.COLUMN.REJECTREASON')}: ${rowData.reject_reason || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.ORDEREDDATE')}: ${formatDate(rowData.created_at)}
-        `.trim();
-
-            copyToClipboard(dataToCopy);
-        };
-
-        return (
-            <>
-                <span className="p-column-title">Copy</span>
-                <Button
-                    icon="pi pi-copy"
-                    rounded
-                    severity="info"
-                    tooltip={t('COPY_ALL_DETAILS')}
-                    tooltipOptions={{
-                        position: 'top',
-                        className: 'custom-tooltip'
-                    }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        copyOrderDetails();
-                    }}
-                    className="p-button-sm p-button-text"
-                    pt={{
-                        icon: { className: 'text-sm' }
-                    }}
-                />
-            </>
-        );
-    };
-
     // const actionBodyTemplate = (rowData: Order) => {
     //     return (
     //         <>
@@ -602,38 +555,17 @@ const OrderPage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchOrders(page, searchTag));
+        dispatch(fetchResellerOrders(resellerId, page, searchTag));
     };
 
     const exportToExcel = async () => {
         await generateOrderExcelFile({
             orders,
+            resellerId,
             t,
             toast,
             all: true
         });
-    };
-
-    const copyToClipboard = (text: string) => {
-        navigator.clipboard
-            .writeText(text)
-            .then(() => {
-                toast.current?.show({
-                    severity: 'success',
-                    summary: t('COPIED'),
-                    detail: t('TEXT_COPIED_TO_CLIPBOARD'),
-                    life: 2000
-                });
-            })
-            .catch((err) => {
-                console.error('Failed to copy text: ', err);
-                toast.current?.show({
-                    severity: 'error',
-                    summary: t('ERROR'),
-                    detail: t('FAILED_TO_COPY_TEXT'),
-                    life: 2000
-                });
-            });
     };
 
     return (
@@ -655,8 +587,8 @@ const OrderPage = () => {
                         // header={header}
                         responsiveLayout="scroll"
                         paginator={false} // Disable PrimeReact's built-in paginator
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        rows={orders_pagination?.items_per_page}
+                        totalRecords={orders_pagination?.total}
                         currentPageReportTemplate={
                             isRTL()
                                 ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
@@ -668,8 +600,6 @@ const OrderPage = () => {
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={copyButtonBodyTemplate} headerStyle={{ width: '5rem' }}></Column>
-
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.RESELLERNAME')} body={resellerNameBodyTemplate}></Column>
                         <Column
                             style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
@@ -687,9 +617,9 @@ const OrderPage = () => {
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('ORDER.TABLE.COLUMN.STATUS')} sortable body={statusBodyTemplate}></Column>
                     </DataTable>
                     <Paginator
-                        first={(pagination?.page - 1) * pagination?.items_per_page}
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        first={(orders_pagination?.page - 1) * orders_pagination?.items_per_page}
+                        rows={orders_pagination?.items_per_page}
+                        totalRecords={orders_pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
                         template={
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
@@ -787,4 +717,4 @@ const OrderPage = () => {
     );
 };
 
-export default withAuth(OrderPage);
+export default ResellerOrders;
