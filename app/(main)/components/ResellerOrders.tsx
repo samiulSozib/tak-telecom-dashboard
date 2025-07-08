@@ -22,13 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { SplitButton } from 'primereact/splitbutton';
 import i18n from '@/i18n';
 import { _fetchServiceList } from '@/app/redux/actions/serviceActions';
-import { companyReducer } from '../../../../birlik_store_dashboard/app/redux/reducers/companyReducer';
-import serviceReducer from '../../../../birlik_store_dashboard/app/redux/reducers/serviceReducer';
-import { resellerInformationReducer } from '../../redux/reducers/resellerInformationReducer';
 import { fetchResellerOrders } from '@/app/redux/actions/resellerInformationActions';
 import { isRTL } from '../utilities/rtlUtil';
 import { customCellStyle } from '../utilities/customRow';
-import * as XLSX from 'xlsx';
 import { generateOrderExcelFile } from '../utilities/generateExcel';
 
 interface ResellerOrdersProps {

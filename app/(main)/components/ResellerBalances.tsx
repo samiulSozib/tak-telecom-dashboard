@@ -27,7 +27,6 @@ import i18n from '@/i18n';
 import { isRTL } from '../utilities/rtlUtil';
 import { customCellStyle } from '../utilities/customRow';
 import { fetchResellerBalances } from '@/app/redux/actions/resellerInformationActions';
-import { resellerInformationReducer } from '../../redux/reducers/resellerInformationReducer';
 import { Paginator } from 'primereact/paginator';
 import { generateBalanceExcelFile } from '../utilities/generateExcel';
 
