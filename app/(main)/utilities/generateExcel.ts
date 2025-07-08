@@ -44,7 +44,10 @@ export const generateOrderExcelFile = async ({
                         },
                     }
                 );
-                exportOrders = response.data?.data?.orders || [];
+                if (!orders || orders.length === 0) {
+                    exportOrders = response.data?.data?.orders || [];
+                }
+
             } else {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/resellers/${resellerId}/orders?${queryParams.toString()}&filter_isexport=${all}`,
@@ -176,7 +179,10 @@ export const generateBalanceExcelFile = async ({
                         },
                     }
                 );
-                exportBalances = response.data?.data?.balances || [];
+                if (!balances || balances.length === 0) {
+                    exportBalances = response.data?.data?.balances || [];
+                }
+
             } else {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/resellers/${resellerId}/balances?${queryParams.toString()}&filter_isexport=${all}`,
@@ -296,7 +302,10 @@ export const generatePaymentExcelFile = async ({
                         },
                     }
                 );
-                exportPayments = response.data?.data?.payments || [];
+                if (!payments || payments.length === 0) {
+                    exportPayments = response.data?.data?.payments || [];
+                }
+
             } else {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/resellers/${resellerId}/payments?${queryParams.toString()}&filter_isexport=${all}`,
@@ -421,7 +430,10 @@ export const generateTransactionExcelFile = async ({
                         },
                     }
                 );
-                exportTransactions = response.data?.data?.reseller_balance_transactions || [];
+                if (!transactions || transactions.length === 0) {
+                    exportTransactions = response.data?.data?.reseller_balance_transactions || [];
+                }
+
             } else {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/resellers/${resellerId}/transactions?${queryParams.toString()}&filter_isexport=${all}`,
@@ -558,7 +570,10 @@ export const generateSubResellerExcelFile = async ({
                         },
                     }
                 );
-                exportSubResellers = response.data?.data?.sub_resellers || [];
+                if (!sub_resellers || sub_resellers.length === 0) {
+                    exportSubResellers = response.data?.data?.sub_resellers || [];
+                }
+
             } else {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/resellers?${queryParams.toString()}&filter_isexport=${all}`,
