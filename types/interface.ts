@@ -212,6 +212,11 @@ export interface Reseller {
     sub_reseller_limit:number|string,
     sub_resellers_can_create_sub_resellers:number,
     total_earning_balance?:number|string,
+    parent_reseller_id?:number|null|string,
+    parent_reseller_name?:string|null,
+    parent_reseller_profile_image_url?:string|null,
+    parent_reseller_phone?:string|null
+
 }
 
 export interface User {
@@ -381,7 +386,8 @@ export interface Balance{
     payment_currency_id?:number,
     payment_status?:string,
     payment_notes?:string,
-    payment_date?:string
+    payment_date?:string,
+    performed_by_name?:string|null
 }
 
 export interface Payment{
@@ -399,7 +405,8 @@ export interface Payment{
     updated_date:string,
     reseller:Reseller|null,
     payment_method:PaymentMethod|null,
-    currency:Currency|null
+    currency:Currency|null,
+    performed_by_name?:string|null
 }
 
 export interface Roles{

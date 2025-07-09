@@ -140,14 +140,14 @@ const EarningBalanceRequest = () => {
                         className={isRTL() ? 'rtl-button' : ''}
                         onClick={openNew}
                     />
-                    <Button
+                    {/* <Button
                         label={t('APP.GENERAL.DELETE')}
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={() => setDeleteDialogVisible(true)}
                         disabled={!selectedRequests || selectedRequests.length === 0}
                         className={isRTL() ? 'rtl-button' : ''}
-                    />
+                    /> */}
                 </div>
             </React.Fragment>
         );
@@ -333,9 +333,9 @@ const EarningBalanceRequest = () => {
                         style={{ direction: isRTL() ? 'rtl' : 'ltr',fontFamily: "'iranyekan', sans-serif,iranyekan" }}
                         responsiveLayout="scroll"
                     >
-                        <Column
+                        {/* <Column
                             headerStyle={{ width: '4rem' }}
-                        />
+                        /> */}
                         <Column
                             body={actionBodyTemplate}
                             headerStyle={{ minWidth: '10rem' }}

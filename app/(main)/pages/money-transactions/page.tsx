@@ -22,7 +22,7 @@ import { currenciesReducer } from '../../../redux/reducers/currenciesReducer';
 import { AppDispatch } from '@/app/redux/store';
 import { Bundle, MoneyTransaction } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
-import { _fetchMoneyTransactionsList } from '@/app/redux/actions/moneyTransactionsActions';
+import { _deleteSelectedTransactions, _fetchMoneyTransactionsList } from '@/app/redux/actions/moneyTransactionsActions';
 import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { customCellStyle } from '../../utilities/customRow';
@@ -57,7 +57,7 @@ const TransactionPage = () => {
     const [deleteServiceDialog, setDeleteServiceDialog] = useState(false);
     const [deleteServicesDialog, setDeleteServicesDialog] = useState(false);
     const [bundle, setBundle] = useState<Bundle>(emptyBundle);
-    const [selectedCompanies, setSelectedCompanyCode] = useState(null);
+    const [selectedTransactions, setSelectedTransactions] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
@@ -80,13 +80,13 @@ const TransactionPage = () => {
     const filterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        dispatch(_fetchMoneyTransactionsList(1, searchTag,activeFilters));
+        dispatch(_fetchMoneyTransactionsList(1, searchTag, activeFilters));
         dispatch(_fetchBundleList());
         dispatch(_fetchCurrencies());
         dispatch(_fetchServiceList());
         dispatch(_fetchCompanies());
         dispatch(_fetchServiceCategories());
-    }, [dispatch, searchTag,activeFilters]);
+    }, [dispatch, searchTag, activeFilters]);
 
     // Add this useEffect for click outside detection
     useEffect(() => {
@@ -158,163 +158,183 @@ const TransactionPage = () => {
     };
 
     const confirmDeleteSelected = () => {
+        if (!selectedTransactions || (selectedTransactions as any).length === 0) {
+            toast.current?.show({
+                severity: 'warn',
+                summary: t('VALIDATION_WARNING'),
+                detail: t('NO_SELECTED_ITEMS_FOUND'),
+                life: 3000
+            });
+            return;
+        }
         setDeleteServicesDialog(true);
     };
 
+    const deleteSelectedTransactions = async () => {
+        if (!selectedTransactions || (selectedTransactions as any).length === 0) {
+            toast.current?.show({
+                severity: 'error',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('NO_SELECTED_ITEMS_FOUND'),
+                life: 3000
+            });
+            return;
+        }
+
+        const selectedIds = (selectedTransactions as MoneyTransaction[]).map((transaction) => transaction.id);
+
+        await _deleteSelectedTransactions(selectedIds, toast, t);
+        dispatch(_fetchMoneyTransactionsList());
+
+        setSelectedTransactions(null);
+        setDeleteServicesDialog(false);
+    };
+
     const rightToolbarTemplate = () => {
-    return (
-        <React.Fragment>
-            <div className="my-2 flex items-center gap-2">
-                <div className="flex-1 min-w-[100px]" ref={filterRef} style={{ position: 'relative' }}>
-                    <Button
-                        className="p-button-info"
-                        label={t('FILTER')}
-                        icon="pi pi-filter"
-                        onClick={() => setFilterDialogVisible(!filterDialogVisible)}
-                    />
-                    {filterDialogVisible && (
-                        <div
-                            className="p-card p-fluid"
-                            style={{
-                                position: 'absolute',
-                                top: '100%',
-                                left: isRTL() ? 0 : '',
-                                right: isRTL() ? '' : 0,
-                                width: '300px',
-                                zIndex: 1000,
-                                marginTop: '0.5rem',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                            }}
-                        >
-                            <div className="p-card-body" style={{ padding: '1rem' }}>
-                                <div className="grid">
-                                    {/* Transaction Type Filter */}
-                                    <div className="col-12">
-                                        <label htmlFor="transactionTypeFilter" style={{ fontSize: '0.875rem' }}>
-                                            {t('TRANSACTION.TABLE.COLUMN.TYPE')}
-                                        </label>
-                                        <Dropdown
-                                            id="transactionTypeFilter"
-                                            options={[
-                                                { label: t('CREDIT'), value: 'credit' },
-                                                { label: t('DEBIT'), value: 'debit' }
-                                            ]}
-                                            value={filters.filter_transactiontype}
-                                            onChange={(e) => setFilters({ ...filters, filter_transactiontype: e.value })}
-                                            placeholder={t('SELECT_TYPE')}
-                                            style={{ width: '100%' }}
-                                        />
-                                    </div>
+        const hasSelectedTransactions = selectedTransactions && (selectedTransactions as any).length > 0;
+        return (
+            <React.Fragment>
+                <div className="my-2 flex items-center gap-2">
+                    <div className="flex-1 min-w-[100px]" ref={filterRef} style={{ position: 'relative' }}>
+                        <Button className="p-button-info" label={t('FILTER')} icon="pi pi-filter" onClick={() => setFilterDialogVisible(!filterDialogVisible)} />
+                        {filterDialogVisible && (
+                            <div
+                                className="p-card p-fluid"
+                                style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: isRTL() ? 0 : '',
+                                    right: isRTL() ? '' : 0,
+                                    width: '300px',
+                                    zIndex: 1000,
+                                    marginTop: '0.5rem',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                <div className="p-card-body" style={{ padding: '1rem' }}>
+                                    <div className="grid">
+                                        {/* Transaction Type Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="transactionTypeFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('TRANSACTION.TABLE.COLUMN.TYPE')}
+                                            </label>
+                                            <Dropdown
+                                                id="transactionTypeFilter"
+                                                options={[
+                                                    { label: t('CREDIT'), value: 'credit' },
+                                                    { label: t('DEBIT'), value: 'debit' }
+                                                ]}
+                                                value={filters.filter_transactiontype}
+                                                onChange={(e) => setFilters({ ...filters, filter_transactiontype: e.value })}
+                                                placeholder={t('SELECT_TYPE')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
 
-                                    {/* Transaction Category Filter */}
-                                    <div className="col-12">
-                                        <label htmlFor="transactionCategoryFilter" style={{ fontSize: '0.875rem' }}>
-                                            {t('TRANSACTION.TABLE.COLUMN.CATEGORY')}
-                                        </label>
-                                        <Dropdown
-                                            id="transactionCategoryFilter"
-                                            options={[
-                                                { label: t('ADMIN_TO_RESELLER'), value: 'admin-reseller' },
-                                                { label: t('RESELLER_TO_SUBRESELLER'), value: 'reseller-subreseller' }
-                                            ]}
-                                            value={filters.filter_transactioncategory}
-                                            onChange={(e) => setFilters({ ...filters, filter_transactioncategory: e.value })}
-                                            placeholder={t('SELECT_CATEGORY')}
-                                            style={{ width: '100%' }}
-                                        />
-                                    </div>
+                                        {/* Transaction Category Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="transactionCategoryFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('TRANSACTION.TABLE.COLUMN.CATEGORY')}
+                                            </label>
+                                            <Dropdown
+                                                id="transactionCategoryFilter"
+                                                options={[
+                                                    { label: t('ADMIN_TO_RESELLER'), value: 'admin-reseller' },
+                                                    { label: t('RESELLER_TO_SUBRESELLER'), value: 'reseller-subreseller' }
+                                                ]}
+                                                value={filters.filter_transactioncategory}
+                                                onChange={(e) => setFilters({ ...filters, filter_transactioncategory: e.value })}
+                                                placeholder={t('SELECT_CATEGORY')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
 
-                                    {/* Transaction Purpose Filter */}
-                                    <div className="col-12">
-                                        <label htmlFor="transactionPurposeFilter" style={{ fontSize: '0.875rem' }}>
-                                            {t('TRANSACTION.TABLE.COLUMN.PURPOSE')}
-                                        </label>
-                                        <Dropdown
-                                            id="transactionPurposeFilter"
-                                            options={[
-                                                { label: t('FILTER.ORDER'), value: 'order' },
-                                                { label: t('MONEY_TRANSFER'), value: 'money' }
-                                            ]}
-                                            value={filters.filter_transactionpurpose}
-                                            onChange={(e) => setFilters({ ...filters, filter_transactionpurpose: e.value })}
-                                            placeholder={t('SELECT_PURPOSE')}
-                                            style={{ width: '100%' }}
-                                        />
-                                    </div>
+                                        {/* Transaction Purpose Filter */}
+                                        <div className="col-12">
+                                            <label htmlFor="transactionPurposeFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('TRANSACTION.TABLE.COLUMN.PURPOSE')}
+                                            </label>
+                                            <Dropdown
+                                                id="transactionPurposeFilter"
+                                                options={[
+                                                    { label: t('FILTER.ORDER'), value: 'order' },
+                                                    { label: t('MONEY_TRANSFER'), value: 'money' }
+                                                ]}
+                                                value={filters.filter_transactionpurpose}
+                                                onChange={(e) => setFilters({ ...filters, filter_transactionpurpose: e.value })}
+                                                placeholder={t('SELECT_PURPOSE')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </div>
 
-                                    {/* Date Range Filters */}
-                                    <div className="col-12">
-                                        <label htmlFor="startDateFilter" style={{ fontSize: '0.875rem' }}>
-                                            {t('START_DATE')}
-                                        </label>
-                                        <InputText
-                                            type="date"
-                                            id="startDateFilter"
-                                            value={filters.filter_startdate || ''}
-                                            onChange={(e) => setFilters({ ...filters, filter_startdate: e.target.value })}
-                                            style={{ width: '100%' }}
-                                        />
-                                    </div>
+                                        {/* Date Range Filters */}
+                                        <div className="col-12">
+                                            <label htmlFor="startDateFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('START_DATE')}
+                                            </label>
+                                            <InputText type="date" id="startDateFilter" value={filters.filter_startdate || ''} onChange={(e) => setFilters({ ...filters, filter_startdate: e.target.value })} style={{ width: '100%' }} />
+                                        </div>
 
-                                    <div className="col-12">
-                                        <label htmlFor="endDateFilter" style={{ fontSize: '0.875rem' }}>
-                                            {t('END_DATE')}
-                                        </label>
-                                        <InputText
-                                            type="date"
-                                            id="endDateFilter"
-                                            value={filters.filter_enddate || ''}
-                                            onChange={(e) => setFilters({ ...filters, filter_enddate: e.target.value })}
-                                            style={{ width: '100%' }}
-                                        />
-                                    </div>
+                                        <div className="col-12">
+                                            <label htmlFor="endDateFilter" style={{ fontSize: '0.875rem' }}>
+                                                {t('END_DATE')}
+                                            </label>
+                                            <InputText type="date" id="endDateFilter" value={filters.filter_enddate || ''} onChange={(e) => setFilters({ ...filters, filter_enddate: e.target.value })} style={{ width: '100%' }} />
+                                        </div>
 
-                                    {/* Action Buttons */}
-                                    <div className="col-12 mt-3 flex justify-content-between gap-2">
-                                        <Button
-                                            label={t('RESET')}
-                                            icon="pi pi-times"
-                                            className="p-button-secondary p-button-sm"
-                                            onClick={() => {
-                                                setFilters({
-                                                    filter_transactiontype: null,
-                                                    filter_transactioncategory: null,
-                                                    filter_transactionpurpose: null,
-                                                    filter_startdate: null,
-                                                    filter_enddate: null
-                                                });
-                                            }}
-                                        />
-                                        <Button
-                                            label={t('APPLY')}
-                                            icon="pi pi-check"
-                                            className="p-button-sm"
-                                            onClick={() => {
-                                                handleSubmitFilter(filters);
-                                                setFilterDialogVisible(false);
-                                            }}
-                                        />
+                                        {/* Action Buttons */}
+                                        <div className="col-12 mt-3 flex justify-content-between gap-2">
+                                            <Button
+                                                label={t('RESET')}
+                                                icon="pi pi-times"
+                                                className="p-button-secondary p-button-sm"
+                                                onClick={() => {
+                                                    setFilters({
+                                                        filter_transactiontype: null,
+                                                        filter_transactioncategory: null,
+                                                        filter_transactionpurpose: null,
+                                                        filter_startdate: null,
+                                                        filter_enddate: null
+                                                    });
+                                                }}
+                                            />
+                                            <Button
+                                                label={t('APPLY')}
+                                                icon="pi pi-check"
+                                                className="p-button-sm"
+                                                onClick={() => {
+                                                    handleSubmitFilter(filters);
+                                                    setFilterDialogVisible(false);
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-                </div>
-                {/* <Button
+                        )}
+                    </div>
+                    {/* <Button
                     style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
                     label={t('APP.GENERAL.DELETE')}
                     icon="pi pi-trash"
                     severity="danger"
                     onClick={confirmDeleteSelected}
-                    disabled={!selectedCompanies || !(selectedCompanies as any).length}
+                    disabled={!selectedTransactions || !(selectedTransactions as any).length}
                 /> */}
-                <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
+                    <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
+                        {/* <Button
+                            style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
+                            label={t('APP.GENERAL.DELETE')}
+                            icon="pi pi-trash"
+                            severity="danger"
+                            onClick={confirmDeleteSelected}
+                            disabled={!selectedTransactions || !(selectedTransactions as any).length}
+                        /> */}
 
-            </div>
-        </React.Fragment>
-    );
-};
-
+                </div>
+            </React.Fragment>
+        );
+    };
 
     const leftToolbarTemplate = () => {
         return (
@@ -469,11 +489,9 @@ const TransactionPage = () => {
     };
 
     const handleSubmitFilter = (filters: any) => {
-    const cleanedFilters = Object.fromEntries(
-        Object.entries(filters).filter(([_, value]) => value !== null && value !== '')
-    );
-    setActiveFilters(cleanedFilters);
-};
+        const cleanedFilters = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== ''));
+        setActiveFilters(cleanedFilters);
+    };
 
     const exportToExcel = async () => {
         await generateTransactionExcelFile({
@@ -484,6 +502,12 @@ const TransactionPage = () => {
         });
     };
 
+    const deleteCompaniesDialogFooter = (
+        <>
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteServicesDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteSelectedTransactions} />
+        </>
+    );
 
     return (
         <div className="grid crud-demo -m-5">
@@ -496,8 +520,8 @@ const TransactionPage = () => {
                     <DataTable
                         ref={dt}
                         value={transactions}
-                        selection={selectedCompanies}
-                        onSelectionChange={(e) => setSelectedCompanyCode(e.value as any)}
+                        selection={selectedTransactions}
+                        onSelectionChange={(e) => setSelectedTransactions(e.value as any)}
                         dataKey="id"
                         className="datatable-responsive"
                         globalFilter={globalFilter}
@@ -515,7 +539,7 @@ const TransactionPage = () => {
                         dir={isRTL() ? 'rtl' : 'ltr'}
                         style={{ direction: isRTL() ? 'rtl' : 'ltr', fontFamily: "'iranyekan', sans-serif,iranyekan" }}
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        {/* <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column> */}
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Reseller" header={t('TRANSACTION.TABLE.COLUMN.RESELLERNAME')} body={resellerBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Amount" header={t('TRANSACTION.TABLE.COLUMN.AMOUNT')} body={amountBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="Currency" header={t('TRANSACTION.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate}></Column>
@@ -561,6 +585,12 @@ const TransactionPage = () => {
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
                         }
                     />
+                    <Dialog visible={deleteServicesDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={deleteCompaniesDialogFooter} onHide={hideDeleteServicesDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {<span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE_SELECTED_ITEMS')}</span>}
+                        </div>
+                    </Dialog>
                 </div>
             </div>
         </div>

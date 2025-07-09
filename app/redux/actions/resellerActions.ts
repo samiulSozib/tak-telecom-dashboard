@@ -408,7 +408,7 @@ export const _fetchResellers = (
 
         const queryString = queryParams.toString();
         const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/resellers?page=${page}&${queryString}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/resellers?items_per_page=${10}&page=${page}&${queryString}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -378,6 +378,51 @@ const ResellerPage = () => {
         );
     };
 
+const parentNameBodyTemplate = (rowData: Reseller) => {
+    if (!rowData.parent_reseller_name && !rowData.parent_reseller_profile_image_url) {
+        return null; // or return <></> if you prefer
+    }
+
+    return (
+        <>
+            <span className="p-column-title">Name</span>
+            <div
+                style={{
+                    display: 'flex',
+                    textAlign: 'center',
+                    alignItems: 'center',
+                    gap: '10px'
+                }}
+            >
+                <img
+                    src={`${rowData.parent_reseller_profile_image_url}`}
+                    alt={rowData.parent_reseller_name || ''}
+                    className="shadow-2"
+                    style={{
+                        padding: '2px',
+                        width: '45px',
+                        height: '45px',
+                        borderRadius: '50%',
+                        objectFit: 'cover'
+                    }}
+                />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        textAlign: 'start'
+                    }}
+                >
+                    <span style={{ fontWeight: 'bold' }}>
+                        {rowData.parent_reseller_name}
+                    </span>
+                </div>
+            </div>
+        </>
+    );
+};
+
+
     const phoneBodyTemplate = (rowData: Reseller) => {
         return (
             <>
@@ -658,7 +703,7 @@ const ResellerPage = () => {
 
                         responsiveLayout="scroll"
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        {/* <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column> */}
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ width: '5rem' }}></Column>
                         <Column
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
@@ -704,6 +749,13 @@ const ResellerPage = () => {
                             field="preferred_currency"
                             header={t('RESELLER.TABLE.COLUMN.CURRENCYPREFERENCE')}
                             body={preferredCurrencyBodyTemplate}
+                        ></Column>
+                        <Column
+                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
+                            field="name"
+                            header={t('PARENT_RESELLER_NAME')}
+                            sortable
+                            body={parentNameBodyTemplate}
                         ></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="country" header={t('RESELLER.TABLE.COLUMN.COUNTRY')} body={countryBodyTemplate}></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('BUNDLE.TABLE.FILTER.STATUS')} sortable body={statusBodyTemplate}></Column>

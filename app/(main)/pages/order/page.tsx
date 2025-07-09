@@ -29,6 +29,7 @@ import { companyReducer } from '../../../redux/reducers/companyReducer';
 import serviceReducer from '../../../redux/reducers/serviceReducer';
 import { _fetchServiceList } from '@/app/redux/actions/serviceActions';
 import { generateOrderExcelFile } from '../../utilities/generateExcel';
+import { InputTextarea } from 'primereact/inputtextarea';
 
 const OrderPage = () => {
     const [orderDialog, setOrderDialog] = useState(false);
@@ -49,6 +50,8 @@ const OrderPage = () => {
     const [statusChangeDialog, setStatusChangeDialog] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState<number | null>();
     const [refreshing, setRefreshing] = useState(false);
+    const [rejectReasonDialog, setRejectReasonDialog] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
 
     // Add these state variables near your other state declarations
     const [filterDialogVisible, setFilterDialogVisible] = useState(false);
@@ -323,10 +326,35 @@ const OrderPage = () => {
     };
 
     const rechargeableAccountBodyTemplate = (rowData: Order) => {
+        const copyOrderDetails = () => {
+            const dataToCopy = `🔹 ${t('ORDER.TABLE.COLUMN.RECHARGEABLEACCOUNT')}: ${rowData.rechargeble_account || '-'}`.trim();
+            copyToClipboard(dataToCopy);
+        };
+
         return (
             <>
-                <span className="p-column-title">Account</span>
-                <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.rechargeble_account}</span>
+                <span className="p-column-title">{t('ORDER.TABLE.COLUMN.RECHARGEABLEACCOUNT')}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '' }}>
+                    <Button
+                        icon="pi pi-copy"
+                        rounded
+                        severity="info"
+                        tooltip={t('COPY_RECHARGEABLE_ACCOUNT')}
+                        tooltipOptions={{
+                            position: 'top',
+                            className: 'custom-tooltip'
+                        }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            copyOrderDetails();
+                        }}
+                        className="p-button-sm p-button-text"
+                        pt={{
+                            icon: { className: 'text-sm' }
+                        }}
+                    />
+                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{rowData.rechargeble_account}</span>
+                </div>
             </>
         );
     };
@@ -456,18 +484,11 @@ const OrderPage = () => {
             const statusText = rowData.status == 0 ? t('ORDER.STATUS.PENDING') : rowData.status == 1 ? t('ORDER.STATUS.CONFIRMED') : rowData.status == 2 ? t('ORDER.STATUS.REJECTED') : t('ORDER.STATUS.UNKNOWN');
 
             const dataToCopy = `
-📋 Order Details
+📋 ${t('ORDER_DETAILS')}
 ----------------
-🔹 ${t('ORDER.TABLE.COLUMN.RESELLERNAME')}: ${rowData.reseller?.reseller_name || '-'}
 🔹 ${t('ORDER.TABLE.COLUMN.RECHARGEABLEACCOUNT')}: ${rowData.rechargeble_account || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.BUNDLEID')}: ${rowData.bundle?.id || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.PAYABLEAMOUNT')}: ${rowData.bundle?.buying_price || '-'}
 🔹 ${t('ORDER.TABLE.COLUMN.BUNDLETITLE')}: ${rowData.bundle?.bundle_title || '-'}
 🔹 ${t('ORDER.TABLE.COLUMN.COMPANYNAME')}: ${rowData.bundle?.service?.company?.company_name || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.CATEGORYNAME')}: ${rowData.bundle?.service?.service_category?.category_name || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.STATUS')}: ${statusText}
-🔹 ${t('ORDER.TABLE.COLUMN.REJECTREASON')}: ${rowData.reject_reason || '-'}
-🔹 ${t('ORDER.TABLE.COLUMN.ORDEREDDATE')}: ${formatDate(rowData.created_at)}
         `.trim();
 
             copyToClipboard(dataToCopy);
@@ -498,6 +519,8 @@ const OrderPage = () => {
         );
     };
 
+
+
     // const actionBodyTemplate = (rowData: Order) => {
     //     return (
     //         <>
@@ -508,55 +531,78 @@ const OrderPage = () => {
     // };
 
     const actionBodyTemplate = (rowData: Order) => {
-        //const menuType = rowData.menuType; // Assuming `menuType` is part of your data
+        const status = Number(rowData.status); // in case it's a string
 
-        // Define the dropdown actions
-        const items = [
-            // {
-            //     label: 'Edit',
-            //     icon: 'pi pi-pencil',
-            //     command: () => editReseller(rowData),
-            //     //disabled: menuType === 'guest', // Example condition
-            // },
-            {
-                label: t('APP.GENERAL.DELETE'),
-                icon: 'pi pi-trash',
-                command: () => confirmDeleteOrder(rowData)
-                //disabled: menuType !== 'admin', // Example condition
-            },
-            {
-                label: t('ORDER.STATUS.CONFIRMED'),
-                icon: 'pi pi-check',
-                command: () => confirmChangeStatus(rowData, 1) // 1 for confirmed
-            },
-            {
-                label: t('ORDER.STATUS.UNDER_PROCESS'),
-                icon: 'pi pi-spinner',
-                command: () => confirmChangeStatus(rowData, 3) // 3 for under process
-            },
-            {
-                label: t('ORDER.STATUS.REJECTED'),
-                icon: 'pi pi-times',
-                command: () => confirmChangeStatus(rowData, 2) // 2 for rejected
-            }
-        ];
+        let items: any[] = [];
 
-        return (
-            <SplitButton
-                label=""
-                icon="pi pi-cog"
-                model={items}
-                className="p-button-rounded"
-                severity="info" // Optional: change severity or style
-                dir="ltr"
-            />
-        );
+        if (status === 0) {
+            // Pending
+            items = [
+                {
+                    label: t('ORDER.STATUS.CONFIRMED'),
+                    icon: 'pi pi-check',
+                    command: () => confirmChangeStatus(rowData, 1)
+                },
+                {
+                    label: t('ORDER.STATUS.UNDER_PROCESS'),
+                    icon: 'pi pi-spinner',
+                    command: () => confirmChangeStatus(rowData, 3)
+                },
+                {
+                    label: t('ORDER.STATUS.REJECTED'),
+                    icon: 'pi pi-times',
+                    command: () => confirmChangeStatus(rowData, 2)
+                }
+            ];
+        } else if (status === 2) {
+            // Rejected
+            items = [
+                {
+                    label: t('ORDER.STATUS.CONFIRMED'),
+                    icon: 'pi pi-check',
+                    command: () => confirmChangeStatus(rowData, 1)
+                }
+            ];
+        }
+
+        if (items.length > 0) {
+            return <SplitButton label="" icon="pi pi-cog" model={items} className="p-button-rounded" severity="info" dir="ltr" />;
+        }
+
+        // If status is Confirmed (1), show a placeholder button
+        if (status === 1) {
+            return <SplitButton label="" icon="pi pi-cog" disabled className="p-button-rounded" severity="info" dir="ltr" />;
+        }
+
+        return null;
     };
 
     const confirmChangeStatus = (order: Order, newStatus: number) => {
+        // setOrder(order);
+        // setSelectedStatus(newStatus);
+        // setStatusChangeDialog(true);
         setOrder(order);
         setSelectedStatus(newStatus);
-        setStatusChangeDialog(true);
+
+        if (newStatus === 2) {
+            // If status is rejected (2)
+            setRejectReasonDialog(true); // Show reject reason dialog first
+        } else {
+            setStatusChangeDialog(true); // For other status changes, show normal confirmation
+        }
+    };
+
+    const finalizeRejection = () => {
+        if (!order?.id || selectedStatus === null) {
+            console.error('Order ID or status is undefined.');
+            return;
+        }
+
+        // Dispatch action with rejection reason
+        dispatch(_changeOrderStatus(order.id, selectedStatus as number, toast, t, rejectionReason));
+        setRejectReasonDialog(false);
+        setStatusChangeDialog(false);
+        setRejectionReason(''); // Reset rejection reason
     };
 
     const changeOrderStatus = () => {
@@ -666,11 +712,12 @@ const OrderPage = () => {
                         dir={isRTL() ? 'rtl' : 'ltr'}
                         style={{ direction: isRTL() ? 'rtl' : 'ltr', fontFamily: "'iranyekan', sans-serif,iranyekan" }}
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        {/* <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column> */}
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={copyButtonBodyTemplate} headerStyle={{ width: '5rem' }}></Column>
 
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.RESELLERNAME')} body={resellerNameBodyTemplate}></Column>
+
                         <Column
                             style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="rechargeble_account"
@@ -779,6 +826,40 @@ const OrderPage = () => {
                                     {selectedStatus === 2 && t('ORDER.STATUS.REJECTED')}?
                                 </span>
                             )}
+                        </div>
+                    </Dialog>
+
+                    {/* reject dialog */}
+                    <Dialog
+                        visible={rejectReasonDialog}
+                        style={{ width: '450px' }}
+                        header={t('ORDER.REJECTION_REASON')}
+                        modal
+                        footer={
+                            <>
+                                <Button
+                                    label={t('APP.GENERAL.CANCEL')}
+                                    icon="pi pi-times"
+                                    severity="danger"
+                                    className={isRTL() ? 'rtl-button' : ''}
+                                    onClick={() => {
+                                        setRejectReasonDialog(false);
+                                        setRejectionReason('');
+                                    }}
+                                />
+                                <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={finalizeRejection} disabled={!rejectionReason.trim()} />
+                            </>
+                        }
+                        onHide={() => {
+                            setRejectReasonDialog(false);
+                            setRejectionReason('');
+                        }}
+                    >
+                        <div className="p-fluid">
+                            <div className="field">
+                                <label htmlFor="rejectionReason">{t('ORDER.REJECTION_REASON')}</label>
+                                <InputTextarea id="rejectionReason" value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} rows={3} autoFocus placeholder={t('ORDER.ENTER_REJECTION_REASON')} />
+                            </div>
                         </div>
                     </Dialog>
                 </div>

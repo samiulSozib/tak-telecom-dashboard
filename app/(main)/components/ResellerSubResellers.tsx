@@ -94,7 +94,7 @@ const ResellerSubResellers = ({ resellerId }: ResellerBalancesProps) => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { sub_resellers, loading, pagination, singleReseller } = useSelector((state: any) => state.resellerInformationReducer);
+    const { sub_resellers, loading, sub_resellers_pagination, singleReseller } = useSelector((state: any) => state.resellerInformationReducer);
     const { countries } = useSelector((state: any) => state.countriesReducer);
     const { districts } = useSelector((state: any) => state.districtReducer);
     const { provinces } = useSelector((state: any) => state.provinceReducer);
@@ -656,8 +656,8 @@ const ResellerSubResellers = ({ resellerId }: ResellerBalancesProps) => {
                         onRowClick={(e) => viewResellerDetails(e.data.id)}
                         dataKey="id"
                         paginator={false} // Disable PrimeReact's built-in paginator
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        rows={sub_resellers_pagination?.items_per_page}
+                        totalRecords={sub_resellers_pagination?.total}
                         className="datatable-responsive"
                         paginatorTemplate={
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
@@ -675,7 +675,7 @@ const ResellerSubResellers = ({ resellerId }: ResellerBalancesProps) => {
 
                         responsiveLayout="scroll"
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
+                        {/* <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column> */}
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} body={actionBodyTemplate} headerStyle={{ width: '5rem' }}></Column>
                         <Column
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
@@ -726,9 +726,9 @@ const ResellerSubResellers = ({ resellerId }: ResellerBalancesProps) => {
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('BUNDLE.TABLE.FILTER.STATUS')} sortable body={statusBodyTemplate}></Column>
                     </DataTable>
                     <Paginator
-                        first={(pagination?.page - 1) * pagination?.items_per_page}
-                        rows={pagination?.items_per_page}
-                        totalRecords={pagination?.total}
+                        first={(sub_resellers_pagination?.page - 1) * sub_resellers_pagination?.items_per_page}
+                        rows={sub_resellers_pagination?.items_per_page}
+                        totalRecords={sub_resellers_pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
                         template={
                             isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
