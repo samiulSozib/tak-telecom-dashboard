@@ -619,6 +619,15 @@ const ResellerOrders = ({ resellerId }: ResellerOrdersProps) => {
         return null;
     };
 
+    const performedByBodyTemplate = (rowData: Order) => {
+        return (
+            <>
+                <span className="p-column-title">Performed By</span>
+                {rowData.performed_by_name}
+            </>
+        );
+    };
+
     const confirmChangeStatus = (order: Order, newStatus: number) => {
         setOrder(order);
         setSelectedStatus(newStatus);
@@ -751,7 +760,9 @@ const ResellerOrders = ({ resellerId }: ResellerOrdersProps) => {
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.COMPANYNAME')} body={companyNameBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.CATEGORYNAME')} body={categoryNameNameBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('ORDER.TABLE.COLUMN.ORDEREDDATE')} body={createdAtBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('ORDER.TABLE.COLUMN.STATUS')} sortable body={statusBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="" header={t('PERFORMED_BY')} body={performedByBodyTemplate}></Column>
+
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('ORDER.TABLE.COLUMN.STATUS')} body={statusBodyTemplate}></Column>
                     </DataTable>
                     <Paginator
                         first={(orders_pagination?.page - 1) * orders_pagination?.items_per_page}

@@ -81,6 +81,7 @@ const PaymentPage = () => {
     const [activeFilters, setActiveFilters] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const filterRef = useRef<HTMLDivElement>(null);
+    const [resellerSearchTerm, setResellerSearchTerm] = useState('');
 
     useEffect(() => {
         dispatch(_fetchPayments(1, searchTag, activeFilters));
@@ -88,6 +89,18 @@ const PaymentPage = () => {
         dispatch(_fetchPaymentMethods());
         dispatch(_fetchCurrencies());
     }, [dispatch, searchTag, activeFilters]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (resellerSearchTerm) {
+                dispatch(_fetchResellers(1, resellerSearchTerm));
+            } else {
+                dispatch(_fetchResellers(1, ''));
+            }
+        }, 300); // Debounce for 300ms
+
+        return () => clearTimeout(timer);
+    }, [resellerSearchTerm, dispatch]);
 
     // Add this useEffect for click outside detection
     useEffect(() => {
@@ -540,17 +553,25 @@ const PaymentPage = () => {
                                         id="reseller"
                                         value={payment.reseller}
                                         options={resellers}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
                                             setPayment((prev) => ({
                                                 ...prev,
-                                                reseller: e.value
-                                            }))
-                                        }
+                                                reseller: e.value,
+                                            }));
+                                        }}
                                         optionLabel="reseller_name"
-                                        //optionValue='id'
+                                        filter
+                                        filterBy="reseller_name"
+                                        filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
+                                        showFilterClear
                                         placeholder={t('PAYMENT.FORM.INPUT.RESELLER')}
                                         className="w-full"
+                                        panelClassName="min-w-[20rem]"
+                                        onFilter={(e) => {
+                                            setResellerSearchTerm(e.filter);
+                                        }}
                                     />
+
                                     {submitted && !payment.reseller && (
                                         <small className="p-invalid" style={{ color: 'red' }}>
                                             {t('THIS_FIELD_IS_REQUIRED')}

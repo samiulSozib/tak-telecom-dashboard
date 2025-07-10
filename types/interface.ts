@@ -354,6 +354,7 @@ export interface Order{
     vpn_activation_qr_code_image: string | null;
     vpn_activation_link: string | null;
     reseller: Reseller|null;
+    performed_by_name?:string|null
 }
 
 

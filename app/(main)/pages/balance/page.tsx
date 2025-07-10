@@ -65,7 +65,7 @@ const BalancePage = () => {
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { balances, loading,pagination } = useSelector((state: any) => state.balanceReducer);
+    const { balances, loading, pagination } = useSelector((state: any) => state.balanceReducer);
     const { currencies } = useSelector((state: any) => state.currenciesReducer);
     const { resellers } = useSelector((state: any) => state.resellerReducer);
     const { paymentMethods } = useSelector((state: any) => state.paymentMethodsReducer);
@@ -80,6 +80,7 @@ const BalancePage = () => {
     const [activeFilters, setActiveFilters] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const filterRef = useRef<HTMLDivElement>(null);
+    const [resellerSearchTerm, setResellerSearchTerm] = useState('');
 
     useEffect(() => {
         dispatch(_fetchBalances(1, searchTag, activeFilters));
@@ -87,6 +88,18 @@ const BalancePage = () => {
         dispatch(_fetchResellers());
         dispatch(_fetchPaymentMethods());
     }, [dispatch, searchTag, activeFilters]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (resellerSearchTerm) {
+                dispatch(_fetchResellers(1, resellerSearchTerm));
+            } else {
+                dispatch(_fetchResellers(1, ''));
+            }
+        }, 300); // Debounce for 300ms
+
+        return () => clearTimeout(timer);
+    }, [resellerSearchTerm, dispatch]);
 
     const openNew = () => {
         setBalance(emptyBalance);
@@ -320,14 +333,14 @@ const BalancePage = () => {
         );
     };
 
-        const performedByBodyTemplate = (rowData: Balance) => {
-            return (
-                <>
-                    <span className="p-column-title">Performed By</span>
-                    {rowData.performed_by_name}
-                </>
-            );
-        };
+    const performedByBodyTemplate = (rowData: Balance) => {
+        return (
+            <>
+                <span className="p-column-title">Performed By</span>
+                {rowData.performed_by_name}
+            </>
+        );
+    };
 
     const createdAtBodyTemplate = (rowData: Balance) => {
         const formatDate = (dateString: string) => {
@@ -433,7 +446,7 @@ const BalancePage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchBalances( page, searchTag));
+        dispatch(_fetchBalances(page, searchTag));
     };
 
     // Add this useEffect for click outside detection
@@ -563,16 +576,23 @@ const BalancePage = () => {
                                             id="reseller"
                                             value={balance.reseller}
                                             options={resellers}
-                                            onChange={(e) =>
+                                            onChange={(e) => {
                                                 setBalance((prev) => ({
                                                     ...prev,
                                                     reseller: e.value
-                                                }))
-                                            }
+                                                }));
+                                            }}
                                             optionLabel="reseller_name"
-                                            //optionValue="id"
-                                            placeholder={t('BALANCE.FORM.RESELLER.PLACEHOLDER')}
+                                            filter
+                                            filterBy="reseller_name"
+                                            filterPlaceholder={t('SEARCH')}
+                                            showFilterClear
+                                            placeholder={t('PAYMENT.FORM.INPUT.RESELLER')}
                                             className="w-full"
+                                            panelClassName="min-w-[20rem]"
+                                            onFilter={(e) => {
+                                                setResellerSearchTerm(e.filter);
+                                            }}
                                         />
                                         {submitted && !balance.reseller && (
                                             <small className="p-invalid" style={{ color: 'red' }}>

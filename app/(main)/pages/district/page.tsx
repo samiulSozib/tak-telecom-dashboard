@@ -322,7 +322,7 @@ const DistrictPage = () => {
 
                     <Dialog visible={districtDialog} style={{ width: '700px', padding: '5px' }} header={t('DISTRICT.DETAILS')} modal className="p-fluid" footer={districtDialogFooter} onHide={hideDialog}>
                         <div className="card" style={{ padding: '40px' }}>
-                            <div className="field">
+                            <div className="field col">
                                 <label htmlFor="district_name" style={{ fontWeight: 'bold' }}>
                                     {t('DISTRICT.TABLE.COLUMN.DISTRICTNAME')}
                                 </label>
@@ -365,6 +365,8 @@ const DistrictPage = () => {
                                     }
                                     optionLabel="province_name"
                                     // optionValue='id'
+                                    filter
+                                    filterBy='province_name'
                                     placeholder={t('DISTRICT.FORM.PLACEHOLDER.PROVINCE')}
                                     className="w-full"
                                 />

@@ -972,6 +972,8 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                                 province_id: e.value
                                             }))
                                         }
+                                        filter
+                                        filterBy='province_name'
                                         optionLabel="province_name"
                                         optionValue="id"
                                         placeholder="Choose a province"
@@ -1000,6 +1002,8 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                                 districts_id: e.value
                                             }))
                                         }
+                                        filter
+                                        filterBy='district_name'
                                         optionLabel="district_name"
                                         optionValue="id"
                                         placeholder="Choose a district"
