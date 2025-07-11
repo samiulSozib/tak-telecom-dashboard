@@ -367,6 +367,7 @@ const DistrictPage = () => {
                                     // optionValue='id'
                                     filter
                                     filterBy='province_name'
+                                    filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
                                     placeholder={t('DISTRICT.FORM.PLACEHOLDER.PROVINCE')}
                                     className="w-full"
                                 />

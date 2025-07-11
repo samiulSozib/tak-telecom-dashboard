@@ -975,6 +975,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                         filter
                                         filterBy='province_name'
                                         optionLabel="province_name"
+                                        filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
                                         optionValue="id"
                                         placeholder="Choose a province"
                                         className="w-full"
@@ -1005,6 +1006,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                         filter
                                         filterBy='district_name'
                                         optionLabel="district_name"
+                                        filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
                                         optionValue="id"
                                         placeholder="Choose a district"
                                         className="w-full"

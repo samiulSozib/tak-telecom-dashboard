@@ -325,7 +325,7 @@ const ResellerOrders = ({ resellerId }: ResellerOrdersProps) => {
 
     const rechargeableAccountBodyTemplate = (rowData: Order) => {
         const copyOrderDetails = () => {
-            const dataToCopy = `🔹 ${t('ORDER.TABLE.COLUMN.RECHARGEABLEACCOUNT')}: ${rowData.rechargeble_account || '-'}`.trim();
+            const dataToCopy = `${rowData.rechargeble_account || '-'}`.trim();
             copyToClipboard(dataToCopy);
         };
 

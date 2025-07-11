@@ -585,7 +585,7 @@ const BalancePage = () => {
                                             optionLabel="reseller_name"
                                             filter
                                             filterBy="reseller_name"
-                                            filterPlaceholder={t('SEARCH')}
+                                            filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
                                             showFilterClear
                                             placeholder={t('PAYMENT.FORM.INPUT.RESELLER')}
                                             className="w-full"
