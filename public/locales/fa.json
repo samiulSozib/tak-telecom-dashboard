@@ -1146,5 +1146,11 @@
     "TRANSACTIONS_DELETED": "تراکنش‌ها با موفقیت حذف شدند",
     "TRANSACTIONS_DELETE_FAILED": "حذف تراکنش‌ها ناموفق بود",
     "ORDER_DETAILS": "جزئیات سفارش",
-    "COPY_RECHARGEABLE_ACCOUNT": "کپی حساب قابل شارژ"
+    "COPY_RECHARGEABLE_ACCOUNT": "کپی حساب قابل شارژ",
+    "TYPE": "نوع",
+    "ARE_YOU_SURE_YOU_WANT_TO_ROLLBACK": "آیا مطمئن هستید که می‌خواهید بازگردانی کنید؟",
+    "BALANCE_ROLLBACKED": "بازگردانی موجودی با موفقیت انجام شد",
+    "BALANCE_ROLLBACKED_FAILED": "بازگردانی موجودی ناموفق بود",
+    "PAYMENT_ROLLBACKED": "بازگردانی پرداخت با موفقیت انجام شد",
+    "PAYMENT_ROLLBACKED_FAILED": "بازگردانی پرداخت ناموفق بود"
 }

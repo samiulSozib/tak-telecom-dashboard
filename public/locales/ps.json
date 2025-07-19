@@ -1146,5 +1146,11 @@
     "TRANSACTIONS_DELETED": "معاملات په بریالیتوب سره ړنګ شول",
     "TRANSACTIONS_DELETE_FAILED": "معاملات ړنګول ناکام شول",
     "ORDER_DETAILS": "د فرمایش جزئیات",
-    "COPY_RECHARGEABLE_ACCOUNT": "قابل‌شارج حساب نقل کړئ"
+    "COPY_RECHARGEABLE_ACCOUNT": "قابل‌شارج حساب نقل کړئ",
+    "TYPE": "ډول",
+    "ARE_YOU_SURE_YOU_WANT_TO_ROLLBACK": "تاسو ډاډه یاست چې غواړئ بیرته وګرځئ؟",
+    "BALANCE_ROLLBACKED": "د بیلانس بیرته ګرځول بریالی شول",
+    "BALANCE_ROLLBACKED_FAILED": "د بیلانس بیرته ګرځول ناکامه شول",
+    "PAYMENT_ROLLBACKED": "د تادیې بیرته ګرځول بریالي شول",
+    "PAYMENT_ROLLBACKED_FAILED": "د تادیې بیرته ګرځول ناکامه شول"
 }
