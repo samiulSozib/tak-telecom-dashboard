@@ -109,13 +109,13 @@ const ResellerPage = () => {
     const filterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        dispatch(_fetchResellers(1, searchTag,activeFilters));
+        dispatch(_fetchResellers(1, searchTag, activeFilters));
         dispatch(_fetchCountries());
         dispatch(_fetchDistricts());
         dispatch(_fetchProvinces());
         dispatch(_fetchCurrencies());
         dispatch(_fetchResellerGroups());
-    }, [dispatch, searchTag,activeFilters]);
+    }, [dispatch, searchTag, activeFilters]);
 
     // Add this useEffect for click outside detection
     useEffect(() => {
@@ -196,7 +196,10 @@ const ResellerPage = () => {
 
     const editReseller = (reseller: Reseller) => {
         //console.log(reseller)
-        setReseller({ ...reseller, country_id: parseInt(reseller.country_id?.toString()), province_id: parseInt(reseller.province_id?.toString()), districts_id: parseInt(reseller.districts_id?.toString()) });
+        const matchingProvince = provinces.find((r:any) => r.id == reseller.province_id);
+
+
+        setReseller({ ...reseller, country_id: parseInt(reseller.country_id?.toString()),province:matchingProvince, province_id: parseInt(reseller.province_id?.toString()), districts_id: parseInt(reseller.districts_id?.toString()) });
 
         setResellerDialog(true);
     };
@@ -273,7 +276,7 @@ const ResellerPage = () => {
                                                 id="statusFilter"
                                                 options={[
                                                     { label: t('TABLE.GENERAL.ACTIVATE'), value: '1' },
-                                                    { label: t('TABLE.GENERAL.DEACTIVATE'), value: '0' },
+                                                    { label: t('TABLE.GENERAL.DEACTIVATE'), value: '0' }
                                                 ]}
                                                 value={filters.filter_status}
                                                 onChange={(e) => setFilters({ ...filters, filter_status: e.value })}
@@ -334,8 +337,7 @@ const ResellerPage = () => {
                         className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '' : ''}
                         onClick={openNew}
                     />
-                                    <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
-
+                    <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
                 </div>
             </React.Fragment>
         );
@@ -378,50 +380,47 @@ const ResellerPage = () => {
         );
     };
 
-const parentNameBodyTemplate = (rowData: Reseller) => {
-    if (!rowData.parent_reseller_name && !rowData.parent_reseller_profile_image_url) {
-        return null; // or return <></> if you prefer
-    }
+    const parentNameBodyTemplate = (rowData: Reseller) => {
+        if (!rowData.parent_reseller_name && !rowData.parent_reseller_profile_image_url) {
+            return null; // or return <></> if you prefer
+        }
 
-    return (
-        <>
-            <span className="p-column-title">Name</span>
-            <div
-                style={{
-                    display: 'flex',
-                    textAlign: 'center',
-                    alignItems: 'center',
-                    gap: '10px'
-                }}
-            >
-                <img
-                    src={`${rowData.parent_reseller_profile_image_url}`}
-                    alt={rowData.parent_reseller_name || ''}
-                    className="shadow-2"
-                    style={{
-                        padding: '2px',
-                        width: '45px',
-                        height: '45px',
-                        borderRadius: '50%',
-                        objectFit: 'cover'
-                    }}
-                />
+        return (
+            <>
+                <span className="p-column-title">Name</span>
                 <div
                     style={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        textAlign: 'start'
+                        textAlign: 'center',
+                        alignItems: 'center',
+                        gap: '10px'
                     }}
                 >
-                    <span style={{ fontWeight: 'bold' }}>
-                        {rowData.parent_reseller_name}
-                    </span>
+                    <img
+                        src={`${rowData.parent_reseller_profile_image_url}`}
+                        alt={rowData.parent_reseller_name || ''}
+                        className="shadow-2"
+                        style={{
+                            padding: '2px',
+                            width: '45px',
+                            height: '45px',
+                            borderRadius: '50%',
+                            objectFit: 'cover'
+                        }}
+                    />
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            textAlign: 'start'
+                        }}
+                    >
+                        <span style={{ fontWeight: 'bold' }}>{rowData.parent_reseller_name}</span>
+                    </div>
                 </div>
-            </div>
-        </>
-    );
-};
-
+            </>
+        );
+    };
 
     const phoneBodyTemplate = (rowData: Reseller) => {
         return (
@@ -618,7 +617,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchResellers(page, searchTag,activeFilters));
+        dispatch(_fetchResellers(page, searchTag, activeFilters));
     };
 
     useEffect(() => {
@@ -656,12 +655,12 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
         }
     }, [reseller?.province_id, districts]);
 
-     const handleSubmitFilter = (filters: any) => {
+    const handleSubmitFilter = (filters: any) => {
         const cleanedFilters = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== ''));
         setActiveFilters(cleanedFilters);
     };
 
-        const exportToExcel = async () => {
+    const exportToExcel = async () => {
         await generateSubResellerExcelFile({
             t,
             toast,
@@ -750,13 +749,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                             header={t('RESELLER.TABLE.COLUMN.CURRENCYPREFERENCE')}
                             body={preferredCurrencyBodyTemplate}
                         ></Column>
-                        <Column
-                            style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
-                            field="name"
-                            header={t('PARENT_RESELLER_NAME')}
-                            sortable
-                            body={parentNameBodyTemplate}
-                        ></Column>
+                        <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="name" header={t('PARENT_RESELLER_NAME')} sortable body={parentNameBodyTemplate}></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="country" header={t('RESELLER.TABLE.COLUMN.COUNTRY')} body={countryBodyTemplate}></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('BUNDLE.TABLE.FILTER.STATUS')} sortable body={statusBodyTemplate}></Column>
                     </DataTable>
@@ -965,7 +958,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                     <Dropdown
                                         id="province_id"
                                         value={reseller.province_id}
-                                        options={filteredProvinces}
+                                        options={provinces}
                                         onChange={(e) =>
                                             setReseller((prev: Reseller) => ({
                                                 ...prev,
@@ -973,7 +966,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                             }))
                                         }
                                         filter
-                                        filterBy='province_name'
+                                        filterBy="province_name"
                                         optionLabel="province_name"
                                         filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
                                         optionValue="id"
@@ -996,7 +989,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                     <Dropdown
                                         id="districts_id"
                                         value={reseller.districts_id}
-                                        options={filteredDistricts}
+                                        options={districts}
                                         onChange={(e) =>
                                             setReseller((prev: Reseller) => ({
                                                 ...prev,
@@ -1004,7 +997,7 @@ const parentNameBodyTemplate = (rowData: Reseller) => {
                                             }))
                                         }
                                         filter
-                                        filterBy='district_name'
+                                        filterBy="district_name"
                                         optionLabel="district_name"
                                         filterPlaceholder={t('ECOMMERCE.COMMON.SEARCH')}
                                         optionValue="id"

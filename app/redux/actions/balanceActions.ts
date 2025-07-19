@@ -13,6 +13,9 @@ import {
     DELETE_BALANCE_REQUEST,
     DELETE_BALANCE_SUCCESS,
     DELETE_BALANCE_FAIL,
+    ROLLBACK_BALANCE_REQUEST,
+    ROLLBACK_BALANCE_SUCCESS,
+    ROLLBACK_BALANCE_FAIL,
 } from '../constants/balanceConstants';
 import { Balance } from "@/types/interface";
 import { Toast } from "primereact/toast";
@@ -41,7 +44,7 @@ export const _fetchBalances = (page: number = 1, search: string = '', filters: a
 
         const queryString = queryParams.toString();
 
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/balances?${queryString}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/balances?items_per_page=${20}&${queryString}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -185,3 +188,39 @@ export const _deleteBalance = (balanceId: number, toast: React.RefObject<Toast>,
 
     }
 };
+
+
+// ROLLBACK a balance
+export const _rollbackedBalance = (balanceId: number, toast: React.RefObject<Toast>, t: (key: string) => string) => async (dispatch: Dispatch) => {
+    dispatch({ type: ROLLBACK_BALANCE_REQUEST });
+
+    try {
+        const token = getAuthToken();
+        const response=await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/balances/rollback/${balanceId}`, {},{
+
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            },
+        });
+        console.log(response)
+        dispatch({ type: ROLLBACK_BALANCE_SUCCESS, payload: balanceId });
+        toast.current?.show({
+            severity: "success",
+            summary: t("SUCCESS"),
+            detail: t("BALANCE_ROLLBACKED"),
+            life: 3000,
+        });
+    } catch (error: any) {
+        console.log(error)
+        dispatch({ type: ROLLBACK_BALANCE_FAIL, payload: error.message });
+        toast.current?.show({
+            severity: "error",
+            summary: t("ERROR"),
+            detail: t("BALANCE_ROLLBACKED_FAILED"),
+            life: 3000,
+        });
+
+    }
+};
+

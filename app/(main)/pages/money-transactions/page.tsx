@@ -369,7 +369,7 @@ const TransactionPage = () => {
         return (
             <>
                 <span className="p-column-title">Currency</span>
-                <span style={{ fontSize: '0.9rem' }}>{rowData.currency?.name}</span>
+                <span style={{ fontSize: '0.9rem' }}>{rowData?.reseller?.user?.currency?.code}</span>
             </>
         );
     };

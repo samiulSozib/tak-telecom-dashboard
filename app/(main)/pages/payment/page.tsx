@@ -17,7 +17,7 @@ import { _fetchTelegramList } from '@/app/redux/actions/telegramActions';
 import { AppDispatch } from '@/app/redux/store';
 import { Payment, Currency } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
-import { _addPayment, _deletePayment, _editPayment, _fetchPayments } from '@/app/redux/actions/paymentActions';
+import { _addPayment, _deletePayment, _editPayment, _fetchPayments, _rollbackedPayment } from '@/app/redux/actions/paymentActions';
 import { paymentReducer } from '../../../redux/reducers/paymentReducer';
 import { resellerReducer } from '../../../redux/reducers/resellerReducer';
 import { _fetchResellers } from '@/app/redux/actions/resellerActions';
@@ -35,6 +35,7 @@ import i18n from '@/i18n';
 import { isRTL } from '../../utilities/rtlUtil';
 import { Paginator } from 'primereact/paginator';
 import { generatePaymentExcelFile } from '../../utilities/generateExcel';
+import { SplitButton } from 'primereact/splitbutton';
 
 const PaymentPage = () => {
     let emptyPayment: Payment = {
@@ -82,10 +83,11 @@ const PaymentPage = () => {
     const [refreshing, setRefreshing] = useState(false);
     const filterRef = useRef<HTMLDivElement>(null);
     const [resellerSearchTerm, setResellerSearchTerm] = useState('');
+    const [rollbackDialog, setRollbackDialog] = useState(false);
 
     useEffect(() => {
         dispatch(_fetchPayments(1, searchTag, activeFilters));
-        dispatch(_fetchResellers());
+        dispatch(_fetchResellers(1, '', '', 10000));
         dispatch(_fetchPaymentMethods());
         dispatch(_fetchCurrencies());
     }, [dispatch, searchTag, activeFilters]);
@@ -158,8 +160,10 @@ const PaymentPage = () => {
     };
 
     const editPayment = (payment: Payment) => {
-        setPayment({ ...payment });
+        const matchingReseller = resellers.find((r: any) => r.id === payment.reseller?.id);
 
+        setPayment({ ...payment, reseller: matchingReseller });
+        console.log(payment.reseller);
         setPaymentDialog(true);
     };
 
@@ -179,6 +183,24 @@ const PaymentPage = () => {
 
     const confirmDeleteSelected = () => {
         setDeletePaymentsDialog(true);
+    };
+
+    const confirmRollbackPayment = (payment: Payment) => {
+        setPayment(payment);
+        setRollbackDialog(true);
+    };
+
+    const rollbackPayment = () => {
+        if (!payment?.id) {
+            console.error('Payment  ID is undefined.');
+            return;
+        }
+        dispatch(_rollbackedPayment(payment?.id, toast, t));
+        hideRollbackDialog();
+    };
+
+    const hideRollbackDialog = () => {
+        setRollbackDialog(false);
     };
 
     const rightToolbarTemplate = () => {
@@ -350,10 +372,27 @@ const PaymentPage = () => {
     };
 
     const statusBodyTemplate = (rowData: Payment) => {
+        const status = rowData.status?.toLowerCase() || 'unknown';
+
+        const getStatusClass = (status: string) => {
+            switch (status.toLowerCase()) {
+                case 'rollback':
+                    return 'bg-yellow-100 text-yellow-800';
+                case 'completed':
+                    return 'bg-green-100 text-green-800';
+                case 'rejected':
+                    return 'bg-red-100 text-red-800';
+                default:
+                    return 'bg-gray-100 text-gray-800';
+            }
+        };
+
+        const displayStatus = status !== 'unknown' ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown';
+
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.status}
+                <span className={`px-2 py-1 rounded-md text-xs font-semibold ${getStatusClass(rowData.status)}`}>{displayStatus}</span>
             </>
         );
     };
@@ -407,15 +446,42 @@ const PaymentPage = () => {
         );
     };
 
+    // const actionBodyTemplate = (rowData: Payment) => {
+    //     return (
+    //         <>
+    //             <div className="flex flex-row">
+    //                 <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editPayment(rowData)} />
+    //                 <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeletePayment(rowData)} />
+    //             </div>
+    //         </>
+    //     );
+    // };
+
     const actionBodyTemplate = (rowData: Payment) => {
-        return (
-            <>
-                <div className="flex flex-row">
-                    <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editPayment(rowData)} />
-                    <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeletePayment(rowData)} />
-                </div>
-            </>
-        );
+        const items = [
+            {
+                label: 'Delete',
+                icon: 'pi pi-trash',
+                command: () => confirmDeletePayment(rowData)
+            }
+        ];
+
+        if (rowData.status !== 'rollbacked') {
+            items.push(
+                {
+                    label: 'Rollback',
+                    icon: 'pi pi-refresh',
+                    command: () => confirmRollbackPayment(rowData)
+                },
+                {
+                    label: 'Edit',
+                    icon: 'pi pi-pencil',
+                    command: () => editPayment(rowData)
+                }
+            );
+        }
+
+        return <SplitButton label="" model={items} className="p-button-rounded" severity="info" dir="ltr" icon="pi pi-cog" />;
     };
 
     // const header = (
@@ -444,6 +510,12 @@ const PaymentPage = () => {
         <>
             <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeletePaymentsDialog} />
             <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} />
+        </>
+    );
+    const rollbackDialogFooter = (
+        <>
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideRollbackDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={rollbackPayment} />
         </>
     );
 
@@ -556,7 +628,7 @@ const PaymentPage = () => {
                                         onChange={(e) => {
                                             setPayment((prev) => ({
                                                 ...prev,
-                                                reseller: e.value,
+                                                reseller: e.value
                                             }));
                                         }}
                                         optionLabel="reseller_name"
@@ -729,6 +801,14 @@ const PaymentPage = () => {
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {payment && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
+                        </div>
+                    </Dialog>
+
+                    {/* Rollback Confirmation Dialog */}
+                    <Dialog visible={rollbackDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={rollbackDialogFooter} onHide={hideRollbackDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-refresh mr-3" style={{ fontSize: '2rem' }} />
+                            {payment && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_ROLLBACK')}?</span>}
                         </div>
                     </Dialog>
                 </div>

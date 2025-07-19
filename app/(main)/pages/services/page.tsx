@@ -106,7 +106,9 @@ const Services = () => {
 
     const editService = (service: Service) => {
         //console.log(service)
-        setService({ ...service });
+        const matchingCompany = companies.find((r: any) => r.id === service.company?.id);
+
+        setService({ ...service, company: matchingCompany });
 
         setServiceDialog(true);
     };
@@ -125,9 +127,7 @@ const Services = () => {
         setDeleteServiceDialog(false);
     };
 
-
-
-        const confirmDeleteSelected = () => {
+    const confirmDeleteSelected = () => {
         if (!selectedServices || (selectedServices as any).length === 0) {
             toast.current?.show({
                 severity: 'warn',
@@ -140,28 +140,25 @@ const Services = () => {
         setDeleteServicesDialog(true);
     };
 
-        const deleteSelectedServices = async() => {
-            if (!selectedServices || (selectedServices as any).length === 0) {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: t('VALIDATION_ERROR'),
-                    detail: t('NO_SELECTED_ITEMS_FOUND'),
-                    life: 3000
-                });
-                return;
-            }
+    const deleteSelectedServices = async () => {
+        if (!selectedServices || (selectedServices as any).length === 0) {
+            toast.current?.show({
+                severity: 'error',
+                summary: t('VALIDATION_ERROR'),
+                detail: t('NO_SELECTED_ITEMS_FOUND'),
+                life: 3000
+            });
+            return;
+        }
 
-            const selectedIds = (selectedServices as Service[]).map((service) => service.id);
+        const selectedIds = (selectedServices as Service[]).map((service) => service.id);
 
+        await _deleteSelectedServices(selectedIds, toast, t);
+        dispatch(_fetchServiceList());
 
-            await _deleteSelectedServices(selectedIds,toast,t)
-            dispatch(_fetchServiceList())
-
-
-
-            setSelectedServices(null)
-            setDeleteServicesDialog(false)
-        };
+        setSelectedServices(null);
+        setDeleteServicesDialog(false);
+    };
 
     const rightToolbarTemplate = () => {
         const hasSelectedServices = selectedServices && (selectedServices as any).length > 0;
@@ -185,7 +182,6 @@ const Services = () => {
                         onClick={confirmDeleteSelected}
                         disabled={!selectedServices || !(selectedServices as any).length}
                     /> */}
-
                 </div>
             </React.Fragment>
         );
@@ -280,7 +276,7 @@ const Services = () => {
     const deleteCompaniesDialogFooter = (
         <>
             <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideDeleteServicesDialog} />
-            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteSelectedServices}/>
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={deleteSelectedServices} />
         </>
     );
 
@@ -325,7 +321,7 @@ const Services = () => {
                         }
                         emptyMessage={t('DATA_TABLE.TABLE.NO_DATA')}
                         dir={isRTL() ? 'rtl' : 'ltr'}
-                        style={{ direction: isRTL() ? 'rtl' : 'ltr',fontFamily: "'iranyekan', sans-serif,iranyekan" }}
+                        style={{ direction: isRTL() ? 'rtl' : 'ltr', fontFamily: "'iranyekan', sans-serif,iranyekan" }}
                         globalFilter={globalFilter}
                         // header={header}
                         responsiveLayout="scroll"

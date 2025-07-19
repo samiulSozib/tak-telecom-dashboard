@@ -102,7 +102,9 @@ const CompanyCodePage = () => {
 
     const editCompanyCode = (companyCode: CompanyCode) => {
         //console.log(companyCode.company)
-        setCompanyCode({ ...companyCode });
+                const matchingCompany = companies.find((r: any) => r.id === companyCode.company?.id);
+
+        setCompanyCode({ ...companyCode,company:matchingCompany });
 
         setCompanyCodeDialog(true);
     };

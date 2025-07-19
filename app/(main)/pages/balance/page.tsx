@@ -17,7 +17,7 @@ import { _fetchTelegramList } from '@/app/redux/actions/telegramActions';
 import { AppDispatch } from '@/app/redux/store';
 import { Balance, Currency } from '@/types/interface';
 import { ProgressBar } from 'primereact/progressbar';
-import { _addBalance, _deleteBalance, _editBalance, _fetchBalances } from '@/app/redux/actions/balanceActions';
+import { _addBalance, _deleteBalance, _editBalance, _fetchBalances, _rollbackedBalance } from '@/app/redux/actions/balanceActions';
 import withAuth from '../../authGuard';
 import { useTranslation } from 'react-i18next';
 import { resellerReducer } from '../../../redux/reducers/resellerReducer';
@@ -32,6 +32,7 @@ import i18n from '@/i18n';
 import { isRTL } from '../../utilities/rtlUtil';
 import { generateBalanceExcelFile } from '../../utilities/generateExcel';
 import { Paginator } from 'primereact/paginator';
+import { SplitButton } from 'primereact/splitbutton';
 
 const BalancePage = () => {
     let emptyBalance: Balance = {
@@ -81,11 +82,12 @@ const BalancePage = () => {
     const [refreshing, setRefreshing] = useState(false);
     const filterRef = useRef<HTMLDivElement>(null);
     const [resellerSearchTerm, setResellerSearchTerm] = useState('');
+    const [rollbackDialog, setRollbackDialog] = useState(false);
 
     useEffect(() => {
         dispatch(_fetchBalances(1, searchTag, activeFilters));
         dispatch(_fetchCurrencies());
-        dispatch(_fetchResellers());
+        dispatch(_fetchResellers(1, '', '', 10000));
         dispatch(_fetchPaymentMethods());
     }, [dispatch, searchTag, activeFilters]);
 
@@ -147,10 +149,15 @@ const BalancePage = () => {
     };
 
     const editBalance = (balance: Balance) => {
-        setBalance({ ...balance });
+        const matchingReseller = resellers.find((r: any) => r.id === balance.reseller?.id);
 
+        setBalance({ ...balance, reseller: matchingReseller });
         setBalanceDialog(true);
     };
+
+    useEffect(() => {
+        //console.log(balance.reseller)
+    }, [dispatch, balance]);
 
     const confirmDeleteBalance = (balance: Balance) => {
         setBalance(balance);
@@ -166,8 +173,26 @@ const BalancePage = () => {
         setDeleteBalanceDialog(false);
     };
 
+    const confirmRollbackBalance = (balance: Balance) => {
+        setBalance(balance);
+        setRollbackDialog(true);
+    };
+
+    const rollbackBalance = () => {
+        if (!balance?.id) {
+            console.error('Balance  ID is undefined.');
+            return;
+        }
+        dispatch(_rollbackedBalance(balance?.id, toast, t));
+        hideRollbackDialog();
+    };
+
     const confirmDeleteSelected = () => {
         setDeleteBalancesDialog(true);
+    };
+
+    const hideRollbackDialog = () => {
+        setRollbackDialog(false);
     };
 
     const rightToolbarTemplate = () => {
@@ -316,10 +341,51 @@ const BalancePage = () => {
     };
 
     const statusBodyTemplate = (rowData: Balance) => {
+        const status = rowData.status?.toLowerCase() || 'unknown';
+
+        const getStatusClass = (status: string) => {
+            switch (status) {
+                case 'rollbacked':
+                    return 'bg-yellow-100 text-yellow-800';
+                case 'completed':
+                    return 'bg-green-100 text-green-800';
+                case 'rejected':
+                    return 'bg-red-100 text-red-800';
+                default:
+                    return 'bg-gray-100 text-gray-800';
+            }
+        };
+
+        const displayStatus = status !== 'unknown' ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown';
+
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {rowData.transaction_type}
+                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusClass(status)}`}>{displayStatus}</span>
+            </>
+        );
+    };
+
+    const typeBodyTemplate = (rowData: Balance) => {
+        const type = rowData.transaction_type?.toLowerCase() || 'unknown';
+
+        const getTypeClass = (type: string) => {
+            switch (type) {
+                case 'debit':
+                    return 'bg-red-100 text-red-800';
+                case 'credit':
+                    return 'bg-blue-100 text-blue-800';
+                default:
+                    return 'bg-gray-100 text-gray-800';
+            }
+        };
+
+        const displayType = type !== 'unknown' ? type.charAt(0).toUpperCase() + type.slice(1) : 'Unknown';
+
+        return (
+            <>
+                <span className="p-column-title">Type</span>
+                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getTypeClass(type)}`}>{displayType}</span>
             </>
         );
     };
@@ -373,13 +439,40 @@ const BalancePage = () => {
         );
     };
 
+    // const actionBodyTemplate = (rowData: Balance) => {
+    //     return (
+    //         <>
+    //             <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editBalance(rowData)} />
+    //             <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteBalance(rowData)} />
+    //         </>
+    //     );
+    // };
+
     const actionBodyTemplate = (rowData: Balance) => {
-        return (
-            <>
-                <Button icon="pi pi-pencil" rounded severity="success" className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'} onClick={() => editBalance(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteBalance(rowData)} />
-            </>
-        );
+        const items = [
+            {
+                label: 'Delete',
+                icon: 'pi pi-trash',
+                command: () => confirmDeleteBalance(rowData)
+            }
+        ];
+
+        if (rowData.status !== 'rollbacked') {
+            items.push(
+                {
+                    label: 'Rollback',
+                    icon: 'pi pi-refresh',
+                    command: () => confirmRollbackBalance(rowData)
+                },
+                {
+                    label: 'Edit',
+                    icon: 'pi pi-pencil',
+                    command: () => editBalance(rowData)
+                }
+            );
+        }
+
+        return <SplitButton label="" model={items} className="p-button-rounded" severity="info" dir="ltr" icon="pi pi-cog" />;
     };
 
     // const header = (
@@ -411,6 +504,13 @@ const BalancePage = () => {
         </>
     );
 
+    const rollbackDialogFooter = (
+        <>
+            <Button label={t('APP.GENERAL.CANCEL')} icon="pi pi-times" severity="danger" className={isRTL() ? 'rtl-button' : ''} onClick={hideRollbackDialog} />
+            <Button label={t('FORM.GENERAL.SUBMIT')} icon="pi pi-check" severity="success" className={isRTL() ? 'rtl-button' : ''} onClick={rollbackBalance} />
+        </>
+    );
+
     useEffect(() => {
         const currencyCode = balance?.reseller?.code || '';
 
@@ -424,7 +524,7 @@ const BalancePage = () => {
                 payment_currency_id: selectedCurrency.id
             }));
         }
-    }, [balance?.reseller?.code, currencies]);
+    }, [balance?.reseller?.code, currencies, balance]);
 
     const [resellerBalance, setResellerBalance] = useState<any>(null);
     const [resellerPayment, setResellerPayment] = useState<any>(null);
@@ -516,6 +616,7 @@ const BalancePage = () => {
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.CURRENCY')} body={currencyBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.REMAINING_BALANCE')} body={remainingBalanceBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.STATUS')} body={statusBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('TYPE')} body={typeBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.DESCRIPTIONS')} body={descriptionBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('PERFORMED_BY')} body={performedByBodyTemplate}></Column>
                         <Column style={{ ...customCellStyle, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} header={t('BALANCE.TABLE.COLUMN.BALANCEDATE')} body={createdAtBodyTemplate}></Column>
@@ -821,6 +922,14 @@ const BalancePage = () => {
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {balance && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
+                        </div>
+                    </Dialog>
+
+                    {/* Rollback Confirmation Dialog */}
+                    <Dialog visible={rollbackDialog} style={{ width: '450px' }} header={t('TABLE.GENERAL.CONFIRM')} modal footer={rollbackDialogFooter} onHide={hideRollbackDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-refresh mr-3" style={{ fontSize: '2rem' }} />
+                            {balance && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_ROLLBACK')}?</span>}
                         </div>
                     </Dialog>
                 </div>

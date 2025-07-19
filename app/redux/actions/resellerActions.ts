@@ -388,7 +388,8 @@ const getAuthToken = () => {
 export const _fetchResellers = (
     page: number = 1,
     search: string = '',
-    filters: any = {}
+    filters: any = {},
+    items_per_page=15
 ) => async (dispatch: Dispatch) => {
     dispatch({ type: FETCH_RESELLERS_REQUEST });
 
@@ -396,7 +397,6 @@ export const _fetchResellers = (
         const token = getAuthToken();
         const queryParams = new URLSearchParams();
 
-        queryParams.append('page', String(page));
         queryParams.append('search', search);
 
         Object.entries(filters).forEach(([key, value]) => {
@@ -408,7 +408,7 @@ export const _fetchResellers = (
 
         const queryString = queryParams.toString();
         const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/resellers?items_per_page=${15}&page=${page}&${queryString}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/resellers?items_per_page=${items_per_page}&page=${page}&${queryString}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -388,7 +388,8 @@ export interface Balance{
     payment_status?:string,
     payment_notes?:string,
     payment_date?:string,
-    performed_by_name?:string|null
+    performed_by_name?:string|null,
+    status?:string|null
 }
 
 export interface Payment{

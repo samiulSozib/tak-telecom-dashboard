@@ -119,7 +119,9 @@ const CompanyPage = () => {
 
     const editCompany = (company: Company) => {
         //console.log(company)
-        setCompany({ ...company,country_id:company.country_id,country:company.country});
+        const matching = countries.find((r: any) => r.id === company.country?.id);
+
+        setCompany({ ...company,country_id:company.country_id,country:matching});
 
         setCompanyDialog(true);
     };

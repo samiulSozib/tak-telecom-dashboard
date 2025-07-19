@@ -1146,5 +1146,14 @@
     "TRANSACTIONS_DELETED": "Transactions deleted successfully",
     "TRANSACTIONS_DELETE_FAILED": "Failed to delete transactions",
     "ORDER_DETAILS": "Order Details",
-    "COPY_RECHARGEABLE_ACCOUNT": "Copy Rechargeable Account"
+    "COPY_RECHARGEABLE_ACCOUNT": "Copy Rechargeable Account",
+
+
+    "TYPE":"Type",
+    "ARE_YOU_SURE_YOU_WANT_TO_ROLLBACK":"Are You Sure? You want to rollback?",
+    "BALANCE_ROLLBACKED":"Balance Rollbacked Success",
+    "BALANCE_ROLLBACKED_FAILED":"Balance Rollbacked Failed",
+    "PAYMENT_ROLLBACKED":"Payment Rollbacked Success",
+    "PAYMENT_ROLLBACKED_FAILED":"Payment Rollbacked Failed"
+
 }
