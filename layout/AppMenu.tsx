@@ -78,6 +78,11 @@ const AppMenu = () => {
                             icon: 'pi pi-fw pi-credit-card', // Good payment method icon
                             to: '/pages/payment-method'
                         },
+                        {
+                            label: t('MENU.PAYMENTTYPE'),
+                            icon: 'pi pi-fw pi-credit-card', // Good payment method icon
+                            to: '/pages/payment-type'
+                        },
 
                         {
                             label: t('MENU.PURCHASEDPRODUCTS'),

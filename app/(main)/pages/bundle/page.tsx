@@ -288,11 +288,12 @@ const BundlePage = () => {
                                             </label>
                                             <Dropdown
                                                 id="serviceFilter"
+                                                value={services.find((s: Service) => s.id === filters.filter_service_id) || null}
                                                 options={services}
-                                                value={filters.filter_service_id}
-                                                onChange={(e) => setFilters({ ...filters, filter_service_id: e.value })}
-                                                optionLabel="service_name" // Adjust based on your service object structure
-                                                optionValue="id"
+                                                // value={filters.filter_service_id}
+                                                onChange={(e) => {console.log(e.value.id),setFilters({ ...filters, filter_service_id: e.value.id })}}
+                                                optionLabel="company.company_name" // Adjust based on your service object structure
+                                                //  optionValue="id"
                                                 placeholder={t('ORDER.FILTER.SELECT_SERVICE')}
                                                 style={{ width: '100%' }}
                                                 itemTemplate={(option) => (
@@ -301,6 +302,15 @@ const BundlePage = () => {
                                                         <div>- {option.company?.company_name}</div>
                                                     </div>
                                                 )}
+                                                valueTemplate={(option) => {
+                                                    if (!option) return t('BUNDLE.FORM.PLACEHOLDER.SERVICENAME');
+                                                    return (
+                                                        <div style={{ display: 'flex', gap: '5px' }}>
+                                                            <div>{option.service_category?.category_name}</div>
+                                                            <div>- {option.company?.company_name}</div>
+                                                        </div>
+                                                    );
+                                                }}
                                             />
                                         </div>
 
@@ -536,7 +546,7 @@ const BundlePage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchBundleList(page, searchTag));
+        dispatch(_fetchBundleList(page, searchTag, activeFilters));
     };
 
     useEffect(() => {
