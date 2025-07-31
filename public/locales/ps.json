@@ -1182,5 +1182,18 @@
     "ENTER_VERIFICATION_NOTES": "د تایید یادښتونه ولیکئ",
     "PAYMENT_VERIFIED_SUCCESSFULLY": "تادیه په بریالیتوب سره تایید شوه",
     "PAYMENT_VERIFIED_AND_SENT_SUCCESSFULLY": "تادیه په بریالیتوب سره تایید او واستول شوه",
-    "ADD_NOTES": "یادښتونه اضافه کړئ"
+    "ADD_NOTES": "یادښتونه اضافه کړئ",
+    "RESELLER.FORM.LABEL.CAN_SET_COMMISSION_GROUP": "د کمیسیون ګروپ تنظیم کولای شی",
+    "RESELLER.FORM.LABEL.CAN_SET_SELLING_PRICE_GROUP": "د خرڅلاو بیې ګروپ تنظیم کولای شی",
+    "RESELLER.FORM.LABEL.CAN_SEND_PAYMENT_REQUEST": "د پیسو غوښتنه لیږل کولای شی",
+    "RESELLER.FORM.LABEL.CAN_ASK_LOAN_BALANCE": "د پور بیلانس غوښتنه کولای شی",
+    "RESELLER.FORM.LABEL.CAN_SEE_OUR_CONTACT": "زموږ د اړیکې معلومات وګورئ",
+    "RESELLER.FORM.LABEL.CAN_SEE_PARENT_CONTACT": "د والد اړیکې معلومات وګورئ",
+    "RESELLER.FORM.LABEL.CAN_SEND_HAWALA": "حواله لیږل کولای شی",
+    "RESELLER.FORM.PLACEHOLDER.MAX_LOAN_BALANCE_REQUEST_AMOUNT": "د پور بیلانس د غوښتنې اعظمي مقدار",
+    "RESELLER.FORM.PLACEHOLDER.MIN_LOAN_BALANCE_REQUEST_AMOUNT": "د پور بیلانس د غوښتنې لږترلږه مقدار",
+    "RESELLER.FORM.LABEL.IDENTITY_PROOF": "د هویت ثبوت",
+    "RESELLER.FORM.LABEL.OPTIONAL_PROOF": "اختیاري ثبوت",
+    "CREATE.SHORT": "جوړول",
+    "ADD": "زیاتول"
 }

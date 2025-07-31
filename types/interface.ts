@@ -216,7 +216,17 @@ export interface Reseller {
     parent_reseller_name?:string|null,
     parent_reseller_profile_image_url?:string|null,
     parent_reseller_phone?:string|null
-
+    reseller_identity_attachment?:File|string|null,
+    extra_optional_proof?:File|string|null,
+    can_set_commission_group?:boolean,
+    can_set_selling_price_group?:boolean,
+    can_send_payment_request?:boolean,
+    can_ask_loan_balance?:boolean,
+    can_see_our_contact?:boolean,
+    can_see_parent_contact?:boolean,
+    can_send_hawala?:boolean,
+    max_loan_balance_request_amount?:number|string,
+    min_loan_balance_request_amount?:number|string
 }
 
 export interface User {

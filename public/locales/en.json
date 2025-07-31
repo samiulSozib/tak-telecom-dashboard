@@ -1182,5 +1182,17 @@
     "ENTER_VERIFICATION_NOTES": "Enter verification notes",
     "PAYMENT_VERIFIED_SUCCESSFULLY": "Payment verified successfully",
     "PAYMENT_VERIFIED_AND_SENT_SUCCESSFULLY": "Payment verified and sent successfully",
-    "ADD_NOTES": "Add notes"
+    "ADD_NOTES": "Add notes",
+    "RESELLER.FORM.LABEL.CAN_SET_COMMISSION_GROUP": "Can set commission group",
+    "RESELLER.FORM.LABEL.CAN_SET_SELLING_PRICE_GROUP": "Can set selling price group",
+    "RESELLER.FORM.LABEL.CAN_SEND_PAYMENT_REQUEST": "Can send payment request",
+    "RESELLER.FORM.LABEL.CAN_ASK_LOAN_BALANCE": "Can ask loan balance",
+    "RESELLER.FORM.LABEL.CAN_SEE_OUR_CONTACT": "Can see our contact",
+    "RESELLER.FORM.LABEL.CAN_SEE_PARENT_CONTACT": "Can see parent contact",
+    "RESELLER.FORM.LABEL.CAN_SEND_HAWALA": "Can send hawala",
+    "RESELLER.FORM.PLACEHOLDER.MAX_LOAN_BALANCE_REQUEST_AMOUNT": "Max Loan Balance Request",
+    "RESELLER.FORM.PLACEHOLDER.MIN_LOAN_BALANCE_REQUEST_AMOUNT": "Min Loan Balance Request",
+    "RESELLER.FORM.LABEL.IDENTITY_PROOF": "Identity Proof",
+    "RESELLER.FORM.LABEL.OPTIONAL_PROOF": "Optional Proof",
+    "ADD": "Add"
 }

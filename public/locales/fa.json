@@ -1182,5 +1182,17 @@
     "ENTER_VERIFICATION_NOTES": "یادداشت‌های تأیید را وارد کنید",
     "PAYMENT_VERIFIED_SUCCESSFULLY": "پرداخت با موفقیت تأیید شد",
     "PAYMENT_VERIFIED_AND_SENT_SUCCESSFULLY": "پرداخت با موفقیت تأیید و ارسال شد",
-    "ADD_NOTES": "افزودن یادداشت"
+    "ADD_NOTES": "افزودن یادداشت",
+    "RESELLER.FORM.LABEL.CAN_SET_COMMISSION_GROUP": "می‌تواند گروه کمیسیون را تنظیم کند",
+    "RESELLER.FORM.LABEL.CAN_SET_SELLING_PRICE_GROUP": "می‌تواند گروه قیمت فروش را تنظیم کند",
+    "RESELLER.FORM.LABEL.CAN_SEND_PAYMENT_REQUEST": "می‌تواند درخواست پرداخت ارسال کند",
+    "RESELLER.FORM.LABEL.CAN_ASK_LOAN_BALANCE": "می‌تواند موجودی وام را درخواست کند",
+    "RESELLER.FORM.LABEL.CAN_SEE_OUR_CONTACT": "می‌تواند اطلاعات تماس ما را ببیند",
+    "RESELLER.FORM.LABEL.CAN_SEE_PARENT_CONTACT": "می‌تواند اطلاعات تماس والد را ببیند",
+    "RESELLER.FORM.LABEL.CAN_SEND_HAWALA": "می‌تواند حواله ارسال کند",
+    "RESELLER.FORM.PLACEHOLDER.MAX_LOAN_BALANCE_REQUEST_AMOUNT": "حداکثر مبلغ درخواست موجودی وام",
+    "RESELLER.FORM.PLACEHOLDER.MIN_LOAN_BALANCE_REQUEST_AMOUNT": "حداقل مبلغ درخواست موجودی وام",
+    "RESELLER.FORM.LABEL.IDENTITY_PROOF": "مدرک هویت",
+    "RESELLER.FORM.LABEL.OPTIONAL_PROOF": "مدرک اختیاری",
+    "ADD": "افزودن"
 }
