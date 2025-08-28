@@ -160,8 +160,8 @@ const OrderPage = () => {
                                 style={{
                                     position: 'absolute',
                                     top: '100%',
-                                    left: isRTL() ? 0 : '',
-                                    right: isRTL() ? '' : 0,
+                                    left: isRTL() ? '-100%' : '',
+                                    right: isRTL() ? '' : '-100%',
                                     width: '300px',
                                     zIndex: 1000,
                                     marginTop: '0.5rem',
@@ -244,6 +244,15 @@ const OrderPage = () => {
                                                         <div>- {option.company?.company_name}</div>
                                                     </div>
                                                 )}
+                                                valueTemplate={(option) => {
+                                                    if (!option) return t('BUNDLE.FORM.PLACEHOLDER.SERVICENAME');
+                                                    return (
+                                                        <div style={{ display: 'flex', gap: '5px' }}>
+                                                            <div>{option.service_category?.category_name}</div>
+                                                            <div>- {option.company?.company_name}</div>
+                                                        </div>
+                                                    );
+                                                }}
                                             />
                                         </div>
 
@@ -655,7 +664,7 @@ const OrderPage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchOrders(page, searchTag));
+        dispatch(_fetchOrders(page, searchTag,activeFilters));
     };
 
     const exportToExcel = async () => {

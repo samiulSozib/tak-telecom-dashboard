@@ -237,6 +237,11 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-question-circle', // Better help icon
                     to: '/pages/help-articles'
                 },
+                {
+                    label: t('MENU.SETTINGS'),
+                    icon: 'pi pi-fw pi-question-circle', // Better help icon
+                    to: '/pages/app-settings'
+                },
             ]
         }
     ];
