@@ -1290,5 +1290,9 @@
         "TELEGRAM_BOT_TOKEN": "Telegram Bot Token"
     },
     "TOTAL_CUSTOM_FIELD": "Total Custom Field",
-    "MENU.SETTINGS": "Settings"
+    "MENU.SETTINGS": "Settings",
+
+    "CURRENCY.GENERAL.BASE_RATE":"Base Rate",
+    "SETTINGS_UPDATED":"Settings Updated",
+    "SETTINGS_UPDATE_FAILED":"Settings Updated Failed"
 }

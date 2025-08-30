@@ -1291,5 +1291,8 @@
         "TELEGRAM_BOT_TOKEN": "د ټیلګرام بوټ ټوکن"
     },
     "TOTAL_CUSTOM_FIELD": "ټول سفارشي فیلډونه",
-    "MENU.SETTINGS": "تنظیمات"
+    "MENU.SETTINGS": "تنظیمات",
+    "CURRENCY.GENERAL.BASE_RATE": "بنسټیزه کچه",
+  "SETTINGS_UPDATED": "تنظیمات تازه شول",
+  "SETTINGS_UPDATE_FAILED": "د تنظیماتو تازه کول ناکام شول"
 }

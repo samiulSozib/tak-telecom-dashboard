@@ -24,8 +24,10 @@ import { InputSwitch } from 'primereact/inputswitch';
 import { InputNumber } from 'primereact/inputnumber';
 import { ColorPicker } from 'primereact/colorpicker';
 import { fetchAppSettings, updateAppSettings } from '@/app/redux/actions/appSettingsActions';
-import { AppSettings } from '@/types/interface';
+import { AppSettings, Currency } from '@/types/interface';
 import { TabView, TabPanel } from 'primereact/tabview';
+import { Sidebar } from 'primereact/sidebar';
+import { _fetchCurrencies } from '@/app/redux/actions/currenciesActions';
 
 const emptySettings: AppSettings = {
   is_instant_confirm: false,
@@ -85,14 +87,46 @@ const AppSettingsPage = () => {
     const [settingsDialog, setSettingsDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [activeTab, setActiveTab] = useState('general');
+    const [mobileNavVisible, setMobileNavVisible] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const toast = useRef<Toast>(null);
     const dispatch = useDispatch<AppDispatch>();
     const { loading, settings: reduxSettings } = useSelector((state: any) => state.appSettingsReducer);
     const { t } = useTranslation();
+        const { currencies } = useSelector((state: any) => state.currenciesReducer);
+
 
     useEffect(() => {
         dispatch(fetchAppSettings());
+        dispatch(_fetchCurrencies()); // Fetch currencies
+
+
+        // Check if device is mobile
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkIsMobile);
+        };
     }, [dispatch]);
+
+    const selectedCurrency = currencies?.find((currency: Currency) =>
+        currency.code === settings.default_currency
+    );
+
+    // Update exchange rate when currency changes
+    useEffect(() => {
+        if (selectedCurrency && settings.default_currency) {
+            setSettings(prev => ({
+                ...prev,
+                exchange_rate_usd_afn: parseFloat(selectedCurrency.exchange_rate_per_usd) || 0
+            }));
+        }
+    }, [settings.default_currency, selectedCurrency]);
 
     useEffect(() => {
         if (reduxSettings) {
@@ -131,9 +165,16 @@ const AppSettingsPage = () => {
         return (
             <React.Fragment>
                 <div className="flex justify-end items-center space-x-2">
+                    {/* {isMobile && (
+                        <Button
+                            icon="pi pi-bars"
+                            className="p-button-text p-button-plain"
+                            onClick={() => setMobileNavVisible(true)}
+                        />
+                    )} */}
                     <Button
                         style={{ gap: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? '0.5rem' : '' }}
-                        label={t('APP_SETTINGS.EDIT_SETTINGS')}
+                        label={ t('APP_SETTINGS.EDIT_SETTINGS')}
                         icon="pi pi-cog"
                         severity="info"
                         className={['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'ml-2' : 'mr-2'}
@@ -158,7 +199,7 @@ const AppSettingsPage = () => {
                     <div className="grid p-fluid">
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="app_name" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_name" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_NAME')} *
                                 </label>
                                 <InputText
@@ -173,7 +214,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="app_slogan" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_slogan" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_SLOGAN')}
                                 </label>
                                 <InputText
@@ -184,18 +225,45 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="default_currency" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="default_currency" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.DEFAULT_CURRENCY')}
                                 </label>
-                                <InputText
+                                <Dropdown
                                     id="default_currency"
                                     value={settings.default_currency}
-                                    onChange={(e) => setSettings({ ...settings, default_currency: e.target.value })}
+                                    options={currencies || []}
+                                    onChange={(e) => setSettings({
+                                        ...settings,
+                                        default_currency: e.value
+                                    })}
+                                    optionLabel="code"
+                                    optionValue="code"
+                                    placeholder={t('CURRENCY.GENERAL.SELECTCURRENCY')}
+                                    className="w-full"
+                                    itemTemplate={(option: Currency) => (
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                            <span>{option.code}</span>
+                                            <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                                                {option.name}
+                                            </span>
+                                        </div>
+                                    )}
+                                    valueTemplate={(option: Currency) => {
+                                        if (!option) return t('CURRENCY.GENERAL.SELECTCURRENCY');
+                                        return (
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                                <span>{option.code}</span>
+                                                <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                                                    {option.name}
+                                                </span>
+                                            </div>
+                                        );
+                                    }}
                                 />
                             </div>
 
                             <div className="field">
-                                <label htmlFor="exchange_rate" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="exchange_rate" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.EXCHANGE_RATE')}
                                 </label>
                                 <InputNumber
@@ -204,11 +272,18 @@ const AppSettingsPage = () => {
                                     onValueChange={(e) => setSettings({ ...settings, exchange_rate_usd_afn: e.value || 0 })}
                                     mode="decimal"
                                     minFractionDigits={4}
+                                    disabled={!settings.default_currency} // Disable if no currency selected
                                 />
+                                {selectedCurrency && (
+                                    <small className="text-sm text-500">
+                                        {t('CURRENCY.GENERAL.BASE_RATE')}: {selectedCurrency.exchange_rate_per_usd}
+                                    </small>
+                                )}
                             </div>
 
+
                             <div className="field">
-                                <label htmlFor="website_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="website_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.WEBSITE_URL')}
                                 </label>
                                 <InputText
@@ -221,34 +296,34 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label style={{ fontWeight: 'bold' }}>{t('APP_SETTINGS.FEATURES')}</label>
+                                <label className="font-bold text-sm md:text-base">{t('APP_SETTINGS.FEATURES')}</label>
                                 <div className="flex flex-column gap-3">
                                     <div className="flex align-items-center">
                                         <InputSwitch
                                             checked={settings.is_instant_confirm}
                                             onChange={(e) => setSettings({ ...settings, is_instant_confirm: e.value })}
                                         />
-                                        <label className="ml-2">{t('APP_SETTINGS.INSTANT_CONFIRM')}</label>
+                                        <label className="ml-2 text-sm md:text-base">{t('APP_SETTINGS.INSTANT_CONFIRM')}</label>
                                     </div>
                                     <div className="flex align-items-center">
                                         <InputSwitch
                                             checked={settings.maintenance_mode}
                                             onChange={(e) => setSettings({ ...settings, maintenance_mode: e.value })}
                                         />
-                                        <label className="ml-2">{t('APP_SETTINGS.MAINTENANCE_MODE')}</label>
+                                        <label className="ml-2 text-sm md:text-base">{t('APP_SETTINGS.MAINTENANCE_MODE')}</label>
                                     </div>
                                     <div className="flex align-items-center">
                                         <InputSwitch
                                             checked={settings.allow_new_registrations}
                                             onChange={(e) => setSettings({ ...settings, allow_new_registrations: e.value })}
                                         />
-                                        <label className="ml-2">{t('APP_SETTINGS.ALLOW_REGISTRATIONS')}</label>
+                                        <label className="ml-2 text-sm md:text-base">{t('APP_SETTINGS.ALLOW_REGISTRATIONS')}</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="field">
-                                <label htmlFor="app_name_en" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_name_en" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_NAME_EN')}
                                 </label>
                                 <InputText
@@ -262,7 +337,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="app_name_fa" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_name_fa" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_NAME_FA')}
                                 </label>
                                 <InputText
@@ -276,7 +351,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="app_name_ps" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_name_ps" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_NAME_PS')}
                                 </label>
                                 <InputText
@@ -292,7 +367,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="app_slogan_en" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_slogan_en" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_SLOGAN_EN')}
                                 </label>
                                 <InputText
@@ -306,7 +381,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="app_slogan_fa" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_slogan_fa" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_SLOGAN_FA')}
                                 </label>
                                 <InputText
@@ -320,7 +395,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="app_slogan_ps" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="app_slogan_ps" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.APP_SLOGAN_PS')}
                                 </label>
                                 <InputText
@@ -341,7 +416,7 @@ const AppSettingsPage = () => {
                     <div className="grid p-fluid">
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="support_phone" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="support_phone" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.SUPPORT_PHONE')} *
                                 </label>
                                 <InputText
@@ -353,7 +428,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="support_email" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="support_email" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.SUPPORT_EMAIL')} *
                                 </label>
                                 <InputText
@@ -365,7 +440,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="support_whatsapp" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="support_whatsapp" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.SUPPORT_WHATSAPP')}
                                 </label>
                                 <InputText
@@ -376,7 +451,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="alternative_phone" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="alternative_phone" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.ALTERNATIVE_PHONE')}
                                 </label>
                                 <InputText
@@ -387,7 +462,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="alternative_whatsapp" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="alternative_whatsapp" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.ALTERNATIVE_WHATSAPP')}
                                 </label>
                                 <InputText
@@ -400,7 +475,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="telegram_username" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="telegram_username" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.TELEGRAM_USERNAME')}
                                 </label>
                                 <InputText
@@ -411,7 +486,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="telegram_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="telegram_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.TELEGRAM_URL')}
                                 </label>
                                 <InputText
@@ -422,7 +497,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="facebook_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="facebook_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.FACEBOOK_URL')}
                                 </label>
                                 <InputText
@@ -433,7 +508,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="instagram_handle" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="instagram_handle" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.INSTAGRAM_HANDLE')}
                                 </label>
                                 <InputText
@@ -444,7 +519,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="instagram_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="instagram_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.INSTAGRAM_URL')}
                                 </label>
                                 <InputText
@@ -457,7 +532,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="twitter_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="twitter_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.TWITTER_URL')}
                                 </label>
                                 <InputText
@@ -468,7 +543,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="tiktok_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="tiktok_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.TIKTOK_URL')}
                                 </label>
                                 <InputText
@@ -479,7 +554,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="youtube_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="youtube_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.YOUTUBE_URL')}
                                 </label>
                                 <InputText
@@ -518,7 +593,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="primary_color" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="primary_color" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.PRIMARY_COLOR')}
                                 </label>
                                 <ColorPicker
@@ -530,7 +605,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="primary_font_color" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="primary_font_color" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.PRIMARY_FONT_COLOR')}
                                 </label>
                                 <ColorPicker
@@ -544,7 +619,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="secondary_color" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="secondary_color" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.SECONDARY_COLOR')}
                                 </label>
                                 <ColorPicker
@@ -556,7 +631,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="secondary_font_color" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="secondary_font_color" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.SECONDARY_FONT_COLOR')}
                                 </label>
                                 <ColorPicker
@@ -575,7 +650,7 @@ const AppSettingsPage = () => {
                     <div className="grid p-fluid">
                         <div className="col-12 md:col-4">
                             <div className="field">
-                                <label htmlFor="max_orders" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="max_orders" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.MAX_ORDERS_PER_DAY')}
                                 </label>
                                 <InputNumber
@@ -591,7 +666,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-4">
                             <div className="field">
-                                <label htmlFor="min_topup" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="min_topup" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.MIN_TOPUP_AMOUNT')}
                                 </label>
                                 <InputNumber
@@ -607,7 +682,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-4">
                             <div className="field">
-                                <label htmlFor="max_topup" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="max_topup" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.MAX_TOPUP_AMOUNT')}
                                 </label>
                                 <InputNumber
@@ -628,7 +703,7 @@ const AppSettingsPage = () => {
                     <div className="grid p-fluid">
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="api_base_url" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="api_base_url" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.API_BASE_URL')}
                                 </label>
                                 <InputText
@@ -645,7 +720,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="api_username" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="api_username" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.API_USERNAME')}
                                 </label>
                                 <InputText
@@ -662,7 +737,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="api_authkey" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="api_authkey" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.API_AUTHKEY')}
                                 </label>
                                 <InputText
@@ -681,7 +756,7 @@ const AppSettingsPage = () => {
 
                         <div className="col-12 md:col-6">
                             <div className="field">
-                                <label htmlFor="api_msisdn" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="api_msisdn" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.API_MSISDN')}
                                 </label>
                                 <InputText
@@ -698,7 +773,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="api_request_id" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="api_request_id" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.API_REQUEST_ID')}
                                 </label>
                                 <InputText
@@ -715,7 +790,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="telegram_webhook" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="telegram_webhook" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.TELEGRAM_WEBHOOK')}
                                 </label>
                                 <InputText
@@ -732,7 +807,7 @@ const AppSettingsPage = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="telegram_bot_token" style={{ fontWeight: 'bold' }}>
+                                <label htmlFor="telegram_bot_token" className="font-bold text-sm md:text-base">
                                     {t('APP_SETTINGS.TELEGRAM_BOT_TOKEN')}
                                 </label>
                                 <InputText
@@ -756,6 +831,51 @@ const AppSettingsPage = () => {
         }
     };
 
+    const navigationButtons = (
+        <div className="flex flex-column gap-2">
+            <Button
+                label={t('APP_SETTINGS.GENERAL')}
+                className={`p-button-text ${activeTab === 'general' ? 'p-button-primary' : 'p-button-secondary'} text-sm md:text-base`}
+                onClick={() => {
+                    setActiveTab('general');
+                    setMobileNavVisible(false);
+                }}
+            />
+            <Button
+                label={t('APP_SETTINGS.CONTACT_INFO')}
+                className={`p-button-text ${activeTab === 'contact' ? 'p-button-primary' : 'p-button-secondary'} text-sm md:text-base`}
+                onClick={() => {
+                    setActiveTab('contact');
+                    setMobileNavVisible(false);
+                }}
+            />
+            <Button
+                label={t('APP_SETTINGS.BRANDING')}
+                className={`p-button-text ${activeTab === 'branding' ? 'p-button-primary' : 'p-button-secondary'} text-sm md:text-base`}
+                onClick={() => {
+                    setActiveTab('branding');
+                    setMobileNavVisible(false);
+                }}
+            />
+            <Button
+                label={t('APP_SETTINGS.LIMITS')}
+                className={`p-button-text ${activeTab === 'limits' ? 'p-button-primary' : 'p-button-secondary'} text-sm md:text-base`}
+                onClick={() => {
+                    setActiveTab('limits');
+                    setMobileNavVisible(false);
+                }}
+            />
+            <Button
+                label={t('APP_SETTINGS.INTEGRATION')}
+                className={`p-button-text ${activeTab === 'integration' ? 'p-button-primary' : 'p-button-secondary'} text-sm md:text-base`}
+                onClick={() => {
+                    setActiveTab('integration');
+                    setMobileNavVisible(false);
+                }}
+            />
+        </div>
+    );
+
     return (
         <div className="grid crud-demo -m-5">
             <div className="col-12">
@@ -766,50 +886,54 @@ const AppSettingsPage = () => {
 
                     <div className="card">
                         <div className="grid">
-                            <div className="col-12 md:col-3">
-                                <div className="p-3 border-round surface-card">
-                                    <h4>{t('APP_SETTINGS.APP_SETTINGS')}</h4>
-                                    <div className="flex flex-column gap-2">
-                                        <Button
-                                            label={t('APP_SETTINGS.GENERAL')}
-                                            className={`p-button-text ${activeTab === 'general' ? 'p-button-primary' : 'p-button-secondary'}`}
-                                            onClick={() => setActiveTab('general')}
-                                        />
-                                        <Button
-                                            label={t('APP_SETTINGS.CONTACT_INFO')}
-                                            className={`p-button-text ${activeTab === 'contact' ? 'p-button-primary' : 'p-button-secondary'}`}
-                                            onClick={() => setActiveTab('contact')}
-                                        />
-                                        <Button
-                                            label={t('APP_SETTINGS.BRANDING')}
-                                            className={`p-button-text ${activeTab === 'branding' ? 'p-button-primary' : 'p-button-secondary'}`}
-                                            onClick={() => setActiveTab('branding')}
-                                        />
-                                        <Button
-                                            label={t('APP_SETTINGS.LIMITS')}
-                                            className={`p-button-text ${activeTab === 'limits' ? 'p-button-primary' : 'p-button-secondary'}`}
-                                            onClick={() => setActiveTab('limits')}
-                                        />
-                                        <Button
-                                            label={t('APP_SETTINGS.INTEGRATION')}
-                                            className={`p-button-text ${activeTab === 'integration' ? 'p-button-primary' : 'p-button-secondary'}`}
-                                            onClick={() => setActiveTab('integration')}
-                                        />
+                            {!isMobile ? (
+                                <>
+                                    <div className="col-12 md:col-3">
+                                        <div className="p-3 border-round surface-card">
+                                            <h4 className="text-base md:text-xl">{t('APP_SETTINGS.APP_SETTINGS')}</h4>
+                                            {navigationButtons}
+                                        </div>
+                                    </div>
+
+                                    <div className="col-12 md:col-9">
+                                        <div className="p-3 border-round surface-card">
+                                            {renderTabContent()}
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="col-12">
+                                    <div className="p-3 border-round surface-card">
+                                        <div className="flex align-items-center mb-3">
+                                            <h4 className="text-base md:text-xl m-0">{t('APP_SETTINGS.APP_SETTINGS')}</h4>
+                                            <Button
+                                                icon="pi pi-bars"
+                                                className="p-button-text p-button-plain ml-auto"
+                                                onClick={() => setMobileNavVisible(true)}
+                                            />
+                                        </div>
+                                        {renderTabContent()}
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="col-12 md:col-9">
-                                <div className="p-3 border-round surface-card">
-                                    {renderTabContent()}
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
+                    <Sidebar
+                        visible={mobileNavVisible}
+                        onHide={() => setMobileNavVisible(false)}
+                        position="left"
+                        style={{ width: '250px' }}
+                    >
+                        <div className="p-3">
+                            <h4 className="text-base md:text-xl mb-3">{t('APP_SETTINGS.APP_SETTINGS')}</h4>
+                            {navigationButtons}
+                        </div>
+                    </Sidebar>
+
                     <Dialog
                         visible={settingsDialog}
-                        style={{ width: '900px', maxHeight: '80vh' }}
+                        style={{ width: isMobile ? '95vw' : '900px', maxHeight: '80vh' }}
                         header={t('FORM.GENERAL.SUBMIT')}
                         modal
                         className="p-fluid"
@@ -817,8 +941,10 @@ const AppSettingsPage = () => {
                         onHide={hideDialog}
                     >
                         <div className="card" style={{ padding: '20px', maxHeight: '60vh', overflowY: 'auto' }}>
-                            <TabView activeIndex={['general', 'contact', 'branding', 'limits', 'integration'].indexOf(activeTab)}
-                                onTabChange={(e) => setActiveTab(['general', 'contact', 'branding', 'limits', 'integration'][e.index])}>
+                            <TabView
+                                activeIndex={['general', 'contact', 'branding', 'limits', 'integration'].indexOf(activeTab)}
+                                onTabChange={(e) => setActiveTab(['general', 'contact', 'branding', 'limits', 'integration'][e.index])}
+                            >
                                 <TabPanel header={t('APP_SETTINGS.GENERAL')}>
                                     {activeTab === 'general' && renderTabContent()}
                                 </TabPanel>

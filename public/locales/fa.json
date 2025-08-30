@@ -1290,5 +1290,8 @@
         "TELEGRAM_BOT_TOKEN": "توکن ربات تلگرام"
     },
     "TOTAL_CUSTOM_FIELD": "مجموع فیلدهای سفارشی",
-    "MENU.SETTINGS": "تنظیمات"
+    "MENU.SETTINGS": "تنظیمات",
+     "CURRENCY.GENERAL.BASE_RATE": "نرخ پایه",
+  "SETTINGS_UPDATED": "تنظیمات به‌روزرسانی شد",
+  "SETTINGS_UPDATE_FAILED": "به‌روزرسانی تنظیمات ناکام شد"
 }

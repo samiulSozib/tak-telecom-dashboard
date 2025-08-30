@@ -151,8 +151,8 @@ const OrderPage = () => {
         return (
             <React.Fragment>
                 <div className="-m-1 my-2 flex flex-wrap gap-1 w-full">
-                    <Button className="flex-1 min-w-[100px]" label={t('REFRESH')} icon={`pi pi-refresh ${refreshing ? 'pi-spin' : ''}`} severity="secondary" onClick={handleRefresh} disabled={refreshing} />
-                    <div className="flex-1 min-w-[100px]" ref={filterRef} style={{ position: 'relative' }}>
+                    <Button className="flex-1  h-10" label={t('REFRESH')} icon={`pi pi-refresh ${refreshing ? 'pi-spin' : ''}`} severity="secondary" onClick={handleRefresh} disabled={refreshing} />
+                    <div className="flex-1  h-10" ref={filterRef} style={{ position: 'relative' }}>
                         <Button className="p-button-info w-full" label={t('ORDER.FILTER.FILTER')} icon="pi pi-filter" onClick={() => setFilterDialogVisible(!filterDialogVisible)} />
                         {filterDialogVisible && (
                             <div
@@ -308,7 +308,7 @@ const OrderPage = () => {
                         )}
                     </div>
 
-                    <Button className="flex-1 min-w-[100px]" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
+                    <Button className="flex-1  h-10" label={t('EXPORT.EXPORT')} icon={`pi pi-file-excel`} severity="success" onClick={exportToExcel} />
                 </div>
             </React.Fragment>
         );
@@ -664,7 +664,7 @@ const OrderPage = () => {
 
     const onPageChange = (event: any) => {
         const page = event.page + 1;
-        dispatch(_fetchOrders(page, searchTag,activeFilters));
+        dispatch(_fetchOrders(page, searchTag, activeFilters));
     };
 
     const exportToExcel = async () => {
