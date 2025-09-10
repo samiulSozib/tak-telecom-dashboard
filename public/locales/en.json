@@ -1294,5 +1294,7 @@
 
     "CURRENCY.GENERAL.BASE_RATE":"Base Rate",
     "SETTINGS_UPDATED":"Settings Updated",
-    "SETTINGS_UPDATE_FAILED":"Settings Updated Failed"
+    "SETTINGS_UPDATE_FAILED":"Settings Updated Failed",
+
+    "DOCUMENTS":"Documents"
 }

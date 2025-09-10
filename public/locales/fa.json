@@ -1293,5 +1293,7 @@
     "MENU.SETTINGS": "تنظیمات",
      "CURRENCY.GENERAL.BASE_RATE": "نرخ پایه",
   "SETTINGS_UPDATED": "تنظیمات به‌روزرسانی شد",
-  "SETTINGS_UPDATE_FAILED": "به‌روزرسانی تنظیمات ناکام شد"
+  "SETTINGS_UPDATE_FAILED": "به‌روزرسانی تنظیمات ناکام شد",
+  "DOCUMENTS": "اسناد"
+
 }

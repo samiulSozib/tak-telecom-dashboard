@@ -1294,5 +1294,7 @@
     "MENU.SETTINGS": "تنظیمات",
     "CURRENCY.GENERAL.BASE_RATE": "بنسټیزه کچه",
   "SETTINGS_UPDATED": "تنظیمات تازه شول",
-  "SETTINGS_UPDATE_FAILED": "د تنظیماتو تازه کول ناکام شول"
+  "SETTINGS_UPDATE_FAILED": "د تنظیماتو تازه کول ناکام شول",
+  "DOCUMENTS": "اسناد"
+
 }
