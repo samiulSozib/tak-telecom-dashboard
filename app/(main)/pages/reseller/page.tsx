@@ -29,7 +29,7 @@ import { resellerGroupReducer } from '@/app/redux/reducers/resellerGroupReducer'
 import { _fetchResellerGroups } from '@/app/redux/actions/resellerGroupActions';
 import { InputSwitch } from 'primereact/inputswitch';
 import { SplitButton } from 'primereact/splitbutton';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Paginator } from 'primereact/paginator';
 import { customCellStyleImage } from '../../utilities/customRow';
 import i18n from '@/i18n';
@@ -145,6 +145,25 @@ const ResellerPage = () => {
     useEffect(() => {
         //console.log(resellers)
     }, [dispatch, resellers]);
+
+    // Add this useEffect to handle auto-opening the dialog
+    const searchParams = useSearchParams(); // Add this
+
+    useEffect(() => {
+        const action = searchParams.get('action');
+        if (action === 'add') {
+            // Small delay to ensure the page is fully loaded and Redux state is ready
+            const timer = setTimeout(() => {
+                openNew();
+                // Optional: Clean up the URL after opening the dialog
+                router.replace('/pages/reseller');
+            }, 300);
+
+            return () => clearTimeout(timer);
+        }
+    }, [searchParams, router]);
+
+
 
     const openNew = () => {
         setReseller(emptyReseller);
@@ -772,7 +791,7 @@ const ResellerPage = () => {
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="name"
                             header={t('RESELLER.TABLE.COLUMN.RESELLERNAME')}
-                            
+
                             body={nameBodyTemplate}
                         ></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="phone" header={t('RESELLER.TABLE.COLUMN.PHONE')} body={phoneBodyTemplate}></Column>
@@ -781,7 +800,7 @@ const ResellerPage = () => {
                             field="total_earning_balance"
                             header={t('TOTAL_EARNING_BALANCE')}
                             body={totalEarningBalanceBodyTemplate}
-                            headerStyle={{ whiteSpace: 'nowrap'}}
+                            headerStyle={{ whiteSpace: 'nowrap' }}
                         ></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="balance" header={t('MENU.BALANCE')} body={balanceBodyTemplate}></Column>
                         <Column
@@ -789,39 +808,39 @@ const ResellerPage = () => {
                             field="available_payment"
                             header={t('RESELLER.TABLE.COLUMN.AVAILABLEPAYMENT')}
                             body={availablePaymentBodyTemplate}
-                            headerStyle={{ whiteSpace: 'nowrap'}}
+                            headerStyle={{ whiteSpace: 'nowrap' }}
                         ></Column>
                         <Column
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="total_payment"
                             header={t('RESELLER.TABLE.COLUMN.PAYMENT')}
                             body={totalPaymentBodyTemplate}
-                            headerStyle={{ whiteSpace: 'nowrap'}}
+                            headerStyle={{ whiteSpace: 'nowrap' }}
                         ></Column>
                         <Column
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="total_balance"
                             header={t('RESELLER.TABLE.COLUMN.TOTAL_BALANCE')}
                             body={totalBalanceSentBodyTemplate}
-                            headerStyle={{ whiteSpace: 'nowrap'}}
+                            headerStyle={{ whiteSpace: 'nowrap' }}
                         ></Column>
                         <Column
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="loan_amount"
                             header={t('RESELLER.TABLE.COLUMN.LOANAMOUNT')}
                             body={loanAmountBodyTemplate}
-                            headerStyle={{ whiteSpace: 'nowrap'}}
+                            headerStyle={{ whiteSpace: 'nowrap' }}
                         ></Column>
                         <Column
                             style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }}
                             field="preferred_currency"
                             header={t('MENU.CURRENCY')}
                             body={preferredCurrencyBodyTemplate}
-                            
+
                         ></Column>
-                        <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="name" header={t('PARENT_RESELLER_NAME')}  body={parentNameBodyTemplate} headerStyle={{ whiteSpace: 'nowrap'}}></Column>
+                        <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="name" header={t('PARENT_RESELLER_NAME')} body={parentNameBodyTemplate} headerStyle={{ whiteSpace: 'nowrap' }}></Column>
                         <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="country" header={t('RESELLER.TABLE.COLUMN.COUNTRY')} body={countryBodyTemplate}></Column>
-                        <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('BUNDLE.TABLE.FILTER.STATUS')}  body={statusBodyTemplate}></Column>
+                        <Column style={{ ...customCellStyleImage, textAlign: ['ar', 'fa', 'ps', 'bn'].includes(i18n.language) ? 'right' : 'left' }} field="status" header={t('BUNDLE.TABLE.FILTER.STATUS')} body={statusBodyTemplate}></Column>
                     </DataTable>
                     <Paginator
                         first={(pagination?.page - 1) * pagination?.items_per_page}
@@ -829,7 +848,22 @@ const ResellerPage = () => {
                         totalRecords={pagination?.total}
                         onPageChange={(e) => onPageChange(e)}
                         template={
-                            isRTL() ? 'RowsPerPageDropdown CurrentPageReport LastPageLink NextPageLink PageLinks PrevPageLink FirstPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                            isRTL() ? 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown'
+                        }
+                        currentPageReportTemplate={
+                            isRTL()
+                                ? `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}` // localized RTL string
+                                : `${t('DATA_TABLE.TABLE.PAGINATOR.SHOWING')}`
+                        }
+                        firstPageLinkIcon={
+                            isRTL()
+                                ? "pi pi-angle-double-right"
+                                : "pi pi-angle-double-left"
+                        }
+                        lastPageLinkIcon={
+                            isRTL()
+                                ? "pi pi-angle-double-left"
+                                : "pi pi-angle-double-right"
                         }
                     />
 
@@ -1548,7 +1582,7 @@ const ResellerPage = () => {
 
                     <Dialog visible={deleteResellerDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteResellerDialogFooter} onHide={hideDeleteResellerDialog}>
                         <div className="flex align-items-center justify-content-center">
-                            <i className="pi pi-exclamation-triangle mx-3" style={{ fontSize: '2rem', color:'red' }} />
+                            <i className="pi pi-exclamation-triangle mx-3" style={{ fontSize: '2rem', color: 'red' }} />
                             {reseller && (
                                 <span>
                                     {t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} <b>{reseller.reseller_name}</b>
@@ -1559,7 +1593,7 @@ const ResellerPage = () => {
 
                     <Dialog visible={statusResellerDialog} style={{ width: '450px' }} header="Confirm" modal footer={statusResellerDialogFooter} onHide={hideStatusResellerDialog}>
                         <div className="flex align-items-center justify-content-center">
-                            <i className="pi pi-exclamation-triangle mx-3" style={{ fontSize: '2rem', color:'red' }} />
+                            <i className="pi pi-exclamation-triangle mx-3" style={{ fontSize: '2rem', color: 'red' }} />
                             {reseller && (
                                 <span>
                                     Are you sure you want to change status <b>{reseller.reseller_name}</b>?
@@ -1570,7 +1604,7 @@ const ResellerPage = () => {
 
                     <Dialog visible={deleteResellersDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteResellersDialogFooter} onHide={hideDeleteResellersDialog}>
                         <div className="flex align-items-center justify-content-center">
-                            <i className="pi pi-exclamation-triangle mx-3" style={{ fontSize: '2rem', color:'red' }} />
+                            <i className="pi pi-exclamation-triangle mx-3" style={{ fontSize: '2rem', color: 'red' }} />
                             {reseller && <span>{t('ARE_YOU_SURE_YOU_WANT_TO_DELETE')} the selected companies?</span>}
                         </div>
                     </Dialog>
